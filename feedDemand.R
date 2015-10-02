@@ -4,13 +4,17 @@ library(data.table)
 library(reshape2)
 
 
-setwd("T:/Team_working_folder/A/Total-Feed-Model/Programming/Programs/functions")
-source("functions/sws_query.r")
+#setwd("T:/Team_working_folder/A/Total-Feed-Model/Programming/Programs/functions")
+#source("functions/sws_query.r")
+
+GetTestEnvironment("https://hqlprswsas1.hq.un.fao.org:8181/sws", "eca8911c-6d70-4b82-9933-6af56d628c92")
 
 
 ## retrieve data on animal numbers from old sws using FCL codes (to be converted into new sws and CPC coding)
 animalHeads = as.data.table(sws_query(area=1:299, item=c(866, 946, 976, 1016, 1034, 1057, 1068, 1072, 1079, 1096,
                                             1107, 1110, 1126, 1140 ), ele=11, year=1990:2012, value.names=F))
+#key <- 
+animalHeads <- 
 
 animalHeads$ele = NULL
 animalHeads$flag = NULL
