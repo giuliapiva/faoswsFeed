@@ -49,7 +49,7 @@ into the working directory or specify full path with class.path argument.")
     pingvec <- system2("ping",paste('-n 1', x),
                        stderr=FALSE,
                        stdout=FALSE,...)
-    if (pingvec == 0) TRUE else FALSE
+    pingvec == 0
   }
   
   if(!ping("lprdbwo1.fao.org"))
