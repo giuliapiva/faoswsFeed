@@ -46,15 +46,17 @@ animalUnit = animalUnit[,.(Area.Code, Item.Code, Year, Energy.Factor, Protein.Fa
 setnames(animalUnit, c("geographicAreaM49", "measuredItemCPC", "timePointYears", 
                         "energyFactor", "proteinFactor"))
 
-#convert types for merging
-animalUnit[,`:=`(geographicAreaM49=as.character(geographicAreaM49), 
-              measuredItemCPC=as.character(measuredItemCPC), 
+#convert types and codes for merging
+animalUnit[,`:=`(geographicAreaM49=fs2m49(as.character(geographicAreaM49)), 
+              measuredItemCPC=fcl2cpc(sprintf("%04d", measuredItemCPC)),
               timePointYears=as.character(timePointYears))]
 
 
 ## Link animal types with intensity groups
-animalCPCGroup = data.table(measuredItemCPC = sort(unique(animalHeads$measuredItemCPC)),
-                                 animalGroup = c(1, 5, 2, 2, 3, 4, 4, 4, 4, 7, 7, 7, 6, 8))                         
+animalCPCGroup = data.table(measuredItemCPC = fcl2cpc(sprintf("%04d",
+                                                              c(866, 946, 976, 1016, 1034, 1057, 1068, 1072, 1079, 1096, 1107,
+                                                                1110, 1126, 1140))),
+                            animalGroup = c(1, 5, 2, 2, 3, 4, 4, 4, 4, 7, 7, 7, 6, 8))                         
 ## intensity factors
 
 intensityFactor  = as.data.table(read.csv("../Data/trans/IR-estimated_6-15.csv"))
