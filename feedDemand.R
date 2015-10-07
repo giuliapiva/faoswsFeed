@@ -6,21 +6,13 @@ library(data.table)
 library(reshape2)
 
 
-#setwd("T:/Team_working_folder/A/Total-Feed-Model/Programming/Programs/functions")
 source("functions/sws_query.r")
 
 
 if(CheckDebug()){
   SetClientFiles("~/certificates/production")
+  GetTestEnvironment("https://hqlprswsas1.hq.un.fao.org:8181/sws", "ebdda55c-21a4-4bdd-9d0c-5098cec843f7")
 }
-
-GetTestEnvironment("https://hqlprswsas1.hq.un.fao.org:8181/sws", "ebdda55c-21a4-4bdd-9d0c-5098cec843f7")
-
-
-## retrieve data on animal numbers from old sws using FCL codes (to be converted into new sws and CPC coding)
-# animalHeads = as.data.table(sws_query(area=1:299, item=c(866, 946, 976, 1016, 1034, 1057, 1068, 1072, 1079, 1096,
-#                                             1107, 1110, 1126, 1140 ), ele=11, year=1990:2012, value.names=F,
-#                                       class.path = 'functions/ojdbc14.jar'))
 
 ## FS and FCL code are on FAOStat 1 > SUA Working
 
@@ -39,8 +31,7 @@ key = DatasetKey(domain="agriculture", dataset="agriculture",
                  )
 animalHeads = GetData(key)
 
-#animalHeads$ele = NULL
-#animalHeads$flag = NULL
+
 animalHeads[, `:=`(measuredElement=NULL, flagObservationStatus=NULL, flagMethod=NULL)]
 setnames(animalHeads, c('geographicAreaM49', "measuredItemCPC", "timePointYears", "animalHeads"))
 
@@ -50,7 +41,6 @@ animalHeads[, animalHeads := ifelse( measuredItemCPC %in% fcl2cpc(as.character(c
                                      animalHeads)]
 
 ## animal units
-#setwd("T:/Team_working_folder/A/Total-Feed-Model/Programming/Data/trans")
 animalUnit = as.data.table(read.csv('../Data/trans/animal_unit_6-12.csv'))
 animalUnit = animalUnit[,.(Area.Code, Item.Code, Year, Energy.Factor, Protein.Factor)]
 setnames(animalUnit, c("geographicAreaM49", "measuredItemCPC", "timePointYears", 
@@ -132,4 +122,3 @@ feedDemandData[, energyDemand := livestockEnergyDemand + aquaEnergyDemand]
 feedDemandData[, proteinDemand := livestockProteinDemand + aquaProteinDemand]
 
 feedDemand = feedDemandData[, .(geographicAreaM49, timePointYears, energyDemand, proteinDemand)]
-
