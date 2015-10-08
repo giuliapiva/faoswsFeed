@@ -1,0 +1,71 @@
+---
+title: "fs2m49() problems"
+author: "Sebastian Campbell"
+date: "8 October 2015"
+output: pdf_document
+---
+
+## Setting up of environment
+```{r setup}
+library(faosws)
+library(faoswsUtil)
+library(data.table)
+
+GetTestEnvironment("https://hqlprswsas1.hq.un.fao.org:8181/sws", 
+                   "ebdda55c-21a4-4bdd-9d0c-5098cec843f7")
+
+fscodes <- GetCodeList("faostat_one", "FS1_SUA", "geographicAreaFS")
+setkey(fscodes, code)
+m49codes <- GetCodeList("feed", "feed_availability", "geographicAreaM49")
+setkey(m49codes, code)
+
+convtable <- faosws::GetTableData(schemaName = "ess", tableName = "fal_2_m49")
+```
+
+## Codes not present in one table or another
+The current table used to convert between FAOSTAT and M49 codes is used for conversion in both directions. As such, all the FAOSTAT codes it contains should be present in all `geographicAreaFS` tables and all M49 codes it contains should be in all `geographicAreaM49` tables. If not, there is a risk of translating a code to one that doesn't exist in the other table. When the SWS receives a code that it doesn't have, it simply throws an error and does not proceed with the request, i.e. it does not simply ignore the incorrect code.
+
+##M49 codes not present in the M49 table
+
+```{r M49_not_present}
+#Get all keys in the conversion table
+m49_conv_keys <- convtable$m49
+#Get all keys in the data table
+m49_all_keys <- m49codes$code
+
+#Find all keys present in the conversion table, but not the data table
+m49_diffs <- setdiff(m49_conv_keys, m49_all_keys)
+m49_diffs
+
+#Merge these back into the FAOSTAT table to see to which country they belong
+setkey(convtable, fal)
+fscodes[convtable[m49 %in% m49_diffs]]
+```
+
+##FAOSTAT codes not present in the FAOSTAT table
+
+```{r FAOSTAT_not_present}
+#Do the same, but with the FAOSTAT codes
+fs_conv_keys <- convtable$fal
+fs_all_keys <- fscodes$code
+fs_diffs <- setdiff(fs_conv_keys, fs_all_keys)
+fs_diffs
+
+setkey(convtable, m49)
+m49codes[convtable[fal %in% fs_diffs]]
+```
+
+##Codes which have mismatched names in different tables
+
+By looking through it manually, I found one code that I don't think matches.
+
+```{r manual}
+# Entry in the FAOSTAT table
+problem_fs <- "281"
+fscodes[code==problem_fs]
+
+# Conversion
+converted_problem <- fs2m49(problem_fs)
+m49codes[code==converted_problem]
+
+```

@@ -47,18 +47,18 @@ setkey(convtable, m49)
 m49codes[convtable[fal %in% fs_diffs]]
 
 ## CURRENT PROBLEMS
-fs:22 - m49:532; Aruba ~ 532 is not a valid code, 533 is.
-fs:214 - m49:158; China, Taiwan Prov ~ Maps to nowhere. Maybe 156 China?
-
-fs:281 - m49:663; USA, Summer Season/Saint-Martin ~ Names don't match
-#
-# These fs codes don't have matches in the fs codes
-#
-  code  description selectionOnly    type startDate endDate fal
-1:  531     CuraÃ§ao         FALSE country        NA      NA 279
-2:  534 Sint Maarten         FALSE country        NA      NA 280
-3:  831     Guernsey         FALSE country        NA      NA 274
-4:  832       Jersey         FALSE country        NA      NA 283
+# fs:22 - m49:532; Aruba ~ 532 is not a valid code, 533 is.
+# fs:214 - m49:158; China, Taiwan Prov ~ Maps to nowhere. Maybe 156 China?
+# 
+# fs:281 - m49:663; USA, Summer Season/Saint-Martin ~ Names don't match
+# #
+# # These fs codes don't have matches in the fs codes
+# #
+#   code  description selectionOnly    type startDate endDate fal
+# 1:  531     CuraÃ§ao         FALSE country        NA      NA 279
+# 2:  534 Sint Maarten         FALSE country        NA      NA 280
+# 3:  831     Guernsey         FALSE country        NA      NA 274
+# 4:  832       Jersey         FALSE country        NA      NA 283
 
 
 
