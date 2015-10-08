@@ -6,9 +6,6 @@ library(data.table)
 library(reshape2)
 
 
-source("functions/sws_query.r")
-
-
 if(CheckDebug()){
   SetClientFiles("~/certificates/production")
   GetTestEnvironment("https://hqlprswsas1.hq.un.fao.org:8181/sws", "ebdda55c-21a4-4bdd-9d0c-5098cec843f7")
@@ -21,11 +18,11 @@ if(CheckDebug()){
 
 key = DatasetKey(domain="agriculture", dataset="agriculture",
                   dimensions=list(
-                    Dimension(name="geographicAreaM49", keys=na.omit(fs2m49(as.character((1:299)[-22])))),
+                    Dimension(name="geographicAreaM49", keys=na.omit(fs2m49(as.character((1:299)[-22])))), #user input
                     Dimension(name="measuredItemCPC", keys=fcl2cpc(sprintf("%04d", c(866, 946, 976, 1016, 1034, 1057, 1068, 1072, 1079, 1096,
                                                                                              1107, 1110, 1126, 1140)))),
                     Dimension(name="measuredElement", keys=c("5111", "5112")),
-                    Dimension(name="timePointYears", keys=as.character(1990:2012))
+                    Dimension(name="timePointYears", keys=as.character(1990:2012)) #user input
                     
                     )
                  )
