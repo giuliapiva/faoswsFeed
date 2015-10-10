@@ -2,7 +2,7 @@
 
 library(faosws)
 library(faoswsUtil)
-library(data.table)
+suppressPackageStartupMessages(library(data.table))
 library(reshape2)
 
 
@@ -16,26 +16,35 @@ if(CheckDebug()){
 ## PROBLEMATIC CODES
 # 22 (Aruba) is mapped to 532, should be 533
 
+animalKeys <- fcl2cpc(sprintf("%04d", c(866, 946, 976, 1016, 1034, 1057, 1068, 1072, 1079, 1096,
+                                        1107, 1110, 1126, 1140)))
+stockKeys <- c("5111", "5112")
+thousandHeads <- "5112"
+
 key = DatasetKey(domain="agriculture", dataset="agriculture",
                   dimensions=list(
                     Dimension(name="geographicAreaM49", keys=na.omit(fs2m49(as.character((1:299)[-22])))), #user input
-                    Dimension(name="measuredItemCPC", keys=fcl2cpc(sprintf("%04d", c(866, 946, 976, 1016, 1034, 1057, 1068, 1072, 1079, 1096,
-                                                                                             1107, 1110, 1126, 1140)))),
-                    Dimension(name="measuredElement", keys=c("5111", "5112")),
+                    Dimension(name="measuredItemCPC", keys=animalKeys),
+                    Dimension(name="measuredElement", keys=stockKeys),
                     Dimension(name="timePointYears", keys=as.character(1990:2012)) #user input
                     
                     )
                  )
 animalHeads = GetData(key)
 
+setnames(animalHeads, "Value", "animalHeads")
 
-animalHeads[, `:=`(measuredElement=NULL, flagObservationStatus=NULL, flagMethod=NULL)]
-setnames(animalHeads, c('geographicAreaM49', "measuredItemCPC", "timePointYears", "animalHeads"))
+# Poultry and Rabbits are expressed in '000 heads, hence convert into heads
+animalHeads[measuredElement %in% thousandHeads , animalHeads * 1000]
 
 # Poultry and Rabbits are expressed in '000 heads, hence convert into heads
 animalHeads[, animalHeads := ifelse( measuredItemCPC %in% fcl2cpc(as.character(c(1057, 1068, 1072, 1079, 1140))), 
-                                     animalHeads * 1000, 
-                                     animalHeads)]
+                                                                          animalHeads * 1000, animalHeads)]
+
+
+animalHeads[, `:=`(measuredElement=NULL, flagObservationStatus=NULL, flagMethod=NULL)]
+
+
 
 ## animal units
 animalUnit = as.data.table(read.csv('../Data/trans/animal_unit_6-12.csv'))
