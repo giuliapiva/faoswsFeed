@@ -5,10 +5,14 @@ date: "8 October 2015"
 output: pdf_document
 ---
 
+```{r knitr-settings, echo=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
 ## Setting up of environment
-```{r setup}
+```{r setup, echo=TRUE}
 library(faosws)
-library(faoswsUtil)
+suppressMessages(library(faoswsUtil))
 library(data.table)
 
 GetTestEnvironment("https://hqlprswsas1.hq.un.fao.org:8181/sws", 
@@ -27,6 +31,8 @@ The current table used to convert between FAOSTAT and M49 codes is used for conv
 
 ##M49 codes not present in the M49 table
 
+The following codes are present in the conversion table, but not in the actual M49 table.
+
 ```{r M49_not_present}
 #Get all keys in the conversion table
 m49_conv_keys <- convtable$m49
@@ -43,6 +49,8 @@ fscodes[convtable[m49 %in% m49_diffs]]
 ```
 
 ##FAOSTAT codes not present in the FAOSTAT table
+
+The following codes are present in the conversion table, but not in the actual FAOSTAT table.
 
 ```{r FAOSTAT_not_present}
 #Do the same, but with the FAOSTAT codes
