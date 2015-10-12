@@ -1,4 +1,4 @@
-source('T:/Onno/Feed-Model/Expert-Approach/Programming/Programs/functions/cattle_energy_factor.r')
+source('functions/cattle_energy_factor.r')
 
 
 cattle_protein_factor <- function(area, year) {

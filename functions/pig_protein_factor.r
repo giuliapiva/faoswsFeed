@@ -1,4 +1,4 @@
-source('T:/Onno/Feed-Model/Expert-Approach/Programming/Programs/functions/sws_query_2.r')
+source('functions/sws_query_2.r')
 
 
 pig_protein_factor <- function(area, year) {

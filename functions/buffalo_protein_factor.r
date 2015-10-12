@@ -1,4 +1,4 @@
-source('T:/Onno/Feed-Model/Expert-Approach/Programming/Programs/functions/buffalo_energy_factor.r')
+source('functions/buffalo_energy_factor.r')
 
 
 buffalo_protein_factor <- function(area, year) {

@@ -42,30 +42,30 @@
 ##
 ## START
 
-setwd("T:/Onno/Feed-Model/Expert-Approach/Programming/Programs/functions")
+#setwd("T:/Onno/Feed-Model/Expert-Approach/Programming/Programs/functions")
 
 ## 1. SOURCE FUNCTIONS
 
-source('cattle_energy_factor.r')
-source('cattle_protein_factor.r')
-source('sheep_energy_factor.r')
-source('sheep_protein_factor.r')
-source('goat_energy_factor.r')
-source('goat_protein_factor.r')
-source('pig_energy_factor.r')
-source('pig_protein_factor.r')
-source('chicken_energy_factor.r')
-source('chicken_protein_factor.r')
-source('duck_energy_factor.r')
-source('duck_protein_factor.r')
-source('geese_energy_factor.r')
-source('geese_protein_factor.r')
-source('turkey_energy_factor.r')
-source('turkey_protein_factor.r')
-source('buffalo_energy_factor.r')
-source('buffalo_protein_factor.r')
-source('camel_energy_factor.r')
-source('camel_protein_factor.r')
+source('functions/cattle_energy_factor.r')
+source('functions/cattle_protein_factor.r')
+source('functions/sheep_energy_factor.r')
+source('functions/sheep_protein_factor.r')
+source('functions/goat_energy_factor.r')
+source('functions/goat_protein_factor.r')
+source('functions/pig_energy_factor.r')
+source('functions/pig_protein_factor.r')
+source('functions/chicken_energy_factor.r')
+source('functions/chicken_protein_factor.r')
+source('functions/duck_energy_factor.r')
+source('functions/duck_protein_factor.r')
+source('functions/geese_energy_factor.r')
+source('functions/geese_protein_factor.r')
+source('functions/turkey_energy_factor.r')
+source('functions/turkey_protein_factor.r')
+source('functions/buffalo_energy_factor.r')
+source('functions/buffalo_protein_factor.r')
+source('functions/camel_energy_factor.r')
+source('functions/camel_protein_factor.r')
 
 ## 2. COMPILE INDICEs
 
@@ -198,7 +198,7 @@ indices <- indices[order(indices$Area.Code),]
 
 #write
 #write.csv(indices, 'T:/Onno/Feed-Model/Expert-Approach/Data/Animal Unit Indices/aui_6.csv', row.names=F)
-write.csv(indices, '../..Data/aui_6.csv', row.names=F)
+write.csv(indices, '../Data/trans/aui_6.csv', row.names=F)
 
 
 ## End

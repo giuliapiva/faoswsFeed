@@ -1,4 +1,4 @@
-source('T:/Onno/Feed-Model/Expert-Approach/Programming/Programs/functions/sws_query_2.r')
+source('functions/sws_query_2.r')
 
 duck_energy_factor <- function(area, year) {
   #   
