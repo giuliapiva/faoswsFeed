@@ -157,12 +157,11 @@ olddata <- as.data.table(sws_query(area=1:299, item=c(866, 946, 976, 1016, 1034,
 olddata[,`:=`(area = fs2m49(as.character(area)),
            item = fcl2cpc(sprintf("%04d", item)),
            ele = NULL,
-           year=as.character(year),
-           flag = NULL)]
-setnames(olddata, c("area", "item", "year", "value"), c("geographicAreaM49", "measuredItemCPC", "timePointYears", "oldValue"))
+           year=as.character(year))]
+setnames(olddata, c("area", "item", "year", "value", "flag"), c("geographicAreaM49", "measuredItemCPC", "timePointYears", "oldValue", "oldFlag"))
 setkey(olddata, geographicAreaM49, measuredItemCPC, timePointYears)
 
-raw_comparison <- olddata[newdata][, .(geographicAreaM49, country, measuredItemCPC, animal, timePointYears, oldValue, Value)]
+raw_comparison <- olddata[newdata][, .(geographicAreaM49, country, measuredItemCPC, animal, timePointYears, oldValue, oldFlag, Value, flagObservationStatus)]
 raw_comparison <- raw_comparison[Value != oldValue,]
 ```
 
