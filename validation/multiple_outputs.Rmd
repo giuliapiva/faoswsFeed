@@ -1,0 +1,40 @@
+---
+title: "Code duplicates"
+author: "Sebastian Campbell"
+date: "13 October 2015"
+output: html_document
+---
+
+```{r setup, echo=FALSE}
+library(faosws)
+suppressPackageStartupMessages(library(data.table))
+suppressPackageStartupMessages(library(faoswsUtil))
+library(DT)
+
+GetTestEnvironment("https://hqlprswsas1.hq.un.fao.org:8181/sws", "ebdda55c-21a4-4bdd-9d0c-5098cec843f7")
+```
+
+## Table!
+
+So we've got a table which shows all the cases of duplication for the animals in the Feed module and it's also a chance to show off fancy HTML tables. It's sorted so if anything has multiple entries, they would appear right next to each other. I can ask Giorgio to expand it later to include all animals, but this subset has a few issues of its own that are worth examining.
+
+The last column is 'count' and it's a count variable - number of cells in the database under that selection.
+
+```{r}
+table<- GetTableData(schemaName = "ess",tableName = "v_item_element_check")
+setnames(table, c("icode", "code", "ecode", "cnt"), c("CPC", "element", "subelement", "count"))
+datatable(table,
+          filter="top",
+          options=list(pageLength= -1,
+            lengthMenu=list(list(10, 25, 50, -1), list(10, 25, 50, "All") )
+            )
+          )
+```
+
+## Summary
+
+* 11 - Still has trouble with number of trees
+* 21 - No problems
+* 31 - cattle have indigenous cattle and Goats are doing something weird
+* 41 - No matches for the Feed module, so we don't have to worry for now
+* 51 - Goats and pigs have birth and production while chickens seem to have two different types of production.
