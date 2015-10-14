@@ -1,4 +1,8 @@
 library(data.table)
+library(faosws)
+library(faoswsUtil)
+
+
 files <- list.files("functions", pattern="_factor", full.names = TRUE)
 #file <-"functions/buffalo_energy_factor.r"
 
@@ -25,3 +29,9 @@ item <- sapply(vars, `[[`, 2)
 animal_list[[names(animal_list)[sapply(names(animal_list), grepl,file)]]] <- list(ele=ele, item=item)
 
 }
+
+animal_df <- do.call(rbind,lapply(animal_list, as.data.frame))
+animal_df <- animal_df[!duplicated(animal_df),]
+
+GetTestEnvironment("https://hqlprswsas1.hq.un.fao.org:8181/sws", "ebdda55c-21a4-4bdd-9d0c-5098cec843f7")
+animal_df$cpc <- fcl2cpc(sprintf("%04d",animal_df$item))
