@@ -29,7 +29,7 @@
 ##  2. Compile indices for species
 ##    2.1 Cattle
 ##    2.2 Buffalo
-##    2.3 Sheeps
+##    2.3 Sheep
 ##    2.4 Goats
 ##    2.5 Camel
 ##    2.6 Pigs
@@ -58,8 +58,8 @@ source('functions/chicken_energy_factor.r')
 source('functions/chicken_protein_factor.r')
 source('functions/duck_energy_factor.r')
 source('functions/duck_protein_factor.r')
-source('functions/geese_energy_factor.r')
-source('functions/geese_protein_factor.r')
+source('functions/goose_energy_factor.r')
+source('functions/goose_protein_factor.r')
 source('functions/turkey_energy_factor.r')
 source('functions/turkey_protein_factor.r')
 source('functions/buffalo_energy_factor.r')
@@ -165,13 +165,13 @@ duck <- merge(de, dp, all=T)
 ## 2.9 Geese
 
 #energy
-gee <- geese_energy_factor(1:299, 1990:2011)
-gee$item <- rep(1072,nrow(gee)) 
-gee <- gee[, c("area", "year", "item", "energy")]
+gee <- goose_energy_factor(1:299, 1990:2011)
+gee$item <- rep(1072,nrow(goo)) 
+goo <- goo[, c("area", "year", "item", "energy")]
 
 #protein
-gep <- geese_protein_factor(1:299, 1990:2011) 
-geese <- merge(gee, gep, all=T)
+gep <- goose_protein_factor(1:299, 1990:2011) 
+goose <- merge(goo, gep, all=T)
 
 ## 2.10 For Turkeys
 
@@ -187,7 +187,7 @@ turkey <- merge(te, tp, all=T)
 
 ## 3. COMBINE INDICES
 
-indices <- rbind(cattle, buffalo, sheep, goat, camel, pig, chicken, duck, geese, turkey) 
+indices <- rbind(cattle, buffalo, sheep, goat, camel, pig, chicken, duck, goose, turkey) 
 
 ## 4. PREPARE OUTPUT CSV
 
