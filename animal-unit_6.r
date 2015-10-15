@@ -197,7 +197,6 @@ colnames(indices) <- c("Area.Code", "Item.Code", "Year", "Energy.Factor", "Prote
 indices <- indices[order(indices$Area.Code),]
 
 #write
-#write.csv(indices, 'T:/Onno/Feed-Model/Expert-Approach/Data/Animal Unit Indices/aui_6.csv', row.names=F)
 write.csv(indices, '../Data/trans/aui_6.csv', row.names=F)
 
 

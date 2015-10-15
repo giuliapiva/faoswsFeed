@@ -4,3 +4,8 @@
 
 #Binary files
 *.pdf
+*.jar
+
+#Output files
+*.csv
+*.html
