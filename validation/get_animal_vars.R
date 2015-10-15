@@ -35,3 +35,5 @@ animal_df <- animal_df[!duplicated(animal_df),]
 
 GetTestEnvironment("https://hqlprswsas1.hq.un.fao.org:8181/sws", "ebdda55c-21a4-4bdd-9d0c-5098cec843f7")
 animal_df$cpc <- fcl2cpc(sprintf("%04d",animal_df$item))
+
+cat(paste(shQuote(unique(animal_df$cpc), type="sh"), collapse=", "))
