@@ -1,4 +1,6 @@
-camels_energy_factor <- function(area, year) {
+source('functions/sws_query_2.r')
+
+camel_energy_factor <- function(area, year) {
 
   
   vars <- list(heads = c(11, 1126), carcass = c(41, 1127))

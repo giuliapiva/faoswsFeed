@@ -1,6 +1,6 @@
-source('T:/Onno/Feed-Model/Expert-Approach/Programming/Programs/functions/sws_query_2.r')
+source('functions/sws_query_2.r')
 
-camels_protein_factor <- function(area, year) {
+camel_protein_factor <- function(area, year) {
 
   
   vars <- list(heads = c(11, 1126), carcass = c(41, 1127))

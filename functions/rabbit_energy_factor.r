@@ -1,6 +1,6 @@
 source('functions/sws_query_2.r')
 
-rabbits_energy_factor <- function(area, year) {
+rabbit_energy_factor <- function(area, year) {
 
   
   vars <- list(heads = c(11, 1140), carcass = c(41, 1141))

@@ -1,6 +1,6 @@
 source('functions/sws_query_2.r')
 
-geese_energy_factor <- function(area, year) {
+goose_energy_factor <- function(area, year) {
   #   
   #   if(length(year) > 1) {
   #     library(plyr)

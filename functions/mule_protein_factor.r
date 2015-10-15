@@ -1,6 +1,6 @@
 source('functions/sws_query_2.r')
 
-mules_protein_factor <- function(area, year) {
+mule_protein_factor <- function(area, year) {
 
   
   vars <- list(heads = c(11, 1107), carcass = c(41, 1108))

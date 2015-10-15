@@ -165,8 +165,8 @@ duck <- merge(de, dp, all=T)
 ## 2.9 Geese
 
 #energy
-gee <- goose_energy_factor(1:299, 1990:2011)
-gee$item <- rep(1072,nrow(goo)) 
+goo <- goose_energy_factor(1:299, 1990:2011)
+goo$item <- rep(1072,nrow(goo)) 
 goo <- goo[, c("area", "year", "item", "energy")]
 
 #protein

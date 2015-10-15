@@ -1,6 +1,6 @@
 source('functions/sws_query_2.r')
 
-horses_energy_factor <- function(area, year) {
+horse_energy_factor <- function(area, year) {
 
   
   vars <- list(heads = c(11, 1096), carcass = c(41, 1097))

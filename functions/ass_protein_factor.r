@@ -1,6 +1,6 @@
 source('functions/sws_query_2.r')
 
-asses_protein_factor <- function(area, year) {
+ass_protein_factor <- function(area, year) {
 
   
   vars <- list(heads = c(11, 1110), carcass = c(41, 1111))
