@@ -21,10 +21,10 @@ animalKeys <- fcl2cpc(sprintf("%04d", c(866, 946, 976, 1016, 1034, 1057, 1068, 1
 stockKeys <- c("5111", "5112")
 thousandHeads <- "5112"
 
-key = DatasetKey(domain="agriculture", dataset="agriculture",
+key = DatasetKey(domain="agriculture", dataset="aproduction",
                   dimensions=list(
                     Dimension(name="geographicAreaM49", keys=na.omit(fs2m49(as.character((1:299)[-22])))), #user input
-                    Dimension(name="measuredItemCPC", keys=animalKeys),
+                    Dimension(name="measuredItemCPC", keys=animalKeys), # user input
                     Dimension(name="measuredElement", keys=stockKeys),
                     Dimension(name="timePointYears", keys=as.character(1990:2012)) #user input
                     
