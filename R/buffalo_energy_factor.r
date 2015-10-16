@@ -8,7 +8,9 @@ buffalo_energy_factor <- function(area, year) {
   #  return(ldply(year, cattle_energy_factor, area = area))
   #}
 
-  year[length(year) + 1] <- year[length(year)] + 1
+  year <- append(year, last(year) + 1)
+  
+  
   vars <- list(c(11, 946), c(41, 947), c(51, 951), c(31, 951), c(31, 947), 
                c(91, 946), c(61, 946))
   
