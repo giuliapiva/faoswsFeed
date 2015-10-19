@@ -1,4 +1,4 @@
-source('functions/sws_query_2.r')
+source('R/sws_query_2.r')
 
 ass_energy_factor <- function(area, year) {
 

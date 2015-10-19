@@ -1,4 +1,4 @@
-source('functions/cattle_energy_factor.r')
+source('R/cattle_energy_factor.r')
 
 
 cattle_protein_factor <- function(area, year) {

@@ -1,4 +1,4 @@
-source('functions/sws_query_2.r')
+source('R/sws_query_2.r')
 
 ass_protein_factor <- function(area, year) {
 

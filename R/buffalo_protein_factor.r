@@ -1,4 +1,4 @@
-source('functions/buffalo_energy_factor.r')
+source('R/buffalo_energy_factor.r')
 
 
 buffalo_protein_factor <- function(area, year) {
