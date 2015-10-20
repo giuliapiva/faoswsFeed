@@ -111,7 +111,7 @@ library(faosws)
 library(faoswsUtil)
 library(data.table)
 
-if(CheckDebug()){
+if (CheckDebug()) {
   SetClientFiles("~/certificates/production")
   GetTestEnvironment("https://hqlprswsas1.hq.un.fao.org:8181/sws", "ebdda55c-21a4-4bdd-9d0c-5098cec843f7")
 }
@@ -133,10 +133,10 @@ buffalo_energy_factor <- function(area=na.omit(fs2m49(as.character((1:299)[-22])
 #                c(5318, "02212"), # Milk animals (head), Raw buffalo milk
 #                c(5320, "21112")) # slaughtered/prod animals (head), Buffalo meat
 #   
-  vars <- data.frame(measuredElement = as.character(c(5111, 5510, 55100, 55101, 5320, 53200, 53201, 5510, 5318, 5320, 5900, 5600)),
-                     measuredItemCPC = c("02112", "21112", "21112", "21112", "21112", "21112", "21112", "02212", "02212", "21112", "02112", "02112"),
+  vars <- data.frame(measuredElement = as.character(c(5111, 5510, 55100, 55101, 5320, 53200, 53201, 5510, 5318, 5320)),
+                     measuredItemCPC = c("02112", "21112", "21112", "21112", "21112", "21112", "21112", "02212", "02212", "21112"),
                      stringsAsFactors = FALSE)
-  key = DatasetKey(domain = "agriculture", dataset = "agriculture",
+  key = DatasetKey(domain = "agriculture", dataset = "aproduction",
                    dimensions = list(
                      Dimension(name = "geographicAreaM49", keys = area), #user input
                      Dimension(name = "measuredItemCPC", keys = vars$measuredItemCPC), # user input
@@ -171,14 +171,14 @@ prod_data <- GetData(key)[,.(geographicAreaM49, measuredItemCPC, measuredElement
 raw_data <- rbind(prod_data, trade_data)
 
 
-code_table <- data.frame(measuredElement = as.character(c(5111, 5510, 55100, 55101, 5320, 53200, 53201, 5510, 5318, 5320, 5900, 5600)),
-                   measuredItemCPC = c("02112", "21112", "21112", "21112", "21112", "21112", "21112", "02212", "02212", "21112", "02112", "02112"),
-                   description = c("Stocks", "Meat.Production", "Meat.Production.Ind", "Meat.Production.Bio", "Meat.Animals", "Meat.Animals.Ind", "Meat.Animals.Bio", "Milk.Production", "Milk.Animals", "Slaughtered", "Exports", "Imports"),
+code_table <- data.frame(measuredElement = as.character(c(5111, 5510, 55100, 55101, 5320, 53200, 53201, 5510, 5318, 5900, 5600)),
+                   measuredItemCPC = c("02112", "21112", "21112", "21112", "21112", "21112", "21112", "02212", "02212", "02112", "02112"),
+                   description = c("Stocks", "Meat.Production", "Meat.Production.Ind", "Meat.Production.Bio", "Slaughtered", "Slaughtered.Ind", "Slaughtered.Bio", "Milk.Production", "Milk.Animals", "Exports", "Imports"),
                    stringsAsFactors = FALSE)
 
-named_data <- merge(raw_data, code_table, by=c("measuredElement", "measuredItemCPC"), all.y=TRUE)
+named_data <- merge(raw_data, code_table, by = c("measuredElement", "measuredItemCPC"), all.y = TRUE)
 
-data <- dcast.data.table(named_data, geographicAreaM49 + timePointYears ~ description, value.var="Value")
+data <- dcast.data.table(named_data, geographicAreaM49 + timePointYears ~ description, value.var = "Value")
 #remove any full NA rows
 data <- data[!apply(data, 1, function(x) all(is.na(x))),]
 # All missing values are to be treated as zero
@@ -187,12 +187,12 @@ data[is.na(data)] <- 0
   data <- within(data, {
     # Beef animals are all animals which are not dairy
     Beef.Animals <- Stocks - Milk.Animals
-    
+
     # Change in stocks
     Stocksnext <- c(Stocks[2:length(Stocks)], NA)
 
     #Live cattle are heavier than carcasses
-    liveweight <- Carcass.Wt / .55
+    liveweight <-   (Meat.Production.Bio + (Meat.Production + Meat.Production.Ind)  / .55) * 1000 / (Slaughtered + Slaughtered.Ind + Slaughtered.Bio)
     milkpercow <- Milk.Production * 1000 / Milk.Animals
     metabolicweight <- liveweight ^ 0.75
     
@@ -201,13 +201,13 @@ data[is.na(data)] <- 0
                    / Beef.Animals) / 365
     
     weightgain[weightgain < 0] <- 0 
-    milkenergy <- (((365 * 0.077 * metabolicweight) + ( 0.74 * milkpercow)) * 4.184) / 0.6/ 35600
-    beefenergy <- (365 * 4.184 * (0.077 * metabolicweight +(0.063 * (0.96*liveweight) ^ 0.75 *                                                          
+    milkenergy <- (((365 * 0.077 * metabolicweight) + (0.74 * milkpercow)) * 4.184) / 0.6/ 35600
+    beefenergy <- (365 * 4.184 * (0.077 * metabolicweight + (0.063 * (0.96*liveweight) ^ 0.75 *                                                          
                                                               weightgain ^ 1.097)))/0.6/35600
     #alternatively
     #beefenergy[weightgain == 0] <- (365*(8.3 + (0.091 * Carcass.Wt[weightgain == 0] * 2)))/35600
     
-    energy <- (milkenergy * Milk.Animals + beefenergy * Beef.Animals)/Stocks
+    energy <- (milkenergy * Milk.Animals + beefenergy * Beef.Animals) / Stocks
   })
   
   data[timePointYears != max(as.numeric(timePointYears)), .(
