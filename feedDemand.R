@@ -6,7 +6,7 @@ suppressPackageStartupMessages(library(data.table))
 library(reshape2)
 
 
-if(CheckDebug()){
+if (CheckDebug()) {
   SetClientFiles("~/certificates/production")
   GetTestEnvironment("https://hqlprswsas1.hq.un.fao.org:8181/sws", "ebdda55c-21a4-4bdd-9d0c-5098cec843f7")
 }
@@ -21,12 +21,12 @@ animalKeys <- fcl2cpc(sprintf("%04d", c(866, 946, 976, 1016, 1034, 1057, 1068, 1
 stockKeys <- c("5111", "5112")
 thousandHeads <- "5112"
 
-key = DatasetKey(domain="agriculture", dataset="aproduction",
-                  dimensions=list(
-                    Dimension(name="geographicAreaM49", keys=na.omit(fs2m49(as.character((1:299)[-22])))), #user input
-                    Dimension(name="measuredItemCPC", keys=animalKeys), # user input
-                    Dimension(name="measuredElement", keys=stockKeys),
-                    Dimension(name="timePointYears", keys=as.character(1990:2012)) #user input
+key = DatasetKey(domain = "agriculture", dataset = "aproduction",
+                  dimensions = list(
+                    Dimension(name = "geographicAreaM49", keys = na.omit(fs2m49(as.character((1:299)[-22])))), #user input
+                    Dimension(name = "measuredItemCPC", keys = animalKeys), # user input
+                    Dimension(name = "measuredElement", keys = stockKeys),
+                    Dimension(name = "timePointYears", keys = as.character(1990:2012)) #user input
                     
                     )
                  )
@@ -37,13 +37,8 @@ setnames(animalHeads, "Value", "animalHeads")
 # Poultry and Rabbits are expressed in '000 heads, hence convert into heads
 animalHeads[measuredElement %in% thousandHeads , animalHeads * 1000]
 
-# Poultry and Rabbits are expressed in '000 heads, hence convert into heads
-animalHeads[, animalHeads := ifelse( measuredItemCPC %in% fcl2cpc(as.character(c(1057, 1068, 1072, 1079, 1140))), 
-                                                                          animalHeads * 1000, animalHeads)]
-
-
-animalHeads[, `:=`(measuredElement=NULL, flagObservationStatus=NULL, flagMethod=NULL)]
-
+#Remove flags and measuredElement column
+animalHeads[, `:=`(measuredElement = NULL, flagObservationStatus = NULL, flagMethod = NULL)]
 
 
 ## animal units
@@ -53,9 +48,9 @@ setnames(animalUnit, c("geographicAreaM49", "measuredItemCPC", "timePointYears",
                         "energyFactor", "proteinFactor"))
 
 #convert types and codes for merging
-animalUnit[,`:=`(geographicAreaM49=fs2m49(as.character(geographicAreaM49)), 
-              measuredItemCPC=fcl2cpc(sprintf("%04d", measuredItemCPC)),
-              timePointYears=as.character(timePointYears))]
+animalUnit[,`:=`(geographicAreaM49 = fs2m49(as.character(geographicAreaM49)), 
+              measuredItemCPC = fcl2cpc(sprintf("%04d", measuredItemCPC)),
+              timePointYears = as.character(timePointYears))]
 
 
 ## Link animal types with intensity groups
@@ -70,22 +65,22 @@ intensityFactor  =  intensityFactor[, .(AREA, AnimGroup, Year, IR)]
 
 setnames(intensityFactor, c("geographicAreaM49", "animalGroup",'timePointYears', 'intensity' ))
 #convert types for merging
-intensityFactor[,`:=`(geographicAreaM49=fs2m49(as.character(geographicAreaM49)), 
-                      timePointYears=as.character(timePointYears))]
+intensityFactor[,`:=`(geographicAreaM49 = fs2m49(as.character(geographicAreaM49)), 
+                      timePointYears = as.character(timePointYears))]
 
 
 # compile Total Feed Demand in Energy and Protein
 
 headUnit = merge(animalHeads, animalUnit, 
                   by = c("geographicAreaM49", "measuredItemCPC", "timePointYears"),
-                  all.x=T, allow.cartesian=T) 
+                  all.x = T, allow.cartesian = TRUE) 
 
-headUnitGroup = merge(headUnit, animalCPCGroup, by = "measuredItemCPC", all.x=T)
+headUnitGroup = merge(headUnit, animalCPCGroup, by = "measuredItemCPC", all.x = TRUE)
 
 
 livestockDemandData = merge(headUnitGroup,intensityFactor, 
                           by = c("geographicAreaM49", "animalGroup", "timePointYears"),
-                          all.x=T) 
+                          all.x = T) 
 livestockDemandData[is.na(livestockDemandData)] <- 0
 
 # 35000 and 0.319 are energy and protein requirements in MJ and 
@@ -113,13 +108,13 @@ aquaDemand = aquaDemand[, .(area.code, year, energy, protein)]
 setnames(aquaDemand, c("geographicAreaM49", "timePointYears", 
                     "aquaEnergyDemand", "aquaProteinDemand" ))
 
-aquaDemand[,`:=`(geographicAreaM49=fs2m49(as.character(geographicAreaM49)), 
-                      timePointYears=as.character(timePointYears))]
+aquaDemand[,`:=`(geographicAreaM49 = fs2m49(as.character(geographicAreaM49)), 
+                      timePointYears = as.character(timePointYears))]
 
 
 feedDemandData = merge(livestockDemand, aquaDemand, 
                        by = c("geographicAreaM49", "timePointYears"),
-                       all=T)
+                       all = T)
 
 feedDemandData[is.na(feedDemandData)] <- 0
 
