@@ -8,6 +8,7 @@
 
 #Output files
 *.csv
+!data-raw/*.csv #Except those in data-raw
 *.html
 
 #Folders to ignore
