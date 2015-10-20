@@ -9,3 +9,6 @@
 #Output files
 *.csv
 *.html
+
+#Folders to ignore
+archive
