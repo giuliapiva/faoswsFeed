@@ -1,15 +1,16 @@
 .Rproj.user
 .Rhistory
 .RData
-
+ 
 #Binary files
 *.pdf
 *.jar
 
-#Output files
+# Output files
 *.csv
-!data-raw/*.csv #Except those in data-raw
+## Except those in data-raw
+!data-raw/*.csv 
 *.html
 
-#Folders to ignore
-archive
+# Folders to ignore
+archive/*
