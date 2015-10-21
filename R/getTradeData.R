@@ -1,6 +1,6 @@
 getTradeData <- function(animal, fun, area, year) {
   
-  load("data/codeTable.rda")
+  #load("data/codeTable.rda")
   
   tradeCodes <-  codeTable[module == animal & fun == fun & table == "trade",]
   

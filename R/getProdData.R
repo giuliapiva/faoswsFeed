@@ -1,6 +1,7 @@
 getProdData <- function(animal, fun, area, year){
   
-  load("data/codeTable.rda")  
+  #load("data/codeTable.rda")
+  
   prodCodes <- codeTable[module == animal & fun == fun & table == "production", ]
   
   

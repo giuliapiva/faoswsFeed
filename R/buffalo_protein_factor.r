@@ -1,15 +1,9 @@
-source('R/buffalo_energy_factor.r')
-
-
-buffalo_protein_factor <- function(area, year) {
+buffalo_protein_factor <- function() {
   
   #   if(length(year) < 2) stop('You have to select more than one year')
 
 
-  data <- buffalo_energy_factor(area, year)
-  
-
-
+  data <- buffalo_energy_factor()
   
   data <- within(data, {
     metabolicweight <- liveweight^0.75
@@ -21,7 +15,7 @@ buffalo_protein_factor <- function(area, year) {
     me <- ((milkenergy * 35600) / 365)
     rdp <- ((milkenergy * 35600) / 365) * 7.8
     
-    eup <- 37 * log10(liveweight) - 42.2
+    eup <- 37 * suppressWarnings(log10(liveweight)) - 42.2
     
     
     dlp <- 0.11 * metabolicweight
@@ -36,6 +30,6 @@ buffalo_protein_factor <- function(area, year) {
     protein <- (milkprotein * Milk.Animals + beefprotein * Beef.Animals)/(Beef.Animals + Milk.Animals)
   })
   
-  data[, c("area", "year", "protein") ]
+  data[, .(geographicAreaM49, timePointYears, protein) ]
   
 }
