@@ -3,7 +3,7 @@ source('R/sws_query_2.r')
 ass_energy_factor <- function(area, year) {
 
   
-  vars <- list(heads = c(11, 1096), carcass = c(41, 1097))
+  vars <- list(heads = c(11, 1110), carcass = c(41, 1111))
   
   
   data <- sws_query(area = area, year = year, 
