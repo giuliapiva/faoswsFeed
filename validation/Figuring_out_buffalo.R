@@ -88,20 +88,21 @@ lapply(flist, evalfun, "moo")
 
 GetTestEnvironment("https://hqlprswsas1.hq.un.fao.org:8181/sws", "930fe2c6-b2ec-40f0-8763-6752c665a63f")
 
-CPC_codes <- GetCodeList("agriculture", "agriculture", "measuredItemCPC")[,.(code, description)]
+CPC_codes <- GetCodeList("agriculture", "aproduction", "measuredItemCPC")[,.(code, description)]
 setnames(CPC_codes, c("code", "description"), c("measuredItemCPC", "CPCDescription"))
 Element_codes <- rbind(GetCodeList("agriculture", "agriculture", "measuredElement")[,.(code, description)], 
                        GetCodeList("trade", "total_trade_CPC", "measuredElementTrade")[,.(code, description)])
 setnames(Element_codes, c("code", "description"), c("measuredElement", "elementDescription"))
 
-code_table <- data.frame(measuredElement = as.character(c(5111, 5417, 54170, 54171, 5510, 5318, 5320, 5900, 5600)),
-                         measuredItemCPC = c("02112", "21112", "21112", "21112", "02212", "02212", "21112", "02112", "02112"),
-                         description = c("Stocks", "Carcass.Wt","Carcass.Wt.Ind", "Live.Wt.Bio",  "Milk.Production", "Milk.Animals", "Slaughtered", "Exports", "Imports"),
+code_table <- data.frame(module="buffalo", fun="energy", table=c(rep("production", 9), rep("trade", 2)),
+  measuredElement = as.character(c(5111, 5510, 55100, 55101, 5320, 53200, 53201, 5510, 5318, 5900, 5600)),
+                         measuredItemCPC = c("02112", "21112", "21112", "21112", "21112", "21112", "21112", "02212", "02212", "02112", "02112"),
+                         variable = c("Stocks", "Meat.Production", "Meat.Production.Ind", "Meat.Production.Bio", "Slaughtered", "Slaughtered.Ind", "Slaughtered.Bio", "Milk.Production", "Milk.Animals", "Exports", "Imports"),
                          stringsAsFactors = FALSE)
 
-CPCmerge <- merge(CPC_codes, code_table, by="measuredItemCPC")
-all_codes <- merge(CPCmerge, Element_codes, by="measuredElement")
-setcolorder(all_codes, c("measuredItemCPC", "CPCDescription", "measuredElement", "elementDescription", "description"))
+CPCmerge <- merge(CPC_codes, code_table, by = "measuredItemCPC")
+all_codes <- merge(CPCmerge, Element_codes, by = "measuredElement")
+setcolorder(all_codes, c("module", "fun", "table", "measuredItemCPC", "CPCDescription", "measuredElement", "elementDescription", "variable"))
 
 
 
@@ -202,7 +203,7 @@ data[is.na(data)] <- 0
     
     weightgain[weightgain < 0] <- 0 
     milkenergy <- (((365 * 0.077 * metabolicweight) + (0.74 * milkpercow)) * 4.184) / 0.6/ 35600
-    beefenergy <- (365 * 4.184 * (0.077 * metabolicweight + (0.063 * (0.96*liveweight) ^ 0.75 *                                                          
+    beefenergy <- (365 * 4.184 * (0.077 * metabolicweight + (0.063 * (0.96 * liveweight) ^ 0.75 *                                                          
                                                               weightgain ^ 1.097)))/0.6/35600
     #alternatively
     #beefenergy[weightgain == 0] <- (365*(8.3 + (0.091 * Carcass.Wt[weightgain == 0] * 2)))/35600
