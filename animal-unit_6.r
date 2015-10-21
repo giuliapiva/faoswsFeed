@@ -62,8 +62,8 @@ source('R/goose_energy_factor.r')
 source('R/goose_protein_factor.r')
 source('R/turkey_energy_factor.r')
 source('R/turkey_protein_factor.r')
-source('R/buffalo_energy_factor.r')
-source('R/buffalo_protein_factor.r')
+#source('R/buffalo_energy_factor.r')
+#source('R/buffalo_protein_factor.r')
 source('R/camel_energy_factor.r')
 source('R/camel_protein_factor.r')
 
@@ -84,12 +84,12 @@ cattle <- merge(ce, cp, all=T)
 ## 2.2 Buffaloes
 
 #energy
-be <- buffalo_energy_factor(1:299, 1990:2012)
-be$item <- rep(946, nrow(be))
-be <- be[,c("area", "year", "item", "energy")]
+be <- buffalo_energy_factor()
+be$measuredItemCPC <- "02112"
+be <- be[,.(geographicAreaM49, timePointYears, measuredItemCPC, energy)]
 
 #protein
-bp <- buffalo_protein_factor(1:299, 1990:2012)
+bp <- buffalo_protein_factor()
 buffalo <- merge(be, bp, all=T)
 
 ## 2.3 Sheep

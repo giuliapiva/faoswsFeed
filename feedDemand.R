@@ -8,7 +8,8 @@ library(reshape2)
 
 if (CheckDebug()) {
   SetClientFiles("~/certificates/production")
-  GetTestEnvironment("https://hqlprswsas1.hq.un.fao.org:8181/sws", "ebdda55c-21a4-4bdd-9d0c-5098cec843f7")
+  #GetTestEnvironment("https://hqlprswsas1.hq.un.fao.org:8181/sws", "ebdda55c-21a4-4bdd-9d0c-5098cec843f7")
+  GetTestEnvironment("https://hqlprswsas1.hq.un.fao.org:8181/sws", "f45d0a2a-a798-435d-84e9-897a572c0d10")
 }
 
 ## FS and FCL code are on FAOStat 1 > SUA Working
@@ -30,6 +31,7 @@ key = DatasetKey(domain = "agriculture", dataset = "aproduction",
                     
                     )
                  )
+#define this as a subset of the larger data
 animalHeads = GetData(key)
 
 setnames(animalHeads, "Value", "animalHeads")

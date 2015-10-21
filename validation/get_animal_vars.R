@@ -3,7 +3,7 @@ library(faosws)
 library(faoswsUtil)
 
 
-files <- list.files("functions", pattern="_factor", full.names = TRUE)
+files <- list.files("R", pattern="_factor", full.names = TRUE)
 #file <-"functions/buffalo_energy_factor.r"
 
 animal_list <- vector(length(files), mode="list")
@@ -35,5 +35,7 @@ animal_df <- animal_df[!duplicated(animal_df),]
 
 GetTestEnvironment("https://hqlprswsas1.hq.un.fao.org:8181/sws", "ebdda55c-21a4-4bdd-9d0c-5098cec843f7")
 animal_df$cpc <- fcl2cpc(sprintf("%04d",animal_df$item))
+animal_df <- cbind(animal=row.names(animal_df), animal_df)
 
-cat(paste(shQuote(unique(animal_df$cpc), type="sh"), collapse=", "))
+#cat(paste(shQuote(unique(animal_df$cpc), type="sh"), collapse=", "))
+write.csv(animal_df, "validation/aui_faostat_variables.csv", row.names=FALSE)

@@ -1,1 +1,4 @@
 exportPattern("^[^\\.]")
+import("data.table")
+import("faosws")
+import("faoswsUtil")
