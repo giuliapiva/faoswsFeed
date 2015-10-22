@@ -1,9 +1,7 @@
 library(RJDBC)
-library("stats4")
+library(stats4)
 
-remove(list=ls())
-
-setwd("~/1_Job/1_Work/5_Innovations/7_Use-Elements/Feed/Programming/Data")
+#setwd("~/1_Job/1_Work/5_Innovations/7_Use-Elements/Feed/Programming/Data")
 
 '******************************************'
 '* IR-Model 6.9                           *'
@@ -22,14 +20,14 @@ lstyear=2012
 '*** Calculate the degree of intensification in production systems ***'
 # GLEAM is source data
 
-df1=read.csv("source/GLEAM_Feed-Comp_Rumin.csv")
+df1=read.csv("../Data/source/GLEAM_Feed-Comp_Rumin.csv")
 df2=df1[,1:6]
 df2$IntFactor=df1$ALFALFAH + df1$GRAINSIL + df1$MAIZESIL + df1$FDDRBEET + df1$GRAINS + df1$CORN + df1$MLSOY + df1$MLRAPE + df1$MLCTTN + df1$PKEXP + df1$MZGLTM + df1$MZGLTF + df1$BULP + df1$MOLASSES + df1$GRNBYDRY + df1$BRNBYWET
 df2$total=apply(df1[,7:ncol(df1)], 1, FUN=sum)
 df2[which(df2$total>0 & df2$total<0.99),]
 is.na(df2$IntFactor)=(df2$total==0)
 
-df3=read.csv("source/GLEAM_Feed-Comp_Monogast.csv")
+df3=read.csv("../Data/source/GLEAM_Feed-Comp_Monogast.csv")
 df4=df3[,1:6]
 df4$IntFactor=df3$PULSES + df3$CASSAVA + df3$WHEATS + df3$WHEATN + df3$MAIZES + df3$MAIZEN + df3$BARLEY + df3$MILLET + df3$RICE + df3$SORGHUM + df3$SOY + df3$BNFRUIT + df3$MLSOY + df3$MLOILSDS + df3$MLCTTN + df3$GRNBYDRY + df3$CPULSES + df3$CCASSAVA + df3$CWHEAT + df3$CMAIZE + df3$CBARLEY + df3$CMILLET + df3$CRICE + df3$CSORGHUM + df3$CSOY + df3$CMLSOY + df3$CMLOILSDS + df3$CMLCTTN + df3$PKEXP + df3$MOLASSES + df3$RAPESEED + df3$MLRAPE + df3$SOY.OIL + df3$LIME
 df4$total=apply(df3[,7:ncol(df3)], 1, FUN=sum)
@@ -45,7 +43,7 @@ df7=aggregate(df6[,7], df6[,c(1:3,5)], FUN=mean)
 df7=df7[order(df7$ADM0_CODE, df7$AnimGroup, df7$ProdSys),]
 names(df7)[5]="IntFactor"
 
-df8=read.csv("source/GLEAM_Prodsys-Size.csv")
+df8=read.csv("../Data/GLEAM_Prodsys-Size.csv")
 
 df9=merge(df7, df8, all.x=TRUE)
 
@@ -56,7 +54,7 @@ gleamps=df9
 
 remove(df1, df2, df3, df4, df5, df6, df7, df8, df9)
 
-psreg=read.csv("source/LS-ProdSys_Registry_6-6.csv")
+psreg=read.csv("../Data/LS-ProdSys_Registry_6-6.csv")
 df0=unique(psreg[,c(3,5)])
 
 df1=merge(gleamps, df0, all.x=TRUE)
@@ -83,8 +81,8 @@ remove(df0, df1, df2, df3, agg1, agg2, psreg, gleamps)
 
 '*** Construct the roster for the aggregation among countries ***'
 
-df0=read.csv("source/area-advancement_6-8.csv")
-df1=read.csv("source/WLPS-Countries.csv")[1]
+df0=read.csv("../Data/area-advancement_6-8.csv")
+df1=read.csv("../Data/WLPS-Countries.csv")[1]
 df1$WLPSCty=TRUE
 
 for (i in 1:3) {
@@ -101,7 +99,7 @@ for (i in 1:3) {
 
 df2=df0[which(df0$WLPSCty_1 | df0$WLPSCty_2 | df0$WLPSCty_3),]
 
-df3=read.csv("source/GLEAM-Countries.csv")
+df3=read.csv("../Data/GLEAM-Countries.csv")
 names(df3)[3]="Area_3"
 
 df4=merge(df2, df3, all.x=TRUE)
@@ -228,7 +226,7 @@ remove(df1, diff, mod0, ttest0)
 
 '*** Calculate (regional) intensification rates in 1982 and 1992 ***'
 
-df0=read.csv("source/WLPS_PS-Structure.csv")
+df0=read.csv("../Data/WLPS_PS-Structure.csv")
 
 psw1=df0[, c(1:5,6)]
 names(psw1)[6]="PSShare"
@@ -309,7 +307,7 @@ df6$RegrWgt=1
 df7=rbind(df5, df6[,c(1:3,6,4:5,7)])
 df7=df7[order(df7$AnimGroup, df7$GERegion, df7$Year, df7$AREA),]
 
-areareg=read.csv("source/area-regions-registry_6-10.csv")[,c(1,7)]
+areareg=read.csv("../Data/area-regions-registry_6-10.csv")[,c(1,7)]
 
 df8=merge(df7, areareg, all.x=TRUE)
 
@@ -327,14 +325,14 @@ remove(agg1, aggbs, rgrwgt, rgir2005, df0, df1, df2, df3, df4, df5, df6, df7, df
 
 '* Labour productivity in agriculture, from WDI *'
 
-df0=read.csv("source/WDI-Productivity_6-12.csv")
+df0=read.csv("../Data/WDI-Productivity_6-12.csv")
 
 lstcol=5+lstyear-1980
 
 df1=df0[which(as.character(df0[,4])=="EA.PRD.AGRI.KD"), c(2,5:lstcol)]
 names(df1)[1]="UNCode"
 
-areareg=read.csv("source/area-regions-registry_6-10.csv")[,c(7,1)]
+areareg=read.csv("../Data/area-regions-registry_6-10.csv")[,c(7,1)]
 areareg=areareg[which(areareg$AREA!=276),]
 
 df2=merge(df1, areareg, all.x=TRUE)
@@ -428,11 +426,11 @@ remove(df0, df1, df2, df3, df4, df5, df6, df7, df8, df9, rst, agg1, agg2, agg3, 
 
 '* Livestock Density, from FAOSTAT *'
 
-df0=read.csv("source/area-regions-registry_6-10.csv")[,c(11,3:4,9:10)]
+df0=read.csv("../Data/area-regions-registry_6-10.csv")[,c(11,3:4,9:10)]
 ctyreg=unique(df0)
 remove(df0)
 
-df0=read.csv("source/pmp-series_6-12.csv")
+df0=read.csv("../Data/pmp-series_6-12.csv")
 df1=df0[,c(3,9,11)]
 names(df1)=c("Country", "Year", "pmp")
 
@@ -471,19 +469,19 @@ dfpmp=df4[order(df4$Country, df4$Year) ,c(1,4:7)]
 
 remove(df0, df1, df2, df3, df4, agg1, add0, add1, add2, add3)
 
-df1=read.csv("source/faostat_animals.csv")[,c(1,3,6:7)]
+df1=read.csv("../Data/faostat_animals.csv")[,c(1,3,6:7)]
 names(df1)[1:2]=c("AREA", "ITEM")
 
 df2=df1[which(is.element(df1$ITEM, c(866, 976, 1016)) & df1$Year>=1980 & df1$Year<=lstyear),]
 
-animreg=read.csv("source/animal-registry.csv")
+animreg=read.csv("../Data/animal-registry.csv")
 
 df3=merge(df2, animreg, all.x=TRUE)
 
 anim0=aggregate(df3[,4], df3[,c(2,3,5)], FUN=sum)
 names(anim0)[4]="animals"
 
-areacty=read.csv("source/area-regions-registry_6-10.csv")[,c(1,11)]
+areacty=read.csv("../Data/area-regions-registry_6-10.csv")[,c(1,11)]
 
 anim1=merge(anim0, areacty, all.x=TRUE)
 
@@ -572,7 +570,7 @@ remove(df1, micro, macro, mic2005, irpnl1)
 
 '* Proportion of Muslims and Hindus, from the Pew Research Center *'
 
-df1=read.csv("source/Religions.csv")[,c(1,4,6)]
+df1=read.csv("../Data/Religions.csv")[,c(1,4,6)]
 df0=aggrost
 
 for (i in 1:3) {
@@ -936,7 +934,7 @@ write.csv(rgdesc, file="output/rgdesc.csv", row.names=FALSE)
 
 '* Create the roster for prediction *' 
 
-df0=read.csv("source/area-regions-registry_6-10.csv")[,c(9,1:4)]
+df0=read.csv("../Data/area-regions-registry_6-10.csv")[,c(9,1:4)]
 df1=df0[which(df0$endyr>2010 | is.na(df0$endyr)),]
 names(df1)[2]="Area_3"
 
