@@ -1,4 +1,4 @@
-source('R/sws_query_2.r')
+#source('R/sws_query_2.r')
 
 
 pig_energy_factor <- function(area, year) {
@@ -8,14 +8,38 @@ pig_energy_factor <- function(area, year) {
   #     return(ldply(year, cattle_energy_factor, area = area))
   #   }
   
-  vars <- list(heads = c(11, 1034), carcass = c(41, 1035))
+  queryYear <- slot(swsContext.datasets[[1]]@dimensions$timePointYears, "keys")
+  #queryYear <- as.character(1990:2012)
+  year <- c(queryYear)
+  area <- slot(swsContext.datasets[[1]]@dimensions$geographicAreaM49, "keys")
+  #area <- na.omit(fs2m49(as.character((1:299)[-22])))
+  
+  prodData <-  getProdData(animal = "pig", fun = "energy", area = area, year = year)
+  tradeData <- getTradeData(animal = "pig", fun = "energy", area = area, year = year)
+  
+  
+  rawData <- rbind(prodData, tradeData)
+  
+  namedData <- merge(rawData, codeTable[,.(measuredItemCPC, measuredElement, variable)], 
+                     by = c("measuredElement", "measuredItemCPC"), all.y = TRUE)
+  
+  data <- dcast.data.table(namedData, geographicAreaM49 + timePointYears ~ variable, value.var = "Value")
+  #remove any full NA rows
+  data <- data[!apply(data, 1, function(x) all(is.na(x))),]
+  # All missing values are to be treated as zero
+  data[is.na(data)] <- 0
+  
+  
+  
+  
+  #vars <- list(heads = c(11, 1034), carcass = c(41, 1035))
   
   
   
   
   
-  data <- sws_query(area = area, year = year, 
-                    pairs = vars)
+  #data <- sws_query(area = area, year = year, 
+   #                 pairs = vars)
   
   within(data, {
     liveweight <- Carcass.Wt / 10 / 0.75

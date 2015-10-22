@@ -1,13 +1,8 @@
-source('R/sws_query_2.r')
-
 
 pig_protein_factor <- function(area, year) {
  
-          
-         
-  year[length(year) + 1] <- year[length(year)] + 1
 
-  data <- pig_energy_factor(area, year)
+data <- pig_energy_factor()
   
   
   data <- within(data, {
