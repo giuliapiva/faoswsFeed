@@ -1,24 +1,26 @@
 source('R/sws_query_2.r')
 
-duck_energy_factor <- function(area, year) {
-  #   
-  #   if(length(year) > 1) {
-  #     library(plyr)
-  #     return(ldply(year, cattle_energy_factor, area = area))
-  #   }
+duck_energy_factor <- function() {
   
-  vars <- list(heads = c(11, 1068), carcass = c(41, 1069))
+  year <- slot(swsContext.datasets[[1]]@dimensions$timePointYears, "keys")
+  area <- slot(swsContext.datasets[[1]]@dimensions$geographicAreaM49, "keys")
+  #area <- na.omit(fs2m49(as.character((1:299)[-22])))
   
+  rawData <-  getProdData(animal = "duck", fun = "energy", area = area, year = year)
   
+  namedData <- merge(rawData, codeTable[module == "duck" & fun == "energy", .(measuredItemCPC, measuredElement, variable)], 
+                     by = c("measuredElement", "measuredItemCPC"), all.y = TRUE)
   
+  data <- dcast.data.table(namedData, geographicAreaM49 + timePointYears ~ variable, value.var = "Value")
+  #remove any full NA rows
+  data <- data[!apply(data, 1, function(x) all(is.na(x))),]
+  # All missing values are to be treated as zero
+  data[is.na(data)] <- 0
   
-  
-  data <- sws_query(area = area, year = year, 
-                    pairs = vars)
   
   within(data, {
     Carcass.Wt <- Carcass.Wt / 1000
-    liveweight <- Carcass.Wt / 10 / 0.68
+    liveweight <- Carcass.Wt / 0.68
     metabolicweight <- liveweight^0.75
     energy <- (metabolicweight * 78.3 * 2.5 * 365 * 0.0041868) / 35600
   })
