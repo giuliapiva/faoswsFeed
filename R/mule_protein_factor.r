@@ -1,17 +1,25 @@
-source('R/sws_query_2.r')
-
-mule_protein_factor <- function(area, year) {
+mule_protein_factor <- function() {
 
   
-  vars <- list(heads = c(11, 1107), carcass = c(41, 1108))
+  year <- slot(swsContext.datasets[[1]]@dimensions$timePointYears, "keys")
+  area <- slot(swsContext.datasets[[1]]@dimensions$geographicAreaM49, "keys")
+  #area <- na.omit(fs2m49(as.character((1:299)[-22])))
   
+  rawData <-  getProdData(animal = "mule", fun = "protein", area = area, year = year)
   
-  data <- sws_query(area = area, year = year, 
-                    pairs = vars)
+  namedData <- merge(rawData, codeTable[module == "mule" & fun == "protein", .(measuredItemCPC, measuredElement, variable)], 
+                     by = c("measuredElement", "measuredItemCPC"), all.y = TRUE)
+  
+  data <- dcast.data.table(namedData, geographicAreaM49 + timePointYears ~ variable, value.var = "Value")
+  #remove any full NA rows
+  data <- data[!apply(data, 1, function(x) all(is.na(x))),]
+  # All missing values are to be treated as zero
+  data[is.na(data)] <- 0
+  
   
   within(data, {
-    
-    liveweight <- Carcass.Wt / 10 / 0.68
+    #No Conversion: Carcass.Wt comes in kg
+    liveweight <- Carcass.Wt / 0.63
     metabolicweight <- liveweight^0.75
     protein <- (2.7 * metabolicweight) / 874.1886
   })

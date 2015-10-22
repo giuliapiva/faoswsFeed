@@ -1,17 +1,24 @@
-source('R/sws_query_2.r')
-
-horse_energy_factor <- function(area, year) {
+horse_energy_factor <- function() {
 
   
-  vars <- list(heads = c(11, 1096), carcass = c(41, 1097))
+  year <- slot(swsContext.datasets[[1]]@dimensions$timePointYears, "keys")
+  area <- slot(swsContext.datasets[[1]]@dimensions$geographicAreaM49, "keys")
+  #area <- na.omit(fs2m49(as.character((1:299)[-22])))
   
+  rawData <-  getProdData(animal = "horse", fun = "energy", area = area, year = year)
   
-  data <- sws_query(area = area, year = year, 
-                    pairs = vars)
+  namedData <- merge(rawData, codeTable[module == "horse" & fun == "energy", .(measuredItemCPC, measuredElement, variable)], 
+                     by = c("measuredElement", "measuredItemCPC"), all.y = TRUE)
+  
+  data <- dcast.data.table(namedData, geographicAreaM49 + timePointYears ~ variable, value.var = "Value")
+  #remove any full NA rows
+  data <- data[!apply(data, 1, function(x) all(is.na(x))),]
+  # All missing values are to be treated as zero
+  data[is.na(data)] <- 0
   
   within(data, {
-    
-    liveweight <- Carcass.Wt / 10 / 0.62
+    # No Conversion: Carcass.Wt comes in kg
+    liveweight <- Carcass.Wt / 0.62
     metabolicweight <- liveweight^0.75
     energy <- ((0.55 * metabolicweight + 0.00495 * liveweight + 4.184) *365) / 35600
   })
