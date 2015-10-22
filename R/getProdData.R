@@ -5,7 +5,7 @@ getProdData <- function(animal, fun, area, year){
   prodCodes <- codeTable[module == animal & fun == fun & table == "production", ]
   
   
-  prodKey = DatasetKey(domain = "agriculture", dataset = "aproduction",
+  prodKey = DatasetKey(domain = "agriculture", dataset = "agriculture",
                        dimensions = list(
                          Dimension(name = "geographicAreaM49", keys = area), #user input
                          Dimension(name = "measuredItemCPC", keys = unique(prodCodes$measuredItemCPC)),
