@@ -12,7 +12,7 @@ buffalo_energy_factor <- function() {
 
   rawData <- rbind(prodData, tradeData)
   
-  namedData <- merge(rawData, codeTable[,.(measuredItemCPC, measuredElement, variable)], 
+  namedData <- merge(rawData, codeTable[module == "buffalo" & fun == "energy",.(measuredItemCPC, measuredElement, variable)], 
                      by = c("measuredElement", "measuredItemCPC"), all.y = TRUE)
   
   data <- dcast.data.table(namedData, geographicAreaM49 + timePointYears ~ variable, value.var = "Value")

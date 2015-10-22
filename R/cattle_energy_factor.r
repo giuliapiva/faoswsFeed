@@ -1,21 +1,30 @@
 source('R/sws_query_2.r')
 
 
-cattle_energy_factor <- function(area, year) {
+cattle_energy_factor <- function() {
   
 #  if(length(year) > 1) {
  #   library(plyr)
   #  return(ldply(year, cattle_energy_factor, area = area))
   #}
 
-  year[length(year) + 1] <- year[length(year)] + 1
-  vars <- list(c(11, 866), c(41, 867), c(51, 882), c(31, 882), c(31, 867), 
-               c(91, 866), c(61, 866))
+  queryYear <- slot(swsContext.datasets[[1]]@dimensions$timePointYears, "keys")
+  year <- c(queryYear, max(as.numeric((queryYear))) + 1)
+  area <- slot(swsContext.datasets[[1]]@dimensions$geographicAreaM49, "keys")
   
+  prodData <-  getProdData(animal = "buffalo", fun = "energy", area = area, year = year)
+  tradeData <- getTradeData(animal = "buffalo", fun = "energy", area = area, year = year)
   
+  rawData <- rbind(prodData, tradeData)
   
-  data <- sws_query(area = area, year = year, 
-                    pairs = vars)
+  namedData <- merge(rawData, codeTable[,.(measuredItemCPC, measuredElement, variable)], 
+                     by = c("measuredElement", "measuredItemCPC"), all.y = TRUE)
+  
+  data <- dcast.data.table(namedData, geographicAreaM49 + timePointYears ~ variable, value.var = "Value")
+  #remove any full NA rows
+  data <- data[!apply(data, 1, function(x) all(is.na(x))),]
+  # All missing values are to be treated as zero
+  data[is.na(data)] <- 0
   
   data <- within(data, {
     Carcass.Wt <- Carcass.Wt / 10

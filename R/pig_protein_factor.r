@@ -1,5 +1,4 @@
-
-pig_protein_factor <- function(area, year) {
+pig_protein_factor <- function() {
  
 
 data <- pig_energy_factor()
@@ -16,8 +15,7 @@ data <- pig_energy_factor()
                                (0.12*proteingain)))/874.1886 
   })
   
-  data[data$year != max(data$year), c("area", "year", "protein")]
+  data[, .(geographicAreaM49, timePointYears, protein)]
 
 }
-
-
+  

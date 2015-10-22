@@ -52,8 +52,8 @@ source('R/sheep_energy_factor.r')
 source('R/sheep_protein_factor.r')
 source('R/goat_energy_factor.r')
 source('R/goat_protein_factor.r')
-source('R/pig_energy_factor.r')
-source('R/pig_protein_factor.r')
+#source('R/pig_energy_factor.r')
+#source('R/pig_protein_factor.r')
 source('R/chicken_energy_factor.r')
 source('R/chicken_protein_factor.r')
 source('R/duck_energy_factor.r')
@@ -86,6 +86,7 @@ cattle <- merge(ce, cp, all=T)
 #energy
 be <- buffalo_energy_factor()
 be$measuredItemCPC <- "02112"
+setkeyv(be, c(key(be), "measuredItemCPC"))
 be <- be[,.(geographicAreaM49, timePointYears, measuredItemCPC, energy)]
 
 #protein
@@ -131,12 +132,13 @@ camel <- merge(cae, cap, all=T)
 ## 2.6 Pigs
 
 #energy
-pe <- pig_energy_factor(1:299, 1990:2011)
-pe$item <- rep(1034,nrow(pe)) 
-pe <- pe[, c("area", "year", "item", "energy")]
+pe <- pig_energy_factor()
+pe$measuredItemCPC <- "02140"
+setkeyv(pe, c(key(be), "measuredItemCPC"))
+pe <- pe[,.(geographicAreaM49, timePointYears, measuredItemCPC, energy)]
 
 #protein
-pp <- pig_protein_factor(1:299, 1990:2011) 
+pp <- pig_protein_factor() 
 pig <- merge(pe, pp, all=T)
 
 ## 2.7 Chickens

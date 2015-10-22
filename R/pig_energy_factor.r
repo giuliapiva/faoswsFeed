@@ -1,26 +1,20 @@
 #source('R/sws_query_2.r')
 
 
-pig_energy_factor <- function(area, year) {
+pig_energy_factor <- function() {
   #   
   #   if(length(year) > 1) {
   #     library(plyr)
   #     return(ldply(year, cattle_energy_factor, area = area))
   #   }
   
-  queryYear <- slot(swsContext.datasets[[1]]@dimensions$timePointYears, "keys")
-  #queryYear <- as.character(1990:2012)
-  year <- c(queryYear)
+  year <- slot(swsContext.datasets[[1]]@dimensions$timePointYears, "keys")
   area <- slot(swsContext.datasets[[1]]@dimensions$geographicAreaM49, "keys")
   #area <- na.omit(fs2m49(as.character((1:299)[-22])))
   
-  prodData <-  getProdData(animal = "pig", fun = "energy", area = area, year = year)
-  tradeData <- getTradeData(animal = "pig", fun = "energy", area = area, year = year)
+  rawData <-  getProdData(animal = "pig", fun = "energy", area = area, year = year)
   
-  
-  rawData <- rbind(prodData, tradeData)
-  
-  namedData <- merge(rawData, codeTable[,.(measuredItemCPC, measuredElement, variable)], 
+  namedData <- merge(rawData, codeTable[module == "pig" & fun == "energy", .(measuredItemCPC, measuredElement, variable)], 
                      by = c("measuredElement", "measuredItemCPC"), all.y = TRUE)
   
   data <- dcast.data.table(namedData, geographicAreaM49 + timePointYears ~ variable, value.var = "Value")
@@ -39,18 +33,19 @@ pig_energy_factor <- function(area, year) {
   
   
   #data <- sws_query(area = area, year = year, 
-   #                 pairs = vars)
+  #                 pairs = vars)
   
-  within(data, {
+  data <- within(data, {
     liveweight <- Carcass.Wt / 10 / 0.75
     metabolicweight <- liveweight^0.75
     
     proteingain <- ((0.4767 + (0.02147 * liveweight) - (0.0002376 * liveweight^2) + 
-                      (0.000000713 * liveweight^3)) * liveweight) / 2.55
+                       (0.000000713 * liveweight^3)) * liveweight) / 2.55
     
     energy <- (((106 * metabolicweight + (proteingain * 10.6)) * 
-                 (1+(0.0614 * liveweight * 0.0165))) * 0.0041868 * 365) / 35600
+                  (1+(0.0614 * liveweight * 0.0165))) * 0.0041868 * 365) / 35600
   })
   
+  data
   
 }
