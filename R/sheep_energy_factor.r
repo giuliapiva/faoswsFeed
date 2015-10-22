@@ -1,30 +1,31 @@
-source('R/sws_query_2.r')
-
-
-
-sheep_energy_factor <- function(area, year) {
+sheep_energy_factor <- function() {
     
 #    if(length(year) > 1) {
 #      library(plyr)
  #      return(ldply(year, cattle_energy_factor, area = area))
   # }
   
-  vars <- list(heads = c(11, 976), carcass = c(41, 977), milk = c(51, 982))
+  year <- slot(swsContext.datasets[[1]]@dimensions$timePointYears, "keys")
+  area <- slot(swsContext.datasets[[1]]@dimensions$geographicAreaM49, "keys")
+  
+  rawData <-  getProdData(animal = "sheep", fun = "energy", area = area, year = year)
+  
+  namedData <- merge(rawData, codeTable[module == "sheep" & fun == "energy",.(measuredItemCPC, measuredElement, variable)], 
+                     by = c("measuredElement", "measuredItemCPC"), all.y = TRUE)
   
 
-  
-  
-  data <- sws_query(area = area, year = year, 
-                    pairs = vars)
-  
-  within(data, {
-    Carcass.Wt <- Carcass.Wt / 10
-    if(!exists("Production")) 
-    {Production <- 0}
-    Production[is.na(Production)] <- 0
+  data <- dcast.data.table(namedData, geographicAreaM49 + timePointYears ~ variable, value.var = "Value")
+  #remove any full NA rows
+  data <- data[!apply(data, 1, function(x) all(is.na(x))),]
+  # All missing values are to be treated as zero
+  data[is.na(data)] <- 0
+    
+
+  data <- within(data, {
+    #Convert production from tonnes to kilograms
     milkpersheep <- Production * 1000 / Stocks
     energy <- (365 * (1.8 + 0.1 * Carcass.Wt * 2) + 4.6 * milkpersheep) / 35600
   })
   
-  
+  data
 }

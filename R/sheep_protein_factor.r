@@ -1,37 +1,43 @@
 source('R/sws_query_2.r')
 
 
-sheep_protein_factor <- function(area, year) {
+sheep_protein_factor <- function() {
 
   
-  year[length(year) + 1] <- year[length(year)] + 1
+  queryYear <- slot(swsContext.datasets[[1]]@dimensions$timePointYears, "keys")
+  year <- c(queryYear, max(as.numeric((queryYear))) + 1)
+  area <- slot(swsContext.datasets[[1]]@dimensions$geographicAreaM49, "keys")
 
-  energy <- sheep_energy_factor(area, year)
+#   vars <- list(c(31, 977), c(91, 976), c(61, 976))
+#  
+#   data <- sws_query(area = area, year = year, 
+#                      pairs = vars)
+#   
+#   data <- merge(energy, data, by=c('area', 'year'))
   
+  prodData <-  getProdData(animal = "sheep", fun = "protein", area = area, year = year)
+  tradeData <- getTradeData(animal = "sheep", fun = "protein", area = area, year = year)
   
-  vars <- list(c(31, 977), c(91, 976), c(61, 976))
- 
-  data <- sws_query(area = area, year = year, 
-                     pairs = vars)
+  rawData <- rbind(prodData, tradeData)
   
-  data <- merge(energy, data, by=c('area', 'year'))
+  namedData <- merge(rawData, codeTable[module == "sheep" & fun == "protein",.(measuredItemCPC, measuredElement, variable)], 
+                     by = c("measuredElement", "measuredItemCPC"), all.y = TRUE)
+  
+  data <- dcast.data.table(namedData, geographicAreaM49 + timePointYears ~ variable, value.var = "Value")
+  #remove any full NA rows
+  data <- data[!apply(data, 1, function(x) all(is.na(x))),]
+  # All missing values are to be treated as zero
+  data[is.na(data)] <- 0
   
   data <- within(data, {
     
     Stocksnext <- c(Stocks[2:length(Stocks)], NA)
-    Stocksnext[year==2011] <- 0
-   
     
-    if(!exists("Exports")) 
-    {Exports <- 0}
-    Exports[is.na(Exports)] <- 0
-    
-    if(!exists("Imports")) 
-    {Imports <- 0}
-    Imports[is.na(Imports)] <- 0
+    milkpersheep <- Production * 1000 / Stocks
+    energy <- (365 * (1.8 + 0.1 * Carcass.Wt * 2) + 4.6 * milkpersheep) / 35600
     
     liveweight <- Carcass.Wt / .43
-    Production <- ifelse(is.na(Production), 0, Production)
+    
     milkpersheep <- Production * 1000 / Stocks
     metabolicweight <-liveweight^0.75
     
@@ -67,7 +73,7 @@ sheep_protein_factor <- function(area, year) {
     protein <- (rdp + udp) / 874.1886
   })
   
-  data[data$year != max(data$year), c("area", "year", "protein")]
+  data[timePointYears != max(as.numeric(timePointYears)), .(geographicAreaM49, timePointYears, protein)]
 
 }
 
