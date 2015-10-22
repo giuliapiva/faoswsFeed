@@ -42,12 +42,26 @@
 ##
 ## START
 
-#setwd("T:/Onno/Feed-Model/Expert-Approach/Programming/Programs/functions")
+# code       description
+# 1:    02111            Cattle
+# 2:    02112           Buffalo
+# 3:    02122             Sheep
+# 4:    02123             Goats
+# 5:    02140      Swine / pigs
+# 6:    02151          Chickens
+# 7:    02154             Ducks
+# 8:    02153             Geese
+# 9:    02152           Turkeys
+# 10:    02131            Horses
+# 11:    02132             Asses
+# 12:    02133 Mules and hinnies
+# 13: 02121.01            Camels
+# 14:    02191 Rabbits and hares
 
 ## 1. SOURCE FUNCTIONS
 
-source('R/cattle_energy_factor.r')
-source('R/cattle_protein_factor.r')
+#source('R/cattle_energy_factor.r')
+#source('R/cattle_protein_factor.r')
 source('R/sheep_energy_factor.r')
 source('R/sheep_protein_factor.r')
 source('R/goat_energy_factor.r')
@@ -69,16 +83,19 @@ source('R/camel_protein_factor.r')
 
 ## 2. COMPILE INDICEs
 
+keys <- c("geographicAreaM49", "timePointYears", "measuredItemCPC")
+
 ## 2.1 Cattle
 
 # energy
-ce <- cattle_energy_factor(1:299, 1990:2011) 
-ce$item <- rep(866,nrow(ce)) 
-ce <- ce[, c("area", "year", "item", "energy")]
+ce <- cattle_energy_factor() 
+ce$measuredItemCPC <- "02111"
+setkeyv(ce, keys) 
+ce <- ce[, .(geographicAreaM49, timePointYears, measuredItemCPC, energy)]
 
 # protein
-cp <- cattle_protein_factor(1:299, 1990:2011) 
-cattle <- merge(ce, cp, all=T)
+cp <- cattle_protein_factor() 
+cattle <- merge(ce, cp, all = T)
 
 
 ## 2.2 Buffaloes
@@ -86,25 +103,23 @@ cattle <- merge(ce, cp, all=T)
 #energy
 be <- buffalo_energy_factor()
 be$measuredItemCPC <- "02112"
-setkeyv(be, c(key(be), "measuredItemCPC"))
+setkeyv(be, keys)
 be <- be[,.(geographicAreaM49, timePointYears, measuredItemCPC, energy)]
 
 #protein
 bp <- buffalo_protein_factor()
-buffalo <- merge(be, bp, all=T)
+buffalo <- merge(be, bp, all = T)
 
 ## 2.3 Sheep
 
 #energy
-se <- sheep_energy_factor(1:299, 1990:2011)
-se$item <- rep(976,nrow(se)) 
-se <- se[, c("area", "year", "item", "energy")]
+se <- sheep_energy_factor()
+se$measuredItemCPC <- "02122"
+se <- se[, .(geographicAreaM49, timePointYears, measuredItemCPC, energy)]
 
 #protein
-sp <- sheep_protein_factor(1:299, 1990:2011) 
-sheep <- merge(se, sp, all=T)
-
-
+sp <- sheep_protein_factor() 
+sheep <- merge(se, sp, all = T)
 
 ## 2.4 Goats
 
@@ -134,7 +149,7 @@ camel <- merge(cae, cap, all=T)
 #energy
 pe <- pig_energy_factor()
 pe$measuredItemCPC <- "02140"
-setkeyv(pe, c(key(be), "measuredItemCPC"))
+setkeyv(pe, c(key(pe), "measuredItemCPC"))
 pe <- pe[,.(geographicAreaM49, timePointYears, measuredItemCPC, energy)]
 
 #protein

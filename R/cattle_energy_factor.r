@@ -1,6 +1,3 @@
-source('R/sws_query_2.r')
-
-
 cattle_energy_factor <- function() {
   
 #  if(length(year) > 1) {
@@ -12,12 +9,13 @@ cattle_energy_factor <- function() {
   year <- c(queryYear, max(as.numeric((queryYear))) + 1)
   area <- slot(swsContext.datasets[[1]]@dimensions$geographicAreaM49, "keys")
   
-  prodData <-  getProdData(animal = "buffalo", fun = "energy", area = area, year = year)
-  tradeData <- getTradeData(animal = "buffalo", fun = "energy", area = area, year = year)
+  prodData <-  getProdData(animal = "cattle", fun = "energy", area = area, year = year)
+  tradeData <- getTradeData(animal = "cattle", fun = "energy", area = area, year = year)
   
   rawData <- rbind(prodData, tradeData)
   
-  namedData <- merge(rawData, codeTable[,.(measuredItemCPC, measuredElement, variable)], 
+  namedData <- merge(rawData, codeTable[module == "cattle" & fun == "energy",
+                                        .(measuredItemCPC, measuredElement, variable)], 
                      by = c("measuredElement", "measuredItemCPC"), all.y = TRUE)
   
   data <- dcast.data.table(namedData, geographicAreaM49 + timePointYears ~ variable, value.var = "Value")
@@ -27,22 +25,11 @@ cattle_energy_factor <- function() {
   data[is.na(data)] <- 0
   
   data <- within(data, {
-    Carcass.Wt <- Carcass.Wt / 10
     Beef.Animals <- Stocks - Milk.Animals
-    if(!exists("Production")) 
-    {Production <- 0}
-    Production[is.na(Production)] <- 0
+    
     Stocksnext <- c(Stocks[2:length(Stocks)], NA)
     #Stocksnext[year==2011] <- 0
       
-    if(!exists("Exports")) 
-    {Exports <- 0}
-    Exports[is.na(Exports)] <- 0
-    
-    if(!exists("Imports")) 
-    {Imports <- 0}
-    Imports[is.na(Imports)] <- 0
-    
     liveweight <- Carcass.Wt / .55
     milkpercow <- Production * 1000 / Milk.Animals
     metabolicweight <- liveweight^0.75
@@ -60,7 +47,8 @@ cattle_energy_factor <- function() {
     energy <- (milkenergy * Milk.Animals + beefenergy * Beef.Animals)/Stocks
   })
   
-  data[data$year != max(data$year), c("area", "year", "energy","Milk.Animals", "milkenergy", "Beef.Animals", 
-                                      "beefenergy", "liveweight", "weightgain", "milkpercow") ]
+  data[timePointYears != max(as.numeric(timePointYears)),  
+  .(geographicAreaM49, timePointYears, energy, Milk.Animals, milkenergy,  Beef.Animals, beefenergy, liveweight, weightgain, milkpercow
+    )]
   
 }

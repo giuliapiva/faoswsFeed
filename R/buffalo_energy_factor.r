@@ -29,7 +29,11 @@ buffalo_energy_factor <- function() {
     Stocksnext <- c(Stocks[2:length(Stocks)], NA)
     
     #Live cattle are heavier than carcasses
+    ## thousand factor is to convert tonnes to kilograms
+    ## Meat.Production.Bio is live weight so doesn't need the .55 conversion factor
     liveweight <-   (Meat.Production.Bio + (Meat.Production + Meat.Production.Ind)  / .55) * 1000 / (Slaughtered + Slaughtered.Ind + Slaughtered.Bio)
+    
+    #
     milkpercow <- Milk.Production * 1000 / Milk.Animals
     metabolicweight <- liveweight ^ 0.75
     
