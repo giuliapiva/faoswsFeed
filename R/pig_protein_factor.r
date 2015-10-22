@@ -5,8 +5,8 @@ data <- pig_energy_factor()
   
   
   data <- within(data, {
-    
-    liveweight <- Carcass.Wt / 10/ .75
+    #no conversion: Carcass.Wt comes in kg
+    liveweight <- Carcass.Wt / .75
 
     metabolicweight <-liveweight^0.75
     

@@ -36,7 +36,8 @@ pig_energy_factor <- function() {
   #                 pairs = vars)
   
   data <- within(data, {
-    liveweight <- Carcass.Wt / 10 / 0.75
+    # no conversion: data comes in kg
+    liveweight <- Carcass.Wt / 0.75
     metabolicweight <- liveweight^0.75
     
     proteingain <- ((0.4767 + (0.02147 * liveweight) - (0.0002376 * liveweight^2) + 

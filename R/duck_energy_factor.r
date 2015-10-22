@@ -19,6 +19,7 @@ duck_energy_factor <- function() {
   
   
   within(data, {
+    # Conversionfrom g into kg
     Carcass.Wt <- Carcass.Wt / 1000
     liveweight <- Carcass.Wt / 0.68
     metabolicweight <- liveweight^0.75
