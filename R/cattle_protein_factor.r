@@ -6,7 +6,7 @@ cattle_protein_factor <- function() {
   
   data <- within(data, {
     metabolicweight <- liveweight ^ 0.75
-    re <- ((beefenergy * 35600) / 4.184 / 365 - 0.077 * metabolicweight) * 0.6
+    re <- 0.0635 * (0.96 * liveweight) * 0.75 * (weightgain * 0.96) * 1.097
     beefprotein <- (3.8 * (0.96 * liveweight) ^ 0.75 + (weightgain * (268 - (29.4 * (re / weightgain))))) / 874.1886
     beefprotein[weightgain == 0] <- (3.8 * (0.96 * liveweight[weightgain == 0]) ^ 0.75) / 874.1886
     
