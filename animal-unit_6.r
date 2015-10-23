@@ -151,7 +151,7 @@ camel <- merge(cae, cap, all=T)
 #energy
 pe <- pig_energy_factor()
 pe$measuredItemCPC <- "02140"
-setkeyv(pe, c(key(pe), "measuredItemCPC"))
+setkeyv(pe, keys)
 pe <- pe[,.(geographicAreaM49, timePointYears, measuredItemCPC, energy)]
 
 #protein
