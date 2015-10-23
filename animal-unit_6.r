@@ -137,9 +137,9 @@ goat <- merge(ge, gp, all=T)
 ## 2.5 Camels
 
 #energy
-cae <- camel_energy_factor(1:299, 1990:2011)
-cae$item <- rep(1126, nrow(cae))
-cae <- cae[, c("area", "year", "item", "energy")]
+cae <- camel_energy_factor()
+cae$measuredItemCPC <- "02121.01"
+cae <- cae[, .(geographicAreaM49, timePointYears, measuredItemCPC, energy)]
 
 
 #protein
