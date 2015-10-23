@@ -196,7 +196,7 @@ indices <- rbind(cattle, buffalo, sheep, goat, camel, pig, chicken, duck, goose,
 ## 4. PREPARE OUTPUT CSV
 
 # format
-indices <- indices[, .(geographicAreaM49, timePointYears, measuredItemCPC, energy, protein)] 
+#indices <- indices[, .(geographicAreaM49, timePointYears, measuredItemCPC, energy, protein)] 
 
 #write
 #write.csv(indices, '../Data/trans/aui_6.csv', row.names=F)
