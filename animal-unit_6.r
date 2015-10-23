@@ -115,6 +115,7 @@ buffalo <- merge(be, bp, all = T)
 #energy
 se <- sheep_energy_factor()
 se$measuredItemCPC <- "02122"
+setkeyv(se, keys)
 se <- se[, .(geographicAreaM49, timePointYears, measuredItemCPC, energy)]
 
 #protein
@@ -124,12 +125,13 @@ sheep <- merge(se, sp, all = T)
 ## 2.4 Goats
 
 #energy
-ge <- goat_energy_factor(1:299, 1990:2011)
-ge$item <- rep(1016,nrow(ge)) 
-ge <- ge[, c("area", "year", "item", "energy")]
+ge <- goat_energy_factor()
+ge$measuredItemCPC <- "02123"
+setkeyv(ge, keys)
+ge <- ge[, .(geographicAreaM49, timePointYears, measuredItemCPC, energy)]
 
 #protein
-gp <- goat_protein_factor(1:299, 1990:2011) 
+gp <- goat_protein_factor() 
 goat <- merge(ge, gp, all=T)
 
 ## 2.5 Camels

@@ -4,36 +4,38 @@ source('R/sws_query_2.r')
 goat_protein_factor <- function(area, year) {
   
   
-  year[length(year) + 1] <- year[length(year)] + 1
-
-  energy <- goat_energy_factor(area, year)
+  queryYear <- slot(swsContext.datasets[[1]]@dimensions$timePointYears, "keys")
+  year <- c(queryYear, max(as.numeric((queryYear))) + 1)
+  area <- slot(swsContext.datasets[[1]]@dimensions$geographicAreaM49, "keys")
   
   
-  vars <- list(c(31, 1017), c(91, 1016), c(61, 1016))
- 
-  data <- sws_query(area = area, year = year, 
-                     pairs = vars)
+  prodData <-  getProdData(animal = "goat", fun = "protein", area = area, year = year)
+  tradeData <- getTradeData(animal = "goat", fun = "protein", area = area, year = year)
   
-  data <- merge(energy, data, by=c('area', 'year'))
+  rawData <- rbind(prodData, tradeData)
+  
+  namedData <- merge(rawData, codeTable[module == "goat" & fun == "protein",.(measuredItemCPC, measuredElement, variable)], 
+                     by = c("measuredElement", "measuredItemCPC"), all.y = TRUE)
+  
+  data <- dcast.data.table(namedData, geographicAreaM49 + timePointYears ~ variable, value.var = "Value")
+  #remove any full NA rows
+  data <- data[!apply(data, 1, function(x) all(is.na(x))),]
+  # All missing values are to be treated as zero
+  data[is.na(data)] <- 0
   
   data <- within(data, {
     
+    milkpergoat <- Production * 1000 / Stocks
+    energy <- (365 * (1.8 + 0.1 * Carcass.Wt * 2) + 4.6 * milkpergoat) / 35600
+    
     Stocksnext <- c(Stocks[2:length(Stocks)], NA)
-    Stocksnext[year==2011] <- 0
+    #Stocksnext[year==2011] <- 0
   
     
-    if(!exists("Exports")) 
-    {Exports <- 0}
-    Exports[is.na(Exports)] <- 0
-    
-    if(!exists("Imports")) 
-    {Imports <- 0}
-    Imports[is.na(Imports)] <- 0
-    
     liveweight <- Carcass.Wt / .43
-    Production <- ifelse(!is.na(Production), Production, 0)
+    
     milkpergoat <- Production * 1000 / Stocks
-    metabolicweight <-liveweight^0.75
+    metabolicweight <- liveweight^0.75
     
     weightgain <- (((Slaughtered + Exports - Imports + Stocksnext - Stocks 
                         - Stocks * 0.044) * liveweight) / Stocks) / 365
@@ -43,8 +45,6 @@ goat_protein_factor <- function(area, year) {
     
     eup <- 0.147 * liveweight + 3.375
                  
-  
-    
     ig <- ifelse(is.na(weightgain) | weightgain <= 0, 0, 
                           weightgain * (160.4 - 1.22 * liveweight + 0.0105 * 
                                           liveweight^2) 
@@ -67,7 +67,7 @@ goat_protein_factor <- function(area, year) {
     protein <- (rdp + udp) / 874.1886
   })
   
-  data[data$year != max(data$year), c("area", "year", "protein")]
+  data[timePointYears != max(as.numeric(timePointYears)), .(geographicAreaM49, timePointYears, protein)]
 
 }
 
