@@ -34,12 +34,6 @@ buffalo_energy_factor <- function() {
     #Live cattle are heavier than carcasses
     ## thousand factor is to convert tonnes to kilograms
     liveweight <- Carcass.Wt / lw.constant
-    # If there's no carcass weight, estimate it
-    liveweight[liveweight == 0] <- Meat.Production * 1000 / lw.constant / Slaughtered
-    # If there's no regular meat production, use indigenous
-    liveweight[liveweight == 0] <- Meat.Production.Ind * 1000 / lw.constant / Slaughtered.Ind
-    #If there's still no liveweight, use live cattle. Meat.Production.Bio is live weight so doesn't need the .55 conversion factor.
-    liveweight[liveweight == 0] <- Meat.Production.Bio * 1000 / Slaughtered.Bio
     
     milkpercow <- Milk.Production * 1000 / Milk.Animals
     metabolicweight <- liveweight ^ 0.75
