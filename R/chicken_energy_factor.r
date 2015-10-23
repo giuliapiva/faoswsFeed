@@ -1,25 +1,32 @@
-source('R/sws_query_2.r')
-
-chicken_energy_factor <- function(area, year) {
+chicken_energy_factor <- function() {
   #   
   #   if(length(year) > 1) {
   #     library(plyr)
   #     return(ldply(year, cattle_energy_factor, area = area))
   #   }
 
-  vars <- list(c(11, 1057), c(41, 1058), c(41, 1062), c(31, 1062) )
+  year <- slot(swsContext.datasets[[1]]@dimensions$timePointYears, "keys")
+  area <- slot(swsContext.datasets[[1]]@dimensions$geographicAreaM49, "keys")
+  
+  rawData <-  getProdData(animal = "chicken", fun = "energy", area = area, year = year)
+  
+  namedData <- merge(rawData, codeTable[module == "chicken" & fun == "energy",.(measuredItemCPC, measuredElement, variable)], 
+                     by = c("measuredElement", "measuredItemCPC"), all.y = TRUE)
   
   
-  data <- sws_query(area = area, year = year, 
-                    pairs = vars)
+  data <- dcast.data.table(namedData, geographicAreaM49 + timePointYears ~ variable, value.var = "Value")
+  #remove any full NA rows
+  data <- data[!apply(data, 1, function(x) all(is.na(x))),]
+  # All missing values are to be treated as zero
+  data[is.na(data)] <- 0
   
   within(data, {
     Stocks <- Stocks * 1000
     Carcass.Wt <- Carcass.Wt / 1000
-    liveweight <- Carcass.Wt / 10 / 0.68
+    liveweight <- Carcass.Wt / 0.68
     metabolicweight <- liveweight^0.75
     
-    if(!exists("Laying"))  
+    if(all(Laying == 0))  
     {energy <- (metabolicweight * 78.3 *2.5 * 365 * 0.0041868) / 35600
     
      }else{

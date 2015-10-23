@@ -60,26 +60,7 @@
 
 ## 1. SOURCE FUNCTIONS
 
-#source('R/cattle_energy_factor.r')
-#source('R/cattle_protein_factor.r')
-source('R/sheep_energy_factor.r')
-source('R/sheep_protein_factor.r')
-source('R/goat_energy_factor.r')
-source('R/goat_protein_factor.r')
-#source('R/pig_energy_factor.r')
-#source('R/pig_protein_factor.r')
-source('R/chicken_energy_factor.r')
-source('R/chicken_protein_factor.r')
-source('R/duck_energy_factor.r')
-source('R/duck_protein_factor.r')
-source('R/goose_energy_factor.r')
-source('R/goose_protein_factor.r')
-source('R/turkey_energy_factor.r')
-source('R/turkey_protein_factor.r')
-#source('R/buffalo_energy_factor.r')
-#source('R/buffalo_protein_factor.r')
-source('R/camel_energy_factor.r')
-source('R/camel_protein_factor.r')
+library(faoswsFeed)
 
 ## 2. COMPILE INDICEs
 
@@ -132,7 +113,7 @@ ge <- ge[, .(geographicAreaM49, timePointYears, measuredItemCPC, energy)]
 
 #protein
 gp <- goat_protein_factor() 
-goat <- merge(ge, gp, all=T)
+goat <- merge(ge, gp, all = T)
 
 ## 2.5 Camels
 
@@ -143,8 +124,8 @@ cae <- cae[, .(geographicAreaM49, timePointYears, measuredItemCPC, energy)]
 
 
 #protein
-cap <- camel_protein_factor(1:299, 1990:2011)
-camel <- merge(cae, cap, all=T)
+cap <- camel_protein_factor()
+camel <- merge(cae, cap, all = T)
 
 ## 2.6 Pigs
 
@@ -156,52 +137,56 @@ pe <- pe[,.(geographicAreaM49, timePointYears, measuredItemCPC, energy)]
 
 #protein
 pp <- pig_protein_factor() 
-pig <- merge(pe, pp, all=T)
+pig <- merge(pe, pp, all = T)
 
 ## 2.7 Chickens
 
 #energy
-che <- chicken_energy_factor(1:299, 1990:2011)
-che$item <- rep(1057,nrow(che)) 
-che <- che[, c("area", "year", "item", "energy")]
+che <- chicken_energy_factor()
+che$measuredItemCPC <- "02151" 
+setkeyv(che, keys)
+che <- che[,.(geographicAreaM49, timePointYears, measuredItemCPC, energy)]
 
 #protein
-chp <- chicken_protein_factor(1:299, 1990:2011) 
-chicken <- merge(che, chp, all=T)
+chp <- chicken_protein_factor() 
+chicken <- merge(che, chp, all = T)
 
 
 ## 2.8 Ducks
 
 #energy
-de <- duck_energy_factor(1:299, 1990:2011)
-de$item <- rep(1068,nrow(de)) 
-de <- de[, c("area", "year", "item", "energy")]
+de <- duck_energy_factor()
+de$measuredItemCPC <- "02154"
+setkeyv(de, keys)
+de <- de[, .(geographicAreaM49, timePointYears, measuredItemCPC, energy)]
 
 #protein
-dp <- duck_protein_factor(1:299, 1990:2011) 
-duck <- merge(de, dp, all=T)
+dp <- duck_protein_factor() 
+duck <- merge(de, dp, all = T)
 
 ## 2.9 Geese
 
 #energy
-goo <- goose_energy_factor(1:299, 1990:2011)
-goo$item <- rep(1072,nrow(goo)) 
-goo <- goo[, c("area", "year", "item", "energy")]
+goo <- goose_energy_factor()
+goo$measuredItemCPC <- "02153"
+setkeyv(goo, keys)
+goo <- goo[, .(geographicAreaM49, timePointYears, measuredItemCPC, energy)]
 
 #protein
-gep <- goose_protein_factor(1:299, 1990:2011) 
-goose <- merge(goo, gep, all=T)
+gep <- goose_protein_factor() 
+goose <- merge(goo, gep, all = T)
 
 ## 2.10 For Turkeys
 
 #energy
-te <- turkey_energy_factor(1:299, 1990:2011)
-te$item <- rep(1079,nrow(te)) 
-te <- te[, c("area", "year", "item", "energy")]
+te <- turkey_energy_factor()
+te$measuredItemCPC <- "02152"
+setkeyv(te, keys)
+te <- te[, .(geographicAreaM49, timePointYears, measuredItemCPC, energy)]
 
 #protein
-tp <- turkey_protein_factor(1:299, 1990:2011) 
-turkey <- merge(te, tp, all=T)
+tp <- turkey_protein_factor() 
+turkey <- merge(te, tp, all = T)
 
 
 ## 3. COMBINE INDICES
@@ -211,12 +196,10 @@ indices <- rbind(cattle, buffalo, sheep, goat, camel, pig, chicken, duck, goose,
 ## 4. PREPARE OUTPUT CSV
 
 # format
-indices <- indices[, c("area", "item", "year", "energy", "protein")] 
-colnames(indices) <- c("Area.Code", "Item.Code", "Year", "Energy.Factor", "Protein.Factor")
-indices <- indices[order(indices$Area.Code),]
+indices <- indices[, .(geographicAreaM49, timePointYears, measuredItemCPC, energy, protein)] 
 
 #write
-write.csv(indices, '../Data/trans/aui_6.csv', row.names=F)
+#write.csv(indices, '../Data/trans/aui_6.csv', row.names=F)
 
 
 ## End
