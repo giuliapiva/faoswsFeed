@@ -32,15 +32,15 @@ cattle_energy_factor <- function() {
       
     liveweight <- Carcass.Wt / .55
     milkpercow <- Production * 1000 / Milk.Animals
-    metabolicweight <- liveweight^0.75
+    metabolicweight <- liveweight ^ 0.75
     
     weightgain <- (((Slaughtered + Exports - Imports + Stocksnext - Stocks 
                      - Stocks * 0.032) * liveweight) / Beef.Animals) / 365
     
     weightgain[weightgain < 0] <- 0 
-    milkenergy <- (((365 * 0.077 * metabolicweight) + ( 0.74 * milkpercow))*4.184) / 0.6/ 35600
-    beefenergy <- (365 * 4.184 * (0.077 * metabolicweight +(0.063 * (0.96*liveweight)^0.75 *                                                          
-                                                          weightgain^1.097)))/0.6/35600
+    milkenergy <- (((365 * 0.077 * metabolicweight) + (0.74 * milkpercow)) * 4.184) / 0.6/ 35600
+    beefenergy <- (365 * 4.184 * (0.077 * metabolicweight + (0.063 * (0.96*liveweight) ^ 0.75 *                                                          
+                                                          weightgain ^ 1.097))) / 0.6 / 35600
     #alternatively
     #beefenergy[weightgain == 0] <- (365*(8.3 + (0.091 * Carcass.Wt[weightgain == 0] * 2)))/35600
     

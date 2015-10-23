@@ -19,7 +19,7 @@ camel_energy_factor <- function() {
     
     liveweight <- Carcass.Wt / 0.62
     metabolicweight <- liveweight ^ 0.75
-    protein <- ((0.12 * metabolicweight * 4.184) * 365) / 35600
+    energy <- ((0.12 * metabolicweight * 4.184) * 365) / 35600
   })
   
   data

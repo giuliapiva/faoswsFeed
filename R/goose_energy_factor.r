@@ -20,7 +20,7 @@ goose_energy_factor <- function() {
     #Conversion from g into kg
     Carcass.Wt <- Carcass.Wt / 1000
     liveweight <- Carcass.Wt / 0.68
-    metabolicweight <- liveweight^0.75
+    metabolicweight <- liveweight ^ 0.75
     energy <- (metabolicweight * 78.3 * 2.5 * 365 * 0.0041868) / 35600
   })
   

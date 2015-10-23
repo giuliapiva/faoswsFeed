@@ -35,7 +35,7 @@ goat_protein_factor <- function(area, year) {
     liveweight <- Carcass.Wt / .43
     
     milkpergoat <- Production * 1000 / Stocks
-    metabolicweight <- liveweight^0.75
+    metabolicweight <- liveweight ^ 0.75
     
     weightgain <- (((Slaughtered + Exports - Imports + Stocksnext - Stocks 
                         - Stocks * 0.044) * liveweight) / Stocks) / 365
@@ -47,7 +47,7 @@ goat_protein_factor <- function(area, year) {
                  
     ig <- ifelse(is.na(weightgain) | weightgain <= 0, 0, 
                           weightgain * (160.4 - 1.22 * liveweight + 0.0105 * 
-                                          liveweight^2) 
+                                          liveweight ^ 2) 
                                   )
     
     
@@ -55,7 +55,7 @@ goat_protein_factor <- function(area, year) {
                       
   
    
-    dlp <-0.11 * metabolicweight
+    dlp <- 0.11 * metabolicweight
     tp <- eup + dlp + mp + ig
                        
     

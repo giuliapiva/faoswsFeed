@@ -20,7 +20,7 @@ ass_energy_factor <- function() {
     #No COnversion: Carcass.Wt comes in kg
     
     liveweight <- Carcass.Wt / 0.63
-    energy <- ( 0.1548 *  liveweight) * 356 / 35600
+    energy <- (0.1548 *  liveweight) * 356 / 35600
   })
   
 }

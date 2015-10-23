@@ -6,10 +6,10 @@ buffalo_protein_factor <- function() {
   data <- buffalo_energy_factor()
   
   data <- within(data, {
-    metabolicweight <- liveweight^0.75
-    re <- ((beefenergy * 35600)/4.184/365 - 0.077*metabolicweight)*0.6
-    beefprotein <- (3.8 * (0.96 * liveweight)^0.75 + (weightgain *(268-(29.4*(re / weightgain)))))/874.1886
-    beefprotein[weightgain = 0] <- (3.8 * (0.96 * liveweight[weightgain = 0])^0.75)/874.1886
+    metabolicweight <- liveweight ^ 0.75
+    re <- ((beefenergy * 35600) / 4.184 / 365 - 0.077 * metabolicweight) * 0.6
+    beefprotein <- (3.8 * (0.96 * liveweight) ^ 0.75 + (weightgain * (268 - (29.4 * (re / weightgain))))) / 874.1886
+    beefprotein[weightgain = 0] <- (3.8 * (0.96 * liveweight[weightgain = 0]) ^ 0.75)/874.1886
     
     mp <- 5.17 * 6.25 * (milkpercow/365)
     me <- ((milkenergy * 35600) / 365)
