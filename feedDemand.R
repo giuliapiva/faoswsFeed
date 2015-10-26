@@ -4,6 +4,7 @@ library(faosws)
 library(faoswsUtil)
 suppressPackageStartupMessages(library(data.table))
 library(reshape2)
+library(faoswsFeed)
 
 
 if (CheckDebug()) {
@@ -22,12 +23,12 @@ animalKeys <- fcl2cpc(sprintf("%04d", c(866, 946, 976, 1016, 1034, 1057, 1068, 1
 stockKeys <- c("5111", "5112")
 thousandHeads <- "5112"
 
-key = DatasetKey(domain = "agriculture", dataset = "aproduction",
+key = DatasetKey(domain = "agriculture", dataset = "agriculture",
                   dimensions = list(
-                    Dimension(name = "geographicAreaM49", keys = na.omit(fs2m49(as.character((1:299)[-22])))), #user input
+                    Dimension(name = "geographicAreaM49", keys = slot(swsContext.datasets[[1]]@dimensions$geographicAreaM49, "keys")), #user input
                     Dimension(name = "measuredItemCPC", keys = animalKeys), # user input
                     Dimension(name = "measuredElement", keys = stockKeys),
-                    Dimension(name = "timePointYears", keys = as.character(1990:2012)) #user input
+                    Dimension(name = "timePointYears", keys = slot(swsContext.datasets[[1]]@dimensions$timePointYears, "keys")) #user input
                     
                     )
                  )
@@ -43,16 +44,18 @@ animalHeads[measuredElement %in% thousandHeads , animalHeads * 1000]
 animalHeads[, `:=`(measuredElement = NULL, flagObservationStatus = NULL, flagMethod = NULL)]
 
 
-## animal units
-animalUnit = as.data.table(read.csv('../Data/trans/animal_unit_6-12.csv'))
-animalUnit = animalUnit[,.(Area.Code, Item.Code, Year, Energy.Factor, Protein.Factor)]
-setnames(animalUnit, c("geographicAreaM49", "measuredItemCPC", "timePointYears", 
-                        "energyFactor", "proteinFactor"))
+# # animal units
+# animalUnit = as.data.table(read.csv('../Data/trans/animal_unit_6-12.csv'))
+# animalUnit = animalUnit[,.(Area.Code, Item.Code, Year, Energy.Factor, Protein.Factor)]
+# setnames(animalUnit, c("geographicAreaM49", "measuredItemCPC", "timePointYears", 
+#                       "energyFactor", "proteinFactor"))
+# 
+# #convert types and codes for merging
+# animalUnit[,`:=`(geographicAreaM49 = fs2m49(as.character(geographicAreaM49)), 
+#               measuredItemCPC = fcl2cpc(sprintf("%04d", measuredItemCPC)),
+#               timePointYears = as.character(timePointYears))]
 
-#convert types and codes for merging
-animalUnit[,`:=`(geographicAreaM49 = fs2m49(as.character(geographicAreaM49)), 
-              measuredItemCPC = fcl2cpc(sprintf("%04d", measuredItemCPC)),
-              timePointYears = as.character(timePointYears))]
+animalUnit <- calculateAnimalUnits()
 
 
 ## Link animal types with intensity groups
@@ -87,8 +90,8 @@ livestockDemandData[is.na(livestockDemandData)] <- 0
 
 # 35000 and 0.319 are energy and protein requirements in MJ and 
 # MT of protein per year of the base unit
-livestockDemandData[, energyDemand := animalHeads * energyFactor * intensity * 35600]
-livestockDemandData[, proteinDemand := animalHeads * proteinFactor * intensity * 0.319]
+livestockDemandData[, energyDemand := animalHeads * energy * intensity * 35600]
+livestockDemandData[, proteinDemand := animalHeads * protein * intensity * 0.319]
 
 livestockEnergyDemand = as.data.table(aggregate(data = livestockDemandData, 
                                           energyDemand ~ geographicAreaM49 + timePointYears, 

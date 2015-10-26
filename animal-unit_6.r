@@ -60,7 +60,7 @@
 
 ## 1. SOURCE FUNCTIONS
 
-library(faoswsFeed)
+calculateAnimalUnits <- function(){
 
 ## 2. COMPILE INDICEs
 
@@ -201,5 +201,8 @@ indices <- rbind(cattle, buffalo, sheep, goat, camel, pig, chicken, duck, goose,
 #write
 #write.csv(indices, '../Data/trans/aui_6.csv', row.names=F)
 
+indices
+
+}
 
 ## End
