@@ -18,8 +18,7 @@ if (CheckDebug()) {
 ## PROBLEMATIC CODES
 # 22 (Aruba) is mapped to 532, should be 533
 
-animalKeys <- fcl2cpc(sprintf("%04d", c(866, 946, 976, 1016, 1034, 1057, 1068, 1072, 1079, 1096,
-                                        1107, 1110, 1126, 1140)))
+animalKeys <- stockCodes[, measuredItemCPC]
 stockKeys <- c("5111", "5112")
 thousandHeads <- "5112"
 
@@ -38,7 +37,7 @@ animalHeads = GetData(key)
 setnames(animalHeads, "Value", "animalHeads")
 
 # Poultry and Rabbits are expressed in '000 heads, hence convert into heads
-animalHeads[measuredElement %in% thousandHeads , animalHeads * 1000]
+animalHeads[measuredElement %in% thousandHeads , animalHeads := animalHeads * 1000]
 
 #Remove flags and measuredElement column
 animalHeads[, `:=`(measuredElement = NULL, flagObservationStatus = NULL, flagMethod = NULL)]
