@@ -8,7 +8,7 @@ keys <- c("geographicAreaM49", "timePointYears", "measuredItemCPC")
 
 # energy
 ce <- cattle_energy_factor() 
-ce$measuredItemCPC <- "02111"
+ce$measuredItemCPC <- stockCodes["cattle", measuredItemCPC]
 setkeyv(ce, keys) 
 ce <- ce[, .(geographicAreaM49, timePointYears, measuredItemCPC, energy)]
 
@@ -21,7 +21,7 @@ cattle <- merge(ce, cp, all = T)
 
 #energy
 be <- buffalo_energy_factor()
-be$measuredItemCPC <- "02112"
+be$measuredItemCPC <- stockCodes["buffalo", measuredItemCPC]
 setkeyv(be, keys)
 be <- be[,.(geographicAreaM49, timePointYears, measuredItemCPC, energy)]
 
@@ -33,7 +33,7 @@ buffalo <- merge(be, bp, all = T)
 
 #energy
 se <- sheep_energy_factor()
-se$measuredItemCPC <- "02122"
+se$measuredItemCPC <- stockCodes["sheep", measuredItemCPC]
 setkeyv(se, keys)
 se <- se[, .(geographicAreaM49, timePointYears, measuredItemCPC, energy)]
 
@@ -45,7 +45,7 @@ sheep <- merge(se, sp, all = T)
 
 #energy
 ge <- goat_energy_factor()
-ge$measuredItemCPC <- "02123"
+ge$measuredItemCPC <- stockCodes["goat", measuredItemCPC]
 setkeyv(ge, keys)
 ge <- ge[, .(geographicAreaM49, timePointYears, measuredItemCPC, energy)]
 
@@ -57,7 +57,7 @@ goat <- merge(ge, gp, all = T)
 
 #energy
 cae <- camel_energy_factor()
-cae$measuredItemCPC <- "02121.01"
+cae$measuredItemCPC <- stockCodes["camel", measuredItemCPC]
 cae <- cae[, .(geographicAreaM49, timePointYears, measuredItemCPC, energy)]
 
 
@@ -69,7 +69,7 @@ camel <- merge(cae, cap, all = T)
 
 #energy
 pe <- pig_energy_factor()
-pe$measuredItemCPC <- "02140"
+pe$measuredItemCPC <- stockCodes["pig", measuredItemCPC]
 setkeyv(pe, keys)
 pe <- pe[,.(geographicAreaM49, timePointYears, measuredItemCPC, energy)]
 
@@ -81,7 +81,7 @@ pig <- merge(pe, pp, all = T)
 
 #energy
 che <- chicken_energy_factor()
-che$measuredItemCPC <- "02151" 
+che$measuredItemCPC <- stockCodes["chicken", measuredItemCPC]
 setkeyv(che, keys)
 che <- che[,.(geographicAreaM49, timePointYears, measuredItemCPC, energy)]
 
@@ -94,7 +94,7 @@ chicken <- merge(che, chp, all = T)
 
 #energy
 de <- duck_energy_factor()
-de$measuredItemCPC <- "02154"
+de$measuredItemCPC <- stockCodes["duck", measuredItemCPC]
 setkeyv(de, keys)
 de <- de[, .(geographicAreaM49, timePointYears, measuredItemCPC, energy)]
 
@@ -106,7 +106,7 @@ duck <- merge(de, dp, all = T)
 
 #energy
 goo <- goose_energy_factor()
-goo$measuredItemCPC <- "02153"
+goo$measuredItemCPC <- stockCodes["goose", measuredItemCPC]
 setkeyv(goo, keys)
 goo <- goo[, .(geographicAreaM49, timePointYears, measuredItemCPC, energy)]
 
@@ -118,7 +118,7 @@ goose <- merge(goo, gep, all = T)
 
 #energy
 te <- turkey_energy_factor()
-te$measuredItemCPC <- "02152"
+te$measuredItemCPC <- stockCodes["turkey", measuredItemCPC]
 setkeyv(te, keys)
 te <- te[, .(geographicAreaM49, timePointYears, measuredItemCPC, energy)]
 
