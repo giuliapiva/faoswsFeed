@@ -42,9 +42,9 @@ library(plyr)
 ########## 1.GLOBAL AQUACULTURE PRODUCTION
 
 ## retrieve data on production from FISHSTAT in folder as csv file and delete unnecessary info
-setwd('T:/Onno/Feed-Model/Expert-Approach/Programming/Data/source')
+#setwd('T:/Onno/Feed-Model/Expert-Approach/Programming/Data/source')
 
-aqua <- read.csv('aquaculture_production.csv')
+aqua <- read.csv('../Data/source/aquaculture_production.csv')
 
 aqua$S_1990 <- NULL
 aqua$S_1991 <- NULL
@@ -73,7 +73,7 @@ aqua$S_2012 <- NULL
 colnames(aqua)[c(1,2,3,4,5)] <- c("area", "ocean.area", "Environment", "Species", "scientific.name") 
 
 ## Allocate area codes provided by csv
-codes <- read.csv('sws.csv')
+codes <- read.csv('../Data/source/sws.csv')
 colnames(codes) <- c("area.code", "area")
 aqua<- merge(codes, aqua, by="area", all.y=T)
 
@@ -164,7 +164,7 @@ colnames(aqua) <- c("area", "area.code", "year", "type", "quantity")
 ########## 2. PARAMETERS EFCR, PERCENT ON FEED
 
 ## import parameters on EFCR, Percent on feed from csv
-parameters <- read.csv('efcr.csv')
+parameters <- read.csv('../Data/source/efcr.csv')
 
 ##prepare target for prediction
 list <- ddply(parameters, c("type"), summarise, year = 1990:2012)
@@ -255,7 +255,7 @@ aqua$changefo <- ifelse( aqua$year==1990, 0, aqua$changefo)
 ########## 3. COUNTRY SPECIFIC EFCR
 
 ## Import and prepare data
-EFCR2006 <- read.csv('2006.csv') 
+EFCR2006 <- read.csv('../Data/source/2006.csv') 
 
 EFCR2006 <- reshape(EFCR2006, direction="long", varying=list(names(EFCR2006)[3:11]), v.names="EFCR", 
                     idvar=c("area.code", "year"), times= (names(EFCR2006)[3:11]))
