@@ -29,7 +29,7 @@
 start_time <-Sys.time()
 
 
-setwd('C:/Users/Dalheimer/Documents/R_Programs/Feed_Allocation_2015')
+#setwd('C:/Users/Dalheimer/Documents/R_Programs/Feed_Allocation_2015')
 options(scipen=999)
 
 
@@ -44,14 +44,14 @@ library(plyr)
 library(DBI)
 
 ## functions
-source('feedAvail.r')
-source('demandadjust.r')
-source('optimize.r')
-source('sws_query.r')
+source('archive/R/feedAvail.r')
+source('archive/R/demandadjust.r')
+source('archive/R/optimize.r')
+source('R/sws_query.r')
 
 ## CSV inputs
-feedlist <- read.csv('feedlist.csv') 
-demand <- read.csv('total-feed-demand_6-6.csv')
+feedlist <- read.csv('../Data/source/feedlist.csv') 
+demand <- read.csv('../Data/source/total-feed-demand_6-6.csv')
 
 # 2. Preparation of Parameters
 
