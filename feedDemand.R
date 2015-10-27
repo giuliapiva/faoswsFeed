@@ -18,9 +18,9 @@ if (CheckDebug()) {
 ## PROBLEMATIC CODES
 # 22 (Aruba) is mapped to 532, should be 533
 
-animalKeys <- stockCodes[, measuredItemCPC]
-stockKeys <- c("5111", "5112")
-thousandHeads <- "5112"
+animalKeys = stockCodes[, measuredItemCPC]
+stockKeys = c("5111", "5112")
+thousandHeads = "5112"
 
 key = DatasetKey(domain = "agriculture", dataset = "agriculture",
                   dimensions = list(
@@ -42,7 +42,7 @@ animalHeads[measuredElement %in% thousandHeads , animalHeads := animalHeads * 10
 #Remove flags and measuredElement column
 animalHeads[, `:=`(measuredElement = NULL, flagObservationStatus = NULL, flagMethod = NULL)]
 
-animalUnit <- calculateAnimalUnits()
+animalUnit = calculateAnimalUnits()
                   
 ## intensity factors
 
@@ -67,7 +67,7 @@ headUnitGroup = merge(headUnit, animalCPCGroup, by = "measuredItemCPC", all.x = 
 livestockDemandData = merge(headUnitGroup,intensityFactor, 
                           by = c("geographicAreaM49", "animalGroup", "timePointYears"),
                           all.x = T) 
-livestockDemandData[is.na(livestockDemandData)] <- 0
+livestockDemandData[is.na(livestockDemandData)] = 0
 
 # 35000 and 0.319 are energy and protein requirements in MJ and 
 # MT of protein per year of the base unit
@@ -102,7 +102,7 @@ feedDemandData = merge(livestockDemand, aquaDemand,
                        by = c("geographicAreaM49", "timePointYears"),
                        all = T)
 
-feedDemandData[is.na(feedDemandData)] <- 0
+feedDemandData[is.na(feedDemandData)] = 0
 
 
 ## calculate Total feed Demand
