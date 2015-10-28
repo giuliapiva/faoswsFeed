@@ -9,7 +9,7 @@
 # Output files
 *.csv
 ## Except those in data-raw
-!data-raw/*.csv 
+!data-raw/**/*.csv 
 *.html
 
 # Folders to ignore
