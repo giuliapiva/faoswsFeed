@@ -1,12 +1,11 @@
-livestockDensity = function() {
-  
+livestockDensity = function(cattleCPC = "02111") {
 
   ## Get data for permanent meadows and pastures
-  key = DatasetKey(domain = "land", dataset = "land",
+  key = DatasetKey(domain = "Land", dataset = "land",
                    dimensions = list(
                      Dimension(name = "geographicAreaM49", keys = slot(swsContext.datasets[[1]]@dimensions$geographicAreaM49, "keys")), 
-                     Dimension(name = "measuredItemCPC", keys = "6655"), 
-                     Dimension(name = "measuredElement", keys = "5110"),
+                     Dimension(name = "itemLand", keys = "6655"), 
+                     Dimension(name = "landElement", keys = "5110"),
                      Dimension(name = "timePointYears", keys = slot(swsContext.datasets[[1]]@dimensions$timePointYears, "keys")) 
                      
                    )
@@ -16,15 +15,17 @@ livestockDensity = function() {
   
   permanentMeadows = GetData(key)
   
-  setnames(animalHeads, "Value", "permanentMeadows")
+  setnames(permanentMeadows, "Value", "permanentMeadows")
+  
+  animalHeads = getAnimalStocks()
   
   # merge with cattle head data
-  livestockDensityData = merge(animalHeads[measuredItemCPC == "2111",], permanentMeadows, 
-                              by=c("geographicAreaM49", "timePointYears"))
+  livestockDensityData = merge(animalHeads[measuredItemCPC == cattleCPC,], permanentMeadows, 
+                              by = c("geographicAreaM49", "timePointYears"))
   
   # calculate Livestock density
-  livestockDensityData[, := livestockDensity = animalHeads / permanentMeadows]
+  livestockDensityData[, livestockDensity := animalHeads / permanentMeadows]
  
-  livestockDensityData[, "geographicAreaM49", "timePointYears", "livestockDensity"]
+  livestockDensityData[, .(geographicAreaM49, timePointYears, livestockDensity)]
   
 }
