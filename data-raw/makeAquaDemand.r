@@ -4,7 +4,7 @@ library(data.table)
 library(countrycode)
 
 # Read the production file
-aquaProductionData = data.table(read.csv(''))
+aquaProductionData = data.table(read.csv('data-raw/aquaData/globalAquacultureProduction.csv"'))
 
 # Remove the flag columns
 aquaProductionData[, c(which(like(colnames(aquaProductionData), "S_"))) := NULL]
@@ -40,7 +40,6 @@ aquaProductionLongData[, timePointYears := gsub("X", "", timePointYears)]
 
 # fish data and species map
 speciesMap = data.table(read.csv("data-raw/speciesMap.csv"))
-fishData = data.table(read.csv("data-raw/aquaTable.csv"))
 
 # merge production data with species groups
 aquaProductionMergedData = merge(aquaProductionLongData, speciesMap, 
@@ -179,6 +178,7 @@ ifelse(aquaFitted$timePointYears == x & x < unique(surveyData$timePointYears),
 
 
 # merge with nutrient factors
+fishData = data.table(read.csv("data-raw/aquaTable.csv"))
 aquaDemandData = merge(aquaProductionFull, fishData, by = "aquaSpecies") 
    
 # Calculate Aquafeed demand
