@@ -10,6 +10,9 @@
 *.csv
 ## Except those in data-raw
 !data-raw/**/*.csv 
+### But this one's not to be shared
+data-raw/IR_factor/gleam2005.csv
+
 *.html
 
 # Folders to ignore
