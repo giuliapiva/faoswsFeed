@@ -4,7 +4,7 @@ library(data.table)
 library(countrycode)
 
 # Read the production file
-aquaProductionData = data.table(read.csv('data-raw/aquaData/globalAquacultureProduction.csv"'))
+aquaProductionData = data.table(read.csv('data-raw/aquaData/globalAquacultureProduction.csv'))
 
 # Remove the flag columns
 aquaProductionData[, c(which(like(colnames(aquaProductionData), "S_"))) := NULL]
