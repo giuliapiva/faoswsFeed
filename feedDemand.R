@@ -24,14 +24,7 @@ animalUnit = calculateAnimalUnits()
                   
 ## intensity factors
 
-intensityFactor  = as.data.table(read.csv("../Data/trans/IR-estimated_6-15.csv"))
-intensityFactor  =  intensityFactor[, .(AREA, AnimGroup, Year, IR)]
-
-setnames(intensityFactor, c("geographicAreaM49", "animalGroup",'timePointYears', 'intensity' ))
-#convert types for merging
-intensityFactor[,`:=`(geographicAreaM49 = fs2m49(as.character(geographicAreaM49)), 
-                      timePointYears = as.character(timePointYears))]
-
+intensityFactor <- calculateIR()
 
 # compile Total Feed Demand in Energy and Protein
 

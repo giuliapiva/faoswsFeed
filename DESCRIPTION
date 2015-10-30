@@ -7,9 +7,7 @@ Description: This package was written by Onno Hoffmeister and Bernhard Dalheimer
     time as opposed to the existing static consumption model.
 Depends:
     R (>= 3.2.2)
-Suggests:
-    countrycode
-    devtools
+Suggests: countrycode, devtools
 License: FAO
 LazyData: true
 RoxygenNote: 5.0.0
