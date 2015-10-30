@@ -1,7 +1,11 @@
-library(faosws)
-library(countrycode)
-library(reshape2)
-library(data.table)
+#' Calculate intensity factor for a given country in a given year
+#' 
+#' This function pulls in data from GLEAM to do so
+
+#' @param density_replacements Groups which use livestock density instead of agricultural productivity.
+
+calculateIR <- function(density_replacements = "1"){
+
 
 #2005 intensification data
 s2005 <- data.table(read.csv("data-raw/IR_factor/gleam2005.csv",
@@ -9,45 +13,51 @@ s2005 <- data.table(read.csv("data-raw/IR_factor/gleam2005.csv",
                     key = c("geographicAreaM49", "timePointYears", "AnimalGroup"))
 #Remove NA M49 codes -  Channel Islands
 s2005 <- s2005[!is.na(geographicAreaM49),]
+s2005[,AnimalGroup := as.character(AnimalGroup)]
 setnames(s2005, "AnimalGroup", "animalGroup")
-raw_wdi <- data.table(read.csv("data-raw/IR_factor/wdi-productivity_6-12.csv", stringsAsFactors = FALSE))
+setkey(s2005, geographicAreaM49, timePointYears, animalGroup)
 
-#Remove useless metadata at bottom of csv by keeping rows with country names
-raw_wdi <- raw_wdi[Country.Name != "",]
-#Make years all one column
-wdi <- melt(raw_wdi, c("Country.Name", "Country.Code", "Series.Name", "Series.Code"), 
-            variable.name = "timePointYears", value.name = "productivity")
-#Remove 'y' prefix
-wdi[, timePointYears := sub("y", "", timePointYears)]
-#Change names to M49
-wdi[, geographicAreaM49 := as.character(countrycode(Country.Code, "wb", "iso3n"))]
-#Remove any countries that aren't converted (probably Kosovo and Channel Islands)
-wdi <- wdi[!is.na(geographicAreaM49),]
-#keep only select columns
-wdi <- wdi[,.(geographicAreaM49, timePointYears, productivity)]
-setkey(wdi, geographicAreaM49, timePointYears)
+livestockDensity <- calculateLivestockDensity(animalCPCGroup[animalGroup %in% density_replacements, measuredItemCPC],
+                                              addyear = "2005")
 
-#TODO: Add this to animalCPCGroup?
-animalConstants = data.table(animalGroup=1:8, coefficient=c(0.675328547, 0.160315045
-, 0.357946158, 0.347057854, 0.157, 0.164, 0.186, 0.265), key="animalGroup")
-
-mergeAnimalkeys <- lapply(animalConstants[,animalGroup], 
+mergeAnimalkeys <- lapply(animalCoefficients[,animalGroup], 
                           function(x){data.frame(animalGroup=x, 
                                                  wdi[,.(geographicAreaM49, timePointYears)])})
 
 mergeAnimalkeys <- rbindlist(mergeAnimalkeys)
 setkeyv(mergeAnimalkeys, names(mergeAnimalkeys))
 
-mergeAnimalkeys <- animalConstants[mergeAnimalkeys]
+mergeAnimalkeys <- animalCoefficients[mergeAnimalkeys]
 setkey(mergeAnimalkeys, geographicAreaM49, timePointYears, animalGroup)
 
-rawLabor <- mergeAnimalkeys[wdi]
+#Merge data for all years together
+rawLabor <- livestockDensity[mergeAnimalkeys[wdi]]
+#For cattle (code 1) use livestock density instead of agricultural productivity
+rawLabor[,densprod := productivity]
+rawLabor[animalGroup %in% density_replacements, densprod := livestockDensity]
 
 betaTable <- rawLabor[s2005]
+
 
 calculateBeta <- function(intensity2005, param, densprod2005){
   log(intensity2005/(1 - intensity2005)) - param * log(densprod2005)
 }
 
-betas <- betaTable[, .(beta = calculateBeta(intensity, coefficient, productivity)),
+betas <- betaTable[, .(beta = calculateBeta(intensity, coefficient, densprod)),
                    by = .(animalGroup, geographicAreaM49)]
+setkey(betas, geographicAreaM49, animalGroup)
+
+
+IRTable <- merge(betas, rawLabor, by = c("geographicAreaM49", "animalGroup"))
+
+calculateIntensity <- function(beta, coefficient, densprod){
+  nominator <- exp(beta) * densprod ^ coefficient
+  nominator / (1 + nominator)
+}
+
+IRCalculated <- IRTable[, .(intensity = calculateIntensity(beta, coefficient, densprod)),
+                          by = .(animalGroup, geographicAreaM49, timePointYears)]
+
+IRCalculated[, .(geographicAreaM49, animalGroup, timePointYears, intensity)]
+
+}

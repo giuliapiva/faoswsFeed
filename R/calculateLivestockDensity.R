@@ -1,12 +1,20 @@
-calculateLivestockDensity = function(cattleCPC = "02111") {
+calculateLivestockDensity = function(cattleCPC = "02111", addyear) {
 
+  
+  year <- slot(swsContext.datasets[[1]]@dimensions$timePointYears, "keys")
+    
+  if(!missing(addyear)){
+    stopifnot(is.character(addyear))
+    year <- unique(c(year, addyear))
+    }
+  
   ## Get data for permanent meadows and pastures
   key = DatasetKey(domain = "Land", dataset = "land",
                    dimensions = list(
                      Dimension(name = "geographicAreaM49", keys = slot(swsContext.datasets[[1]]@dimensions$geographicAreaM49, "keys")), 
                      Dimension(name = "itemLand", keys = "6655"), 
                      Dimension(name = "landElement", keys = "5110"),
-                     Dimension(name = "timePointYears", keys = slot(swsContext.datasets[[1]]@dimensions$timePointYears, "keys")) 
+                     Dimension(name = "timePointYears", keys = year) 
                      
                    )
   )

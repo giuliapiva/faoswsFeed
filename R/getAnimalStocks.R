@@ -22,6 +22,7 @@ getAnimalStocks <- function(stockKeys = c("5111", "5112"),  thousandHeads = "511
   
   #Remove flags and measuredElement column
   animalHeads[, `:=`(measuredElement = NULL, flagObservationStatus = NULL, flagMethod = NULL)]
+  setkey(animalHeads, geographicAreaM49, measuredItemCPC, timePointYears)
   
   animalHeads
 }
