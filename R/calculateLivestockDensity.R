@@ -1,4 +1,4 @@
-livestockDensity = function(cattleCPC = "02111") {
+calculateLivestockDensity = function(cattleCPC = "02111") {
 
   ## Get data for permanent meadows and pastures
   key = DatasetKey(domain = "Land", dataset = "land",
@@ -20,12 +20,15 @@ livestockDensity = function(cattleCPC = "02111") {
   animalHeads = getAnimalStocks()
   
   # merge with cattle head data
-  livestockDensityData = merge(animalHeads[measuredItemCPC == cattleCPC,], permanentMeadows, 
+  livestockDensityData = merge(animalHeads[measuredItemCPC %in% cattleCPC,], permanentMeadows, 
                               by = c("geographicAreaM49", "timePointYears"))
   
   # calculate Livestock density
   livestockDensityData[, livestockDensity := animalHeads / permanentMeadows]
+  #Add animal groups
+  livestockDensityData[, animalGroup := animalCPCGroup[cattleCPC, animalGroup]]
  
-  livestockDensityData[, .(geographicAreaM49, timePointYears, livestockDensity)]
+  setkey(livestockDensityData, geographicAreaM49, timePointYears, animalGroup)
+  livestockDensityData[, .(geographicAreaM49, timePointYears, animalGroup, livestockDensity)]
   
 }
