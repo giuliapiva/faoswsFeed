@@ -55,7 +55,7 @@ setkey(aquaProduction, geographicAreaM49, timePointYears)
 
 
 ## import parameter survey data
-parameters <- data.table(read.csv('/home/bernhard/faoswsFeed/data-raw/aquaSurveyData.csv'))
+parameters <- data.table(read.csv('data-raw/aquaSurveyData.csv'))
 
 
 ## predict missing parameter values
