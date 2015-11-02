@@ -12,6 +12,7 @@
 !data-raw/**/*.csv 
 ### But this one's not to be shared
 data-raw/IR_factor/gleam2005.csv
+data/s2005.rda
 
 *.html
 
