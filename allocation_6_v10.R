@@ -61,8 +61,8 @@ if (CheckDebug()) {
 
 ## CSV inputs
 feedlist <- read.csv('../Data/source/feedlist.csv') 
-#demand <- read.csv('../Data/source/total-feed-demand_6-6.csv')
-feedDemand <- calculateFeedDemand()
+demand <- read.csv('../Data/source/total-feed-demand_6-6.csv')
+#feedDemand <- calculateFeedDemand()
 
 # 2. Preparation of Parameters
 
