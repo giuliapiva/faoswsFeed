@@ -34,7 +34,9 @@ options(scipen=999)
 
 
 ##packages
-library(data.table)
+library(faosws)
+library(faoswsUtil)
+suppressPackageStartupMessages(library(data.table))
 library(lpSolve)
 library(RJDBC)
 library(stringr)
@@ -42,6 +44,7 @@ library(reshape2)
 library(rJava)
 library(plyr)
 library(DBI)
+library(faoswsFeed)
 
 ## functions
 source('archive/R/feedAvail.r')
@@ -49,9 +52,17 @@ source('archive/R/demandadjust.r')
 source('archive/R/optimize.r')
 source('R/sws_query.r')
 
+#Set environment
+if (CheckDebug()) {
+  SetClientFiles("~/certificates/production")
+  #GetTestEnvironment("https://hqlprswsas1.hq.un.fao.org:8181/sws", "ebdda55c-21a4-4bdd-9d0c-5098cec843f7")
+  GetTestEnvironment("https://hqlprswsas1.hq.un.fao.org:8181/sws", "f45d0a2a-a798-435d-84e9-897a572c0d10")
+}
+
 ## CSV inputs
 feedlist <- read.csv('../Data/source/feedlist.csv') 
-demand <- read.csv('../Data/source/total-feed-demand_6-6.csv')
+#demand <- read.csv('../Data/source/total-feed-demand_6-6.csv')
+feedDemand <- calculateFeedDemand()
 
 # 2. Preparation of Parameters
 
@@ -72,11 +83,7 @@ proteinfeedlist <- feedlist[feedlist$feedClassification == "FeedOnly",]
  
 ## Feed Demand 
 
-demand <- within(demand, {
-              EDemand <- EDemand * 1000
-})
- 
-  colnames(demand) <- c("area", "areaname", "year", "EDemand", "PDemand")
+colnames(demand) <- c("area", "areaname", "year", "EDemand", "PDemand")
   
 
 # 3. Subtract Nutrients provided by FeedOnly items (oilcakes, brans, etc.)

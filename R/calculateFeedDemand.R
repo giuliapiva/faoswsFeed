@@ -1,23 +1,8 @@
-# Calculates protein and energy units 
+#' Calculates protein and energy units 
 
-library(faosws)
-library(faoswsUtil)
-suppressPackageStartupMessages(library(data.table))
-library(reshape2)
-library(faoswsFeed)
-
-
-if (CheckDebug()) {
-  SetClientFiles("~/certificates/production")
-  #GetTestEnvironment("https://hqlprswsas1.hq.un.fao.org:8181/sws", "ebdda55c-21a4-4bdd-9d0c-5098cec843f7")
-  GetTestEnvironment("https://hqlprswsas1.hq.un.fao.org:8181/sws", "f45d0a2a-a798-435d-84e9-897a572c0d10")
-}
+calculateFeedDemand <- function(){
 
 ## FS and FCL code are on FAOStat 1 > SUA Working
-
-## PROBLEMATIC CODES
-# 22 (Aruba) is mapped to 532, should be 533
-
 animalHeads = getAnimalStocks()
 
 animalUnit = calculateAnimalUnits()
@@ -73,3 +58,7 @@ feedDemandData[, energyDemand := livestockEnergyDemand + aquaEnergyDemand]
 feedDemandData[, proteinDemand := livestockProteinDemand + aquaProteinDemand]
 
 feedDemand = feedDemandData[, .(geographicAreaM49, timePointYears, energyDemand, proteinDemand)]
+
+feedDemand
+
+}
