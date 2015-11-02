@@ -62,7 +62,7 @@ aquaDemand <- calculateAquaDemand()
 
 feedDemandData = merge(livestockDemand, aquaDemand, 
                        by = c("geographicAreaM49", "timePointYears"),
-                       all.x = T)
+                       all = T)
 
 feedDemandData[is.na(feedDemandData)] = 0
 
