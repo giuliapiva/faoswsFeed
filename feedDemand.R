@@ -58,20 +58,11 @@ setnames(livestockDemand, c("geographicAreaM49", "timePointYears",
                             "livestockEnergyDemand", "livestockProteinDemand"))
 ## add aquaculture
 
-aquaDemand = as.data.table(read.csv("../Data/trans/aquademand.csv"))
-
-aquaDemand = aquaDemand[, .(area.code, year, energy, protein)]
-
-setnames(aquaDemand, c("geographicAreaM49", "timePointYears", 
-                    "aquaEnergyDemand", "aquaProteinDemand" ))
-
-aquaDemand[,`:=`(geographicAreaM49 = fs2m49(as.character(geographicAreaM49)), 
-                      timePointYears = as.character(timePointYears))]
-
+aquaDemand <- calculateAquaDemand()
 
 feedDemandData = merge(livestockDemand, aquaDemand, 
                        by = c("geographicAreaM49", "timePointYears"),
-                       all = T)
+                       all.x = T)
 
 feedDemandData[is.na(feedDemandData)] = 0
 

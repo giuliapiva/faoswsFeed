@@ -1,5 +1,6 @@
 library(stringr)
 library(plyr)
+library(reshape2)
 library(data.table)
 library(countrycode)
 
@@ -13,7 +14,7 @@ aquaProductionData[, c(which(like(colnames(aquaProductionData), "S_"))) := NULL]
 aquaProductionData[, geographicAreaM49 := countrycode(Land.Area, 
                                                origin = "country.name", 
                                                destination = "iso3n", 
-                                               warn =F)] 
+                                               warn = F)] 
 
 
 # Remove the areas without code (they're non existent)
@@ -24,14 +25,14 @@ setnames(aquaProductionData, c(1,2,3,4,5), c("geographicArea", "oceanArea",
                                              "waterEnvironment", "figisSpecies", "scientificName"))
 
 # Ensure that all data columns are numeric
-aquaProductionData[, (6:(ncol(aquaProductionData)-1)) := lapply(.SD, as.numeric), 
-                   .SDcols = 6:(ncol(aquaProductionData)-1)]
+aquaProductionData[, (6:(ncol(aquaProductionData) - 1)) := lapply(.SD, as.numeric), 
+                   .SDcols = 6:(ncol(aquaProductionData) - 1)]
 
 # From wide to long
 aquaProductionLongData = melt(aquaProductionData, 
-                      id=c("geographicAreaM49", "geographicArea", "oceanArea",
+                      id = c("geographicAreaM49", "geographicArea", "oceanArea",
                            "waterEnvironment", "figisSpecies", "scientificName"), 
-                      na.rm=TRUE)
+                      na.rm = TRUE)
 
 setnames(aquaProductionLongData, c("variable", "value"), c("timePointYears", "aquaProduction")) 
 
@@ -43,10 +44,10 @@ speciesMap = data.table(read.csv("data-raw/speciesMap.csv"))
 
 # merge production data with species groups
 aquaProductionMergedData = merge(aquaProductionLongData, speciesMap, 
-                                 by = "figisSpecies", all.x=T, allow.cartesian = T)
+                                 by = "figisSpecies", all.x = T, allow.cartesian = T)
 
 # sum up figisSpecies within each aquaSpecies
-aquaProduction= as.data.table(aggregate(data = aquaProductionMergedData, 
+aquaProduction = as.data.table(aggregate(data = aquaProductionMergedData, 
                           aquaProduction ~ geographicAreaM49 + geographicArea + timePointYears + aquaSpecies, 
                           sum))
 
@@ -64,13 +65,13 @@ target = ddply(parameters, c("aquaSpecies"),
                summarise, 
                timePointYears = min(aquaProduction$timePointYears):max(aquaProduction$timePointYears))
 
-for(i in c("feedConversionRate", "proportionOnFeed")){
+for (i in c("feedConversionRate", "proportionOnFeed")) {
 
     estimates = ddply(parameters, .(aquaSpecies), 
-              function(x) {predict(lm(get(i) ~ poly(timePointYears, 2), data=x ), 
-              newdata=target)})[,c(0:length(unique(aquaProduction$timePointYears))+1)]
+              function(x) {predict(lm(get(i) ~ poly(timePointYears, 2), data = x ), 
+              newdata = target)})[,c(0:length(unique(aquaProduction$timePointYears)) + 1)]
   
-    estimatesLong = melt(estimates, id="aquaSpecies", na.rm =T, value.name = i) 
+    estimatesLong = melt(estimates, id = "aquaSpecies", na.rm = T, value.name = i) 
     estimatesLongOrdered = estimatesLong[order(estimatesLong$aquaSpecies),]
      
     target = cbind(target, estimatesLongOrdered[[i]])
@@ -83,7 +84,7 @@ setnames(target, c("aquaSpecies", "timePointYears",
                              "fittedFeedConversionRate", "fittedProportionOnFeed"))
 
 # merge with survey data
-fittedParameters = merge(parameters, target, by = c("aquaSpecies","timePointYears"), all.y=T)
+fittedParameters = merge(parameters, target, by = c("aquaSpecies","timePointYears"), all.y = T)
 
 # construct combined parameters
 fittedParameters[, proportionOnFeed := ifelse(is.na(proportionOnFeed),                                           
@@ -101,7 +102,8 @@ parameterValues = fittedParameters[, .(aquaSpecies, timePointYears, proportionOn
 parameterValues[, timePointYears := as.character(timePointYears)]
 
 # merge with Production Data
-aquaProductionParameters = merge(aquaProduction, parameterValues, by = c("aquaSpecies", "timePointYears"), all=T)
+aquaProductionParameters = merge(aquaProduction, 
+                                 parameterValues, by = c("aquaSpecies", "timePointYears"), all = T)
   
 
 # Country Specific Survey Data on fcr
@@ -110,19 +112,21 @@ pointData = data.table(read.csv('data-raw/fcr2006.csv'))
 pointData[, geographicAreaM49 := countrycode(area.code, 
                                              origin = "fao", 
                                              destination = "iso3n", 
-                                             warn =T)] 
+                                             warn = T)] 
 
 ## Manually adjust M49, fao codes for those countries are not (yet) translated 
+# FAOSTAT 153 - New Caledonia - M49 540
+# FAOSTAT 214 - Taiwan, Province of China - M49 158
 
 pointData$geographicAreaM49[pointData$area.code == 153] = 540
 pointData$geographicAreaM49[pointData$area.code == 214] = 158
 
 # Ensure that all data columns are numeric before melt
-pointData[, (3:(ncol(pointData)-1)) := lapply(.SD, as.numeric), 
-                   .SDcols = 3:(ncol(pointData)-1)]
+pointData[, (3:(ncol(pointData) - 1)) := lapply(.SD, as.numeric), 
+                   .SDcols = 3:(ncol(pointData) - 1)]
 
 # melt into long format
-pointDataLong = melt(pointData, id=c("area.code","timePointYears", "geographicAreaM49"), 
+pointDataLong = melt(pointData, id = c("area.code","timePointYears", "geographicAreaM49"), 
                      na.rm = T, 
                      variable.name = "aquaSpecies", value.name = "pointFeedConversionRate") 
 
@@ -139,15 +143,15 @@ aquaFitted = merge(aquaProductionParameters, surveyData, by = c("geographicAreaM
                            
           setkey(aquaFitted, geographicAreaM49, aquaSpecies, timePointYears)
           #Create Variables for year change calculation             
-          aquaFitted[, Y2Ychange := (proportionOnFeed - c(0, proportionOnFeed[1:length(proportionOnFeed)-1])) / 
-                 c(0, proportionOnFeed[1:length(proportionOnFeed)-1])]
+          aquaFitted[, Y2Ychange := (proportionOnFeed - c(0, proportionOnFeed[1:length(proportionOnFeed) - 1])) / 
+                 c(0, proportionOnFeed[1:length(proportionOnFeed) - 1])]
                            
           aquaFitted$Y2Ychange[aquaFitted$timePointYears == min(aquaFitted$timePointYears)] = 0
                            
           aquaFitted[, pointFeedConversionRatenext := c(pointFeedConversionRate[2:length(pointFeedConversionRate)],
                                                 0) ]
           aquaFitted[, pointFeedConversionRateprevious := c(0,
-               pointFeedConversionRate[1:length(pointFeedConversionRate)-1])] 
+               pointFeedConversionRate[1:length(pointFeedConversionRate) - 1])] 
     
           aquaFitted[, Y2Ychangenext := c(Y2Ychange[2:length(Y2Ychange)],0) ]
  # extrapolate feedConversionRate                          
@@ -165,8 +169,8 @@ ifelse(aquaFitted$timePointYears == x & x < unique(surveyData$timePointYears),
                              decreasing = TRUE))
                                                  
 # Apply function
- for(i in c(missing))   
-   aquaFitted[, pointFeedConversionRate:= extrapolate(i)]
+ for (i in c(missing))   
+   aquaFitted[, pointFeedConversionRate := extrapolate(i)]
  
  aquaFitted[, feedConversionRate := ifelse(is.na(pointFeedConversionRate), 
                                       feedConversionRate, 
@@ -186,9 +190,10 @@ aquaDemandData[, aquaEnergyDemand := aquaProduction * feedConversionRate * propo
 aquaDemandData[, aquaProteinDemand := aquaProduction * feedConversionRate * proportionOnFeed * protein]
 
 # Sum Species Demands up to arrive at country aqua demand
-aquaDemand = aquaDemandData[, lapply(.SD, sum), by=.(geographicAreaM49, timePointYears), .SDcols=c("aquaEnergyDemand", "aquaProteinDemand")]
+aquaDemand = aquaDemandData[, lapply(.SD, sum), by = .(geographicAreaM49, timePointYears),
+                            .SDcols = c("aquaEnergyDemand", "aquaProteinDemand")]
 
-aquaDemandTable = aquaDemand
+aquaDemandTable = aquaDemand[,geographicAreaM49 := as.character(geographicAreaM49)]
 
 devtools::use_data(aquaDemandTable, overwrite = TRUE)
 
