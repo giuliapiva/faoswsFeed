@@ -11,7 +11,8 @@ getTradeData <- function(animal, fun, area, year) {
       Dimension(name = "measuredItemCPC", keys = unique(tradeCodes$measuredItemCPC)),
       Dimension(name = "measuredElementTrade", keys = unique(tradeCodes$measuredElement)),
       Dimension(name = "timePointYears", keys = year) #user input
-    )
+    ),
+    sessionId =  slot(swsContext.datasets[[1]], "sessionId")
   )
   
   tradeData <- GetData(tradeKey)[,.(geographicAreaM49, measuredItemCPC, measuredElementTrade, timePointYears, Value)]

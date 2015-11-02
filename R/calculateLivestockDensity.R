@@ -16,7 +16,8 @@ calculateLivestockDensity = function(cattleCPC = "02111", addyear) {
                      Dimension(name = "landElement", keys = "5110"),
                      Dimension(name = "timePointYears", keys = year) 
                      
-                   )
+                   ),
+                   sessionId =  slot(swsContext.datasets[[1]], "sessionId")
   )
   
   

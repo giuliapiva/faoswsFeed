@@ -9,8 +9,8 @@ getAnimalStocks <- function(stockKeys = c("5111", "5112"),  thousandHeads = "511
                      Dimension(name = "measuredItemCPC", keys = animalKeys),
                      Dimension(name = "measuredElement", keys = stockKeys),
                      Dimension(name = "timePointYears", keys = slot(swsContext.datasets[[1]]@dimensions$timePointYears, "keys")) #user input
-                     
-                   )
+                   ),
+                   sessionId =  slot(swsContext.datasets[[1]], "sessionId")
   )
   #define this as a subset of the larger data
   animalHeads = GetData(key)

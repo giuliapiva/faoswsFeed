@@ -11,7 +11,8 @@ getProdData <- function(animal, fun, area, year){
                          Dimension(name = "measuredItemCPC", keys = unique(prodCodes$measuredItemCPC)),
                          Dimension(name = "measuredElement", keys = unique(prodCodes$measuredElement)),
                          Dimension(name = "timePointYears", keys = year) #user input
-                       )
+                       ),
+                       sessionId =  slot(swsContext.datasets[[1]], "sessionId")
   )
   GetData(prodKey)[,.(geographicAreaM49, measuredItemCPC, measuredElement, timePointYears, Value)]
   
