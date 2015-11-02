@@ -1,6 +1,3 @@
-source('R/sws_query_2.r')
-
-
 sheep_protein_factor <- function() {
 
   

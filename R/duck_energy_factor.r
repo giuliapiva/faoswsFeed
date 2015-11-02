@@ -1,5 +1,3 @@
-source('R/sws_query_2.r')
-
 duck_energy_factor <- function() {
   
   year <- slot(swsContext.datasets[[1]]@dimensions$timePointYears, "keys")
