@@ -1,8 +1,8 @@
 chicken_protein_factor <- function() {
 
   
-  year <- slot(swsContext.datasets[[1]]@dimensions$timePointYears, "keys")
-  area <- slot(swsContext.datasets[[1]]@dimensions$geographicAreaM49, "keys")
+  year <- getQueryKey("timePointYears")
+  area <- getQueryKey("geographicAreaM49")
   
   rawData <-  getProdData(animal = "chicken", fun = "protein", area = area, year = year)
   

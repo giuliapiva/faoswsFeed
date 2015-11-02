@@ -1,8 +1,8 @@
 
 
 turkey_protein_factor <- function() {
-  year <- slot(swsContext.datasets[[1]]@dimensions$timePointYears, "keys")
-  area <- slot(swsContext.datasets[[1]]@dimensions$geographicAreaM49, "keys")
+  year <- getQueryKey("timePointYears")
+  area <- getQueryKey("geographicAreaM49")
   #area <- na.omit(fs2m49(as.character((1:299)[-22])))
   
   rawData <-  getProdData(animal = "turkey", fun = "protein", area = area, year = year)

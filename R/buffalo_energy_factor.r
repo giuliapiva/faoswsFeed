@@ -1,9 +1,9 @@
 buffalo_energy_factor <- function() {
   
-  queryYear <- slot(swsContext.datasets[[1]]@dimensions$timePointYears, "keys")
+  queryYear <- getQueryKey("timePointYears")
   #queryYear <- as.character(1990:2012)
   year <- c(queryYear, max(as.numeric((queryYear))) + 1)
-  area <- slot(swsContext.datasets[[1]]@dimensions$geographicAreaM49, "keys")
+  area <- getQueryKey("geographicAreaM49")
   #area <- na.omit(fs2m49(as.character((1:299)[-22])))
   
   prodData <-  getProdData(animal = "buffalo", fun = "energy", area = area, year = year)

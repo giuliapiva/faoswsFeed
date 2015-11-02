@@ -11,7 +11,7 @@ calculateLivestockDensity = function(cattleCPC = "02111", addyear) {
   ## Get data for permanent meadows and pastures
   key = DatasetKey(domain = "Land", dataset = "land",
                    dimensions = list(
-                     Dimension(name = "geographicAreaM49", keys = slot(swsContext.datasets[[1]]@dimensions$geographicAreaM49, "keys")), 
+                     Dimension(name = "geographicAreaM49", keys = getQueryKey("geographicAreaM49")), 
                      Dimension(name = "itemLand", keys = "6655"), 
                      Dimension(name = "landElement", keys = "5110"),
                      Dimension(name = "timePointYears", keys = year) 

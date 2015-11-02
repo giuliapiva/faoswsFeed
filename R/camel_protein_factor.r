@@ -1,8 +1,8 @@
 camel_protein_factor <- function(area, year) {
 
   
-  year <- slot(swsContext.datasets[[1]]@dimensions$timePointYears, "keys")
-  area <- slot(swsContext.datasets[[1]]@dimensions$geographicAreaM49, "keys")
+  year <- getQueryKey("timePointYears")
+  area <- getQueryKey("geographicAreaM49")
   
   rawData <-  getProdData(animal = "camel", fun = "protein", area = area, year = year)
   

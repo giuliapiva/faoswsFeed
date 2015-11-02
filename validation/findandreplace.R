@@ -10,8 +10,8 @@
 
 
 filenames <- list.files("R", pattern = "factor.r$", full.names = T)
-pattern1 <- "source\\(([\"\'])functions/"
-pattern2 <- "source\\(\\1R/"
+pattern1 <- "slot\\(swsContext\\.datasets\\[\\[1\\]\\]@dimensions\\$([a-zA-Z0-9]+), \"keys\"\\)"
+pattern2 <- "getQueryKey\\(\"\\1\"\\)"
 
 
 ## Replace one pattern with another

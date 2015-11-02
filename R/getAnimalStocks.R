@@ -5,10 +5,10 @@ getAnimalStocks <- function(stockKeys = c("5111", "5112"),  thousandHeads = "511
   
   key = DatasetKey(domain = "agriculture", dataset = "agriculture",
                    dimensions = list(
-                     Dimension(name = "geographicAreaM49", keys = slot(swsContext.datasets[[1]]@dimensions$geographicAreaM49, "keys")), #user input
+                     Dimension(name = "geographicAreaM49", keys = getQueryKey("geographicAreaM49")), #user input
                      Dimension(name = "measuredItemCPC", keys = animalKeys),
                      Dimension(name = "measuredElement", keys = stockKeys),
-                     Dimension(name = "timePointYears", keys = slot(swsContext.datasets[[1]]@dimensions$timePointYears, "keys")) #user input
+                     Dimension(name = "timePointYears", keys = getQueryKey("timePointYears")) #user input
                    ),
                    sessionId =  slot(swsContext.datasets[[1]], "sessionId")
   )

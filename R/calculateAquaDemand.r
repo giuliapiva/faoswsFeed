@@ -1,7 +1,7 @@
 calculateAquaDemand = function() {
   
-  areaKeys <- slot(swsContext.datasets[[1]]@dimensions$geographicAreaM49, "keys")
-  timeKeys <- slot(swsContext.datasets[[1]]@dimensions$timePointYears, "keys")
+  areaKeys <- getQueryKey("geographicAreaM49")
+  timeKeys <- getQueryKey("timePointYears")
   
   aquaDemand <- aquaDemandTable
   

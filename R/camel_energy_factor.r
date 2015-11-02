@@ -1,7 +1,7 @@
 camel_energy_factor <- function() {
   
-  year <- slot(swsContext.datasets[[1]]@dimensions$timePointYears, "keys")
-  area <- slot(swsContext.datasets[[1]]@dimensions$geographicAreaM49, "keys")
+  year <- getQueryKey("timePointYears")
+  area <- getQueryKey("geographicAreaM49")
   
   rawData <-  getProdData(animal = "camel", fun = "energy", area = area, year = year)
   

@@ -1,9 +1,9 @@
 sheep_protein_factor <- function() {
 
   
-  queryYear <- slot(swsContext.datasets[[1]]@dimensions$timePointYears, "keys")
+  queryYear <- getQueryKey("timePointYears")
   year <- c(queryYear, max(as.numeric((queryYear))) + 1)
-  area <- slot(swsContext.datasets[[1]]@dimensions$geographicAreaM49, "keys")
+  area <- getQueryKey("geographicAreaM49")
   
   prodData <-  getProdData(animal = "sheep", fun = "protein", area = area, year = year)
   tradeData <- getTradeData(animal = "sheep", fun = "protein", area = area, year = year)

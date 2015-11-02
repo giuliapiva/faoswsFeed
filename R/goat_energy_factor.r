@@ -5,8 +5,8 @@ goat_energy_factor <- function() {
   #     return(ldply(year, cattle_energy_factor, area = area))
   #   }
   
-  year <- slot(swsContext.datasets[[1]]@dimensions$timePointYears, "keys")
-  area <- slot(swsContext.datasets[[1]]@dimensions$geographicAreaM49, "keys")
+  year <- getQueryKey("timePointYears")
+  area <- getQueryKey("geographicAreaM49")
   
   rawData <-  getProdData(animal = "goat", fun = "energy", area = area, year = year)
   
