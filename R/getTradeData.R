@@ -15,7 +15,7 @@ getTradeData <- function(animal, fun, area, year) {
     sessionId =  slot(swsContext.datasets[[1]], "sessionId")
   )
   
-  tradeData <- GetData(tradeKey)[,.(geographicAreaM49, measuredItemCPC, measuredElementTrade, timePointYears, Value)]
+  tradeData <- GetData(tradeKey, flags = FALSE)
   setnames(tradeData, "measuredElementTrade", "measuredElement")
   
 }

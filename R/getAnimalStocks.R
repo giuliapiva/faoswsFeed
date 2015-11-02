@@ -13,15 +13,15 @@ getAnimalStocks <- function(stockKeys = c("5111", "5112"),  thousandHeads = "511
                    sessionId =  slot(swsContext.datasets[[1]], "sessionId")
   )
   #define this as a subset of the larger data
-  animalHeads = GetData(key)
+  animalHeads = GetData(key, flags = FALSE)
   
   setnames(animalHeads, "Value", "animalHeads")
   
   # Poultry and Rabbits are expressed in '000 heads, hence convert into heads
   animalHeads[measuredElement %in% thousandHeads , animalHeads := animalHeads * 1000]
   
-  #Remove flags and measuredElement column
-  animalHeads[, `:=`(measuredElement = NULL, flagObservationStatus = NULL, flagMethod = NULL)]
+  #measuredElement column
+  animalHeads[, measuredElement := NULL]
   setkey(animalHeads, geographicAreaM49, measuredItemCPC, timePointYears)
   
   animalHeads

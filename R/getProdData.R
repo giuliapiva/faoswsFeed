@@ -14,6 +14,6 @@ getProdData <- function(animal, fun, area, year){
                        ),
                        sessionId =  slot(swsContext.datasets[[1]], "sessionId")
   )
-  GetData(prodKey)[,.(geographicAreaM49, measuredItemCPC, measuredElement, timePointYears, Value)]
+  GetData(prodKey, flags = FALSE)
   
 }
