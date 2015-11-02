@@ -16,6 +16,8 @@ aquaProductionData[, geographicAreaM49 := as.character(countrycode(Land.Area,
                                            destination = "iso3n", 
                                            warn = F))] 
 
+# manually correct countrycode mismatch: China code M49 is 1248
+aquaProductionData$geographicAreaM49[aquaProductionData$geographicAreaM49 == "156"] = "1248"
 
 # Remove the areas without code (they're non existent)
 aquaProductionData = aquaProductionData[!is.na(geographicAreaM49),]
