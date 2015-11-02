@@ -11,14 +11,14 @@ aquaProductionData = data.table(read.csv('data-raw/aquaData/globalAquaculturePro
 aquaProductionData[, c(which(like(colnames(aquaProductionData), "S_"))) := NULL]
 
 # Produce M49 codes using countrycode
-aquaProductionData[, geographicAreaM49 := countrycode(Land.Area, 
-                                               origin = "country.name", 
-                                               destination = "iso3n", 
-                                               warn = F)] 
+aquaProductionData[, geographicAreaM49 := as.character(countrycode(Land.Area, 
+                                           origin = "country.name", 
+                                           destination = "iso3n", 
+                                           warn = F))] 
 
 
 # Remove the areas without code (they're non existent)
-aquaProductionData = aquaProductionData[!is.na(geographicAreaM49), ]
+aquaProductionData = aquaProductionData[!is.na(geographicAreaM49),]
 
 # Rename column names
 setnames(aquaProductionData, c(1,2,3,4,5), c("geographicArea", "oceanArea", 
@@ -50,6 +50,7 @@ aquaProductionMergedData = merge(aquaProductionLongData, speciesMap,
 aquaProduction = as.data.table(aggregate(data = aquaProductionMergedData, 
                           aquaProduction ~ geographicAreaM49 + geographicArea + timePointYears + aquaSpecies, 
                           sum))
+
 
 # reorder
 setkey(aquaProduction, geographicAreaM49, timePointYears)
@@ -109,10 +110,10 @@ aquaProductionParameters = merge(aquaProduction,
 # Country Specific Survey Data on fcr
 pointData = data.table(read.csv('data-raw/fcr2006.csv')) 
 
-pointData[, geographicAreaM49 := countrycode(area.code, 
+pointData[, geographicAreaM49 := as.character(countrycode(area.code, 
                                              origin = "fao", 
                                              destination = "iso3n", 
-                                             warn = T)] 
+                                             warn = F))] 
 
 ## Manually adjust M49, fao codes for those countries are not (yet) translated 
 # FAOSTAT 153 - New Caledonia - M49 540
@@ -193,7 +194,6 @@ aquaDemandData[, aquaProteinDemand := aquaProduction * feedConversionRate * prop
 aquaDemand = aquaDemandData[, lapply(.SD, sum), by = .(geographicAreaM49, timePointYears),
                             .SDcols = c("aquaEnergyDemand", "aquaProteinDemand")]
 
-aquaDemandTable = aquaDemand[,geographicAreaM49 := as.character(geographicAreaM49)]
 
 devtools::use_data(aquaDemandTable, overwrite = TRUE)
 
