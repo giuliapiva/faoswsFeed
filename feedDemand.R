@@ -37,7 +37,7 @@ headUnitGroup = merge(headUnit, animalCPCGroup, by = "measuredItemCPC", all.x = 
 
 livestockDemandData = merge(headUnitGroup,intensityFactor, 
                           by = c("geographicAreaM49", "animalGroup", "timePointYears"),
-                          all.x = T) 
+                          all = T) 
 livestockDemandData[is.na(livestockDemandData)] = 0
 
 # 35000 and 0.319 are energy and protein requirements in MJ and 

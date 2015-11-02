@@ -57,7 +57,12 @@ calculateIntensity <- function(beta, coefficient, densprod){
 
 IRCalculated <- IRTable[, .(intensity = calculateIntensity(beta, coefficient, densprod)),
                           by = .(animalGroup, geographicAreaM49, timePointYears)]
+#Give relevant cols and remove 2005 if not in query
 
-IRCalculated[, .(geographicAreaM49, animalGroup, timePointYears, intensity)]
+areaKeys <- getQueryKey("geographicAreaM49")
+yearKeys <- getQueryKey("timePointYears")
+
+IRCalculated[geographicAreaM49 %in% areaKeys & timePointYears %in% yearKeys,
+             .(geographicAreaM49, animalGroup, timePointYears, intensity)]
 
 }
