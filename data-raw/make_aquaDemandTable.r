@@ -1,6 +1,4 @@
-library(stringr)
 library(plyr)
-library(reshape2)
 library(data.table)
 library(countrycode)
 
