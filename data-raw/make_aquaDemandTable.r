@@ -191,7 +191,7 @@ aquaDemandData[, aquaEnergyDemand := aquaProduction * feedConversionRate * propo
 aquaDemandData[, aquaProteinDemand := aquaProduction * feedConversionRate * proportionOnFeed * protein]
 
 # Sum Species Demands up to arrive at country aqua demand
-aquaDemand = aquaDemandData[, lapply(.SD, sum), by = .(geographicAreaM49, timePointYears),
+aquaDemandTable = aquaDemandData[, lapply(.SD, sum), by = .(geographicAreaM49, timePointYears),
                             .SDcols = c("aquaEnergyDemand", "aquaProteinDemand")]
 
 
