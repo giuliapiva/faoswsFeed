@@ -1,7 +1,7 @@
 library(data.table)
 
 # read original feedlist
-feedNutrients = data.table(read.csv("data-raw/feedlist.csv"))
+feedNutrients = data.table(read.csv("data-raw/feedlist.csv", stringsAsFactors = FALSE))
 
 # pick only relevant variables
 feedNutrients = feedNutrients[, .(CPC, ENERGY, PROTEIN, feedClassification)] 
