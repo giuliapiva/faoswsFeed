@@ -2,6 +2,11 @@ cattle_protein_factor <- function() {
 
   data <- cattle_energy_factor()
   
+  if(nrow(data) == 0){
+    setnames("energy", "protein")
+    return(data[, .(geographicAreaM49, timePointYears, protein)])
+  }
+  
   data[is.na(data)] <- 0
   
   data <- within(data, {

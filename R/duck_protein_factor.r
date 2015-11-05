@@ -15,6 +15,13 @@ duck_protein_factor <- function() {
   data <- dcast.data.table(namedData, geographicAreaM49 + timePointYears ~ variable, value.var = "Value")
   #remove any full NA rows
   data <- data[!apply(data, 1, function(x) all(is.na(x))),]
+  
+  #If data is empty, return it
+  if (nrow(data) == 0) {
+    data[,protein := numeric(0)]
+    return(data[ , .(geographicAreaM49, timePointYears, protein)])
+  }
+  
   # All missing values are to be treated as zero
   data[is.na(data)] <- 0
   

@@ -5,6 +5,13 @@ buffalo_protein_factor <- function() {
 
   data <- buffalo_energy_factor()
   
+  if(nrow(data) == 0){
+    setnames("energy", "protein")
+    return(data[, .(geographicAreaM49, timePointYears, protein)])
+  }
+  
+  data[is.na(data)] <- 0
+  
   data <- within(data, {
     metabolicweight <- liveweight ^ 0.75
     re <- 0.0635 * (0.96 * liveweight) * 0.75 * (weightgain * 0.96) * 1.097

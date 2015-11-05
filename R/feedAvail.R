@@ -6,86 +6,111 @@
 
 feedAvail <- function(area, year, feeditem, stv=F, food=T, seed=F, other=F, waste=F, processed=T  ) {
     
-    #Element 5520
-    feed <- sws_query(area=area, item=feeditem, ele=101, year=year, value.names=F)
-    #feed$flag <- NULL
-    feed$ele <- NULL
-    colnames(feed) <- c("area", "item", "year", "feed", "flag")  
+  productionKey = DatasetKey(domain = "agriculture", dataset = "agriculture",
+                       dimensions = list(
+                         Dimension(name = "geographicAreaM49", keys = getQueryKey("geographicAreaM49")),
+                         Dimension(name = "measuredItemCPC", keys = feedNutrients$measuredItemCPC),
+                         Dimension(name = "measuredElement", keys = c("5520", "5510", "5023", "5141", "5525", "5153", "5015")),
+                         Dimension(name = "timePointYears", keys = getQueryKey("timePointYears"))
+                       ),
+                       sessionId =  slot(swsContext.datasets[[1]], "sessionId")
+                   )
+  
+  productionData = GetData(productionKey)
+  
+  tradeKey = DatasetKey(domain = "trade", dataset = "total_trade_CPC",
+                        dimensions = list(
+                          Dimension(name = "geographicAreaM49", keys = getQueryKey("geographicAreaM49")),
+                          Dimension(name = "measuredItemCPC", keys = feedNutrients$measuredItemCPC),
+                          Dimension(name = "measuredElementTrade", keys = c("5600", "5900")),
+                          Dimension(name = "timePointYears", keys = getQueryKey("timePointYears"))
+                        ),
+                        sessionId =  slot(swsContext.datasets[[1]], "sessionId")
+                        )
+  
+  tradeData <- GetData(tradeKey)
+  
+  
+#     #Element 5520
+#     feed <- sws_query(area=area, item=feeditem, ele=101, year=year, value.names=F)
+#     #feed$flag <- NULL
+#     feed$ele <- NULL
+#     colnames(feed) <- c("area", "item", "year", "feed", "flag")  
+#     
+#     #Element 5510  
+#     production <- sws_query(area=area, item=feeditem, ele=51, year=year, value.names=F)
+#     production$flag <- NULL
+#     production$ele <- NULL
+#     colnames(production) <- c("area", "item", "year", "production")
+# 
+#     #Element 5610 - in trade
+#     imports <- sws_query(area=area, item=feeditem, ele=61, year=year, value.names=F)
+#     imports$flag <- NULL
+#     imports$ele <- NULL
+#     colnames(imports) <- c("area", "item", "year", "imports")
+
+#     #Element 5910 - in trade
+#     exports <- sws_query(area=area, item=feeditem, ele=91, year=year, value.names=F)
+#     exports$flag <- NULL
+#     exports$ele <- NULL
+#     colnames(exports) <- c("area", "item", "year", "exports")
+
+#     #Element 5023
+#     processed <- sws_query(area=area, item=feeditem, ele=131, year=year, value.names=F)
+#     processed$flag <- NULL
+#     processed$ele <- NULL
+#     colnames(processed) <- c("area", "item", "year", "processed")
     
-    #Element 5510  
-    production <- sws_query(area=area, item=feeditem, ele=51, year=year, value.names=F)
-    production$flag <- NULL
-    production$ele <- NULL
-    colnames(production) <- c("area", "item", "year", "production")
-
-    #Element 5610 - in trade
-    imports <- sws_query(area=area, item=feeditem, ele=61, year=year, value.names=F)
-    imports$flag <- NULL
-    imports$ele <- NULL
-    colnames(imports) <- c("area", "item", "year", "imports")
-
-    #Element 5910 - in trade
-    exports <- sws_query(area=area, item=feeditem, ele=91, year=year, value.names=F)
-    exports$flag <- NULL
-    exports$ele <- NULL
-    colnames(exports) <- c("area", "item", "year", "exports")
-
-    #Element 5023
-    processed <- sws_query(area=area, item=feeditem, ele=131, year=year, value.names=F)
-    processed$flag <- NULL
-    processed$ele <- NULL
-    colnames(processed) <- c("area", "item", "year", "processed")
+# if(stv==T){
+#     #Element 5071 - not in production
+#     stockvar <- sws_query(area=area, item=feeditem, ele=71, year=year, value.names=F)
+#     stockvar$flag <- NULL
+#     stockvar$ele <- NULL
+#      
+#     
+# } else {stockvar <- data.frame(feed$area, feed$item, feed$year, 0)}
+# 
+#         colnames(stockvar) <- c("area", "item", "year", "stockvar")
     
-if(stv==T){
-    #Element 5071 - not in production
-    stockvar <- sws_query(area=area, item=feeditem, ele=71, year=year, value.names=F)
-    stockvar$flag <- NULL
-    stockvar$ele <- NULL
-     
-    
-} else {stockvar <- data.frame(feed$area, feed$item, feed$year, 0)}
+# if(food==T){
+#     #Element 5141
+#     food <- sws_query(area=area, item=feeditem, ele=141, year=year, value.names=F)
+#     food$flag <- NULL
+#     food$ele <- NULL
+#    
+# } else {food <- data.frame(feed$area, feed$item, feed$year, 0)}
+#       
+# colnames(food) <- c("area", "item", "year", "food")
 
-        colnames(stockvar) <- c("area", "item", "year", "stockvar")
-    
-if(food==T){
-    #Element 5141
-    food <- sws_query(area=area, item=feeditem, ele=141, year=year, value.names=F)
-    food$flag <- NULL
-    food$ele <- NULL
-   
-} else {food <- data.frame(feed$area, feed$item, feed$year, 0)}
-      
-colnames(food) <- c("area", "item", "year", "food")
+# if(seed==T){
+#     #Element 5525
+#     seed <- sws_query(area=area, item=feeditem, ele=111, year=year, value.names=F)
+#     seed$flag <- NULL
+#     seed$ele <- NULL
+#     
+# } else {seed <- data.frame(feed$area, feed$item, feed$year, 0)}
+# 
+#         colnames(seed) <- c("area", "item", "year", "seed")
 
-if(seed==T){
-    #Element 5525
-    seed <- sws_query(area=area, item=feeditem, ele=111, year=year, value.names=F)
-    seed$flag <- NULL
-    seed$ele <- NULL
-    
-} else {seed <- data.frame(feed$area, feed$item, feed$year, 0)}
-
-        colnames(seed) <- c("area", "item", "year", "seed")
-
-if(other==T){
-    #Element 5153
-    other <- sws_query(area=area, item=feeditem, ele=151, year=year, value.names=F)
-    other$flag <- NULL
-    other$ele <- NULL
-    
-}  else {other <- data.frame(feed$area, feed$item, feed$year, 0)}  
-
-      colnames(other) <- c("area", "item", "year", "other")
-
-if(waste==T){
-    #Element 5015
-    waste <- sws_query(area=area, item=feeditem, ele=121, year=year, value.names=F)
-    waste$flag <- NULL
-    waste$ele <- NULL
-    
-}else {waste <- data.frame(feed$area, feed$item, feed$year, 0)}
-
-      colnames(waste) <- c("area", "item", "year", "waste")
+# if(other==T){
+#     #Element 5153
+#     other <- sws_query(area=area, item=feeditem, ele=151, year=year, value.names=F)
+#     other$flag <- NULL
+#     other$ele <- NULL
+#     
+# }  else {other <- data.frame(feed$area, feed$item, feed$year, 0)}  
+# 
+#       colnames(other) <- c("area", "item", "year", "other")
+# 
+# if(waste==T){
+#     #Element 5015
+#     waste <- sws_query(area=area, item=feeditem, ele=121, year=year, value.names=F)
+#     waste$flag <- NULL
+#     waste$ele <- NULL
+#     
+# }else {waste <- data.frame(feed$area, feed$item, feed$year, 0)}
+# 
+#       colnames(waste) <- c("area", "item", "year", "waste")
 
 ### 1.2 Combine data
     Avail <- merge(feed, production, all.x=T)

@@ -2,7 +2,11 @@ pig_protein_factor <- function() {
  
 
 data <- pig_energy_factor()
-  
+
+if(nrow(data) == 0){
+  setnames("energy", "protein")
+  return(data[, .(geographicAreaM49, timePointYears, protein)])
+}
   
   data <- within(data, {
     #no conversion: Carcass.Wt comes in kg
