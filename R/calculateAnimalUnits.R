@@ -114,7 +114,7 @@ goo <- goo[, .(geographicAreaM49, timePointYears, measuredItemCPC, energy)]
 gep <- goose_protein_factor() 
 goose <- merge(goo, gep, all = T)
 
-## 2.10 For Turkeys
+## 2.10 Turkeys
 
 #energy
 te <- turkey_energy_factor()
@@ -126,10 +126,54 @@ te <- te[, .(geographicAreaM49, timePointYears, measuredItemCPC, energy)]
 tp <- turkey_protein_factor() 
 turkey <- merge(te, tp, all = T)
 
+## 2.11 Asses
+
+#energy
+ae <- ass_energy_factor()
+ae$measuredItemCPC <- stockCodes["ass", measuredItemCPC]
+setkeyv(ae, keys)
+ae <- ae[, .(geographicAreaM49, timePointYears, measuredItemCPC, energy)]
+
+#protein
+ap <- ass_protein_factor()
+ass <- merge(ae, ap, all = T)
+
+# 2.12 Horses
+he <- horse_energy_factor()
+he$measuredItemCPC <- stockCodes["horse", measuredItemCPC]
+setkeyv(he, keys)
+he <- he[, .(geographicAreaM49, timePointYears, measuredItemCPC, energy)]
+
+#protein
+hp <- horse_protein_factor()
+horse <- merge(he, hp, all = T)
+
+# 2.13 Mules
+me <- mule_energy_factor()
+me$measuredItemCPC <- stockCodes["mule", measuredItemCPC]
+setkeyv(me, keys)
+me <- me[, .(geographicAreaM49, timePointYears, measuredItemCPC, energy)]
+
+#protein
+mp <- mule_protein_factor()
+mule <- merge(me, mp, all = T)
+
+# 2.14 Rabbits
+
+re <- rabbit_energy_factor()
+re$measuredItemCPC <- stockCodes["rabbit", measuredItemCPC]
+setkeyv(re, keys)
+re <- re[, .(geographicAreaM49, timePointYears, measuredItemCPC, energy)]
+
+#protein
+rp <- rabbit_protein_factor()
+rabbit <- merge(re, rp, all = T)
+
+
 
 ## 3. COMBINE INDICES
 
-indices <- rbind(cattle, buffalo, sheep, goat, camel, pig, chicken, duck, goose, turkey) 
+indices <- rbind(cattle, buffalo, sheep, goat, camel, pig, chicken, duck, goose, turkey, ass, horse, mule, rabbit) 
 
 ## 4. PREPARE OUTPUT CSV
 
