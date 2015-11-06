@@ -4,8 +4,15 @@
 # usage of single summands depends on user input. Data is downloaded from FAOSTAT sws
 
 
-feedAvail <- function(area, year, feeditem, stv=F, food=T, seed=F, other=F, waste=F, processed=T  ) {
+feedAvail <- function(area, year, feeditem, vars = c("food", "processed")) {
     
+  usedvars <- c("production", "feed", "imports", "exports", vars)
+  
+  feedCodeTable <- data.frame(measuredElement = c("5510", "5525", "5015", "5520", "5023", "5153", "5141", "5600", "5900"),
+                              variable = c("production", "seed", "waste", "feed", "processed", "other", "food", "imports", "exports"))
+  
+  feedCodeTable <- feedCodeTable[variable %in% usedvars]
+  
   productionKey = DatasetKey(domain = "agriculture", dataset = "agriculture",
                        dimensions = list(
                          Dimension(name = "geographicAreaM49", keys = getQueryKey("geographicAreaM49")),
@@ -16,7 +23,7 @@ feedAvail <- function(area, year, feeditem, stv=F, food=T, seed=F, other=F, wast
                        sessionId =  slot(swsContext.datasets[[1]], "sessionId")
                    )
   
-  productionData = GetData(productionKey)
+  productionData = GetData(productionKey)#, flags=FALSE)
   
   tradeKey = DatasetKey(domain = "trade", dataset = "total_trade_CPC",
                         dimensions = list(
@@ -28,128 +35,31 @@ feedAvail <- function(area, year, feeditem, stv=F, food=T, seed=F, other=F, wast
                         sessionId =  slot(swsContext.datasets[[1]], "sessionId")
                         )
   
-  tradeData <- GetData(tradeKey)
+  tradeData <- GetData(tradeKey)#, flags=FALSE)
+  setnames(tradeData, "measuredElementTrade", "measuredElement")
   
-  
-#     #Element 5520
-#     feed <- sws_query(area=area, item=feeditem, ele=101, year=year, value.names=F)
-#     #feed$flag <- NULL
-#     feed$ele <- NULL
-#     colnames(feed) <- c("area", "item", "year", "feed", "flag")  
-#     
-#     #Element 5510  
-#     production <- sws_query(area=area, item=feeditem, ele=51, year=year, value.names=F)
-#     production$flag <- NULL
-#     production$ele <- NULL
-#     colnames(production) <- c("area", "item", "year", "production")
-# 
-#     #Element 5610 - in trade
-#     imports <- sws_query(area=area, item=feeditem, ele=61, year=year, value.names=F)
-#     imports$flag <- NULL
-#     imports$ele <- NULL
-#     colnames(imports) <- c("area", "item", "year", "imports")
+  allData <- rbind(productionData, tradeData)
 
-#     #Element 5910 - in trade
-#     exports <- sws_query(area=area, item=feeditem, ele=91, year=year, value.names=F)
-#     exports$flag <- NULL
-#     exports$ele <- NULL
-#     colnames(exports) <- c("area", "item", "year", "exports")
+allData <-  merge(allData, feedCodeTable, all.y = TRUE, by="measuredElement")
 
-#     #Element 5023
-#     processed <- sws_query(area=area, item=feeditem, ele=131, year=year, value.names=F)
-#     processed$flag <- NULL
-#     processed$ele <- NULL
-#     colnames(processed) <- c("area", "item", "year", "processed")
-    
-# if(stv==T){
-#     #Element 5071 - not in production
-#     stockvar <- sws_query(area=area, item=feeditem, ele=71, year=year, value.names=F)
-#     stockvar$flag <- NULL
-#     stockvar$ele <- NULL
-#      
-#     
-# } else {stockvar <- data.frame(feed$area, feed$item, feed$year, 0)}
-# 
-#         colnames(stockvar) <- c("area", "item", "year", "stockvar")
-    
-# if(food==T){
-#     #Element 5141
-#     food <- sws_query(area=area, item=feeditem, ele=141, year=year, value.names=F)
-#     food$flag <- NULL
-#     food$ele <- NULL
-#    
-# } else {food <- data.frame(feed$area, feed$item, feed$year, 0)}
-#       
-# colnames(food) <- c("area", "item", "year", "food")
-
-# if(seed==T){
-#     #Element 5525
-#     seed <- sws_query(area=area, item=feeditem, ele=111, year=year, value.names=F)
-#     seed$flag <- NULL
-#     seed$ele <- NULL
-#     
-# } else {seed <- data.frame(feed$area, feed$item, feed$year, 0)}
-# 
-#         colnames(seed) <- c("area", "item", "year", "seed")
-
-# if(other==T){
-#     #Element 5153
-#     other <- sws_query(area=area, item=feeditem, ele=151, year=year, value.names=F)
-#     other$flag <- NULL
-#     other$ele <- NULL
-#     
-# }  else {other <- data.frame(feed$area, feed$item, feed$year, 0)}  
-# 
-#       colnames(other) <- c("area", "item", "year", "other")
-# 
-# if(waste==T){
-#     #Element 5015
-#     waste <- sws_query(area=area, item=feeditem, ele=121, year=year, value.names=F)
-#     waste$flag <- NULL
-#     waste$ele <- NULL
-#     
-# }else {waste <- data.frame(feed$area, feed$item, feed$year, 0)}
-# 
-#       colnames(waste) <- c("area", "item", "year", "waste")
-
-### 1.2 Combine data
-    Avail <- merge(feed, production, all.x=T)
-    Avail <- merge(Avail, imports, all =T)
-    Avail <- merge(Avail, exports, all.x=T)
-    Avail <- merge(Avail, processed, all.x=T)
-    Avail <- merge(Avail, stockvar, all=T)
-    Avail <- merge(Avail, food, all.x=T)
-    Avail <- merge(Avail, seed, all.x=T)
-    Avail <- merge(Avail, other, all.x=T)
-    Avail <- merge(Avail, waste, all.x=T)
-Avail <- Avail[!is.na(Avail$feed),]
-
-
+avail <- dcast.data.table(allData, geographicAreaM49 + measuredItemCPC + timePointYears ~ variable, value.var = "Value")
 #### Get rid of NAs
-    Avail[is.na(Avail)] <- 0
+    avail[is.na(avail)] <- 0
 
-### 1.3 Calculate Availability
-    Avail <- within(Avail, 
-                Avail <- {production + imports - exports - 
-                            processed - food - seed - other - waste
-                })
-checkfeed <- ddply(Avail, .(area, item), function(z) {
-                    sum(z$feed)
+### 1.3 Calculate availability
+avail[, avail := production + imports - exports - 
+        processed - food - seed - other - waste]
+avail <- avail[,]
 
-                    
-                    })
+checkfeed <- avail[, .(checkfeed = sum(feed)), by = .(geographicAreaM49, measuredItemCPC)]
 
-colnames(checkfeed) <- c("area", "item", "cfeed")
-checkfeed <- within(checkfeed, cfeed <- ifelse(cfeed == 0, 0, 1))
+avail[avail <= 0 , avail := feed]
 
-Avail <- merge(Avail, checkfeed, all.x=T)
-Avail <- Avail[!Avail$cfeed == 0,]
-Avail <- Avail[order(Avail$area, Avail$year),]
+#If official figure exists, use that instead
+#Avail <- within(Avail, { #Avail <- ifelse(Avail <= 0, feed, Avail)
+#                         Avail <- ifelse(flag == " ", feed, Avail)})
 
-Avail <- within(Avail, { Avail <- ifelse(Avail <= 0, feed, Avail)
-                         Avail <- ifelse(flag == " ", feed, Avail)})
-
-Avail[,c(1,3,2,5, 15)]
+avail[, .(geographicAreaM49, measuredItemCPC, timePointYears, feed, avail)]
 
 }
 
