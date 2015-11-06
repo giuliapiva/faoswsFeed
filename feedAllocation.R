@@ -3,7 +3,6 @@
 library(faosws)
 library(faoswsUtil)
 suppressPackageStartupMessages(library(data.table))
-library(lpSolve)
 #library(RJDBC)
 #library(stringr)
 #library(reshape2)
@@ -76,13 +75,13 @@ minusfeedOnlyDemand$minusfeedOnlyProteinDemand[minusfeedOnlyDemand$minusfeedOnly
 # Here we need to pull all official feed figures, so all feed elements with flag " "
 # officialFeed = data.table[, .(measuredItemCPC, timePointYears, officialFeedValue)]
 officialFeed = feedAvail(geographicArea49, timePointYears, c(potentialFeeds, feedOnlyfeeds), vars = NULL)[, 
-                                                                        feedflag == " "]# keep oonly official figures
+                                                                        feedflag == " "]# keep only official figures
 
 officialFeedNutrients = merge(officialFeed, feedNutrients, all.x=T)
 
 # Calculate nutrient availabilities
-officialFeedNutrients[, officialFeedEnergyAvailability := officialFeedValue * energyContent]
-officialFeedNutrients[, officialFeedProteinAvailability := officialFeedValue * proteinContent]
+officialFeedNutrients[, officialFeedEnergyAvailability := feed * energyContent]
+officialFeedNutrients[, officialFeedProteinAvailability := feed * proteinContent]
 
 
 ### aggregate energy and protein availabilities from different items 
@@ -146,73 +145,59 @@ availabilityDemand[, proteinBaseFeed := (proteinShare * residualProteinDemand) /
 
 # simple version (without additional optimization:
 
-availabilityDemand[, feed := ifelse( )]
 #
+
+# create dataframe listing all countries and years
+yearCountryList <- unique(availabilityDemand[, .(geographicAreaM49, timepointYears)])
+
 # create auxiliary funcion which returns all years for a given country
-#yearlist <- subset(dmsp, ,c(1,2))
-
-#yearlist <- unique(yearlist)
-
-#years <- function(x) {yearlist$year[yearlist$area==x]}
-
-
+years = function(x) {
+  yearCountryList$timePointYears[yearlist$geographicArea == x]
+  }
 
 ## Apply optimization function: note Avialability is not a constraint
 
-#feed <- data.table()
+feedAllocated = data.table()
 
-#for(i in unique(yearlist$area))
-#  for(j in 1:length(yearlist$year[yearlist$area==i]))
-#    feed <- rbind(feed, optimize(i, years(i)[j] ))
+for(i in unique(yearCountryList[, timePointYears]))
+  for(j in 1:length(yearCountryList$timePointYears[yearCountryList$geographicAreaM49 == i]))
+    feedAllocated = rbind(feedAllocated, optimize(i, years(i)[j] ))
 
 
 ## Check if all conditions are met and  demand is met
 
-finalenergy <- ddply(feed, .(area, year), function(x) {sum(x$finalfeed * x$ENERGY)})
-colnames(finalenergy) <- c("area", "year", "finalenergy")
-finalprotein <- ddply(feed, .(area, year), function(x) {sum(x$finalfeed * x$PROTEIN)})
-colnames(finalprotein) <- c("area", "year", "finalprotein")
-feed <- merge(feed, finalenergy, by=c("area", "year"), all.x=T)
-feed <- merge(feed, finalprotein, by=c("area", "year"), all.x=T)
+# finalenergy <- ddply(feed, .(area, year), function(x) {sum(x$finalfeed * x$ENERGY)})
+# colnames(finalenergy) <- c("area", "year", "finalenergy")
+# finalprotein <- ddply(feed, .(area, year), function(x) {sum(x$finalfeed * x$PROTEIN)})
+# colnames(finalprotein) <- c("area", "year", "finalprotein")
+# feed <- merge(feed, finalenergy, by=c("area", "year"), all.x=T)
+# feed <- merge(feed, finalprotein, by=c("area", "year"), all.x=T)
+# 
+# feed$finalcheck <- ifelse((feed$REDemand - feed$finalenergy) > 1, "GAP",
+#                                ifelse((feed$RPDemand - feed$finalprotein) > 1, "GAP", "MET")) 
 
-feed$finalcheck <- ifelse((feed$REDemand - feed$finalenergy) > 1, "GAP",
-                               ifelse((feed$RPDemand - feed$finalprotein) > 1, "GAP", "MET")) 
+## Prepare all 3 feed type data for rbind
+# allocated Feed
+allocatedFeed = feedallocated[ ,.(geographicAreaM49, measuredItemCPC, timePointYears, allocatedFeed)]
+setnames(allocatedFeed, allocatedFeed, "feed")
 
-## Reunite estimated with official and cakes & bran feed data
-finalfeed <- subset(feed,, c(1,3,2,10,12,29))
-finalfeed <- setnames(finalfeed, 6, "feed")
-areaname <- subset(finalfeed, , c(1,2))
-areaname <- unique(areaname)
-Official <- merge(Official, areaname, all.x=T, by="area")
-Official <- subset(Official,, c(1,11,3,2,6,5,4))
-Official <- setnames(Official, c(6,7), c("feed", "ObservationFlag"))
-Official$MethodFlag <- rep("-", length(Official$area))
+# flags for allocated Feeds
+allocatedFeed[, ObservationFlag := rep("E", length(geographicAreaM49))]
+allocatedFeed[, MethodFlag := rep("e", length(geographicAreaM49))]
 
-finalfeed$ObservationFlag <- rep("E", length(finalfeed$area))
-finalfeed$MethodFlag <- rep("e", length(finalfeed$area))
+# Feed-only Feed
+feedOnlyFeed = feedOnlyAvailability[, .(geogrphicAreaM49, measuredItemCPC, timePointYears, feedAvailability)]
+setnames(feedOnlyFeed, "feedAvailability", "feed")    
 
-finalfeed <- rbind(finalfeed, Official)
+# flags for feedOnly Feed
+feedOnlyAvailability[, ObservationFlag := rep("E", length(geographicAreaM49))]
+feedOnlyAvailability[, MethodFlag := rep("b", length(geographicAreaM49))]
 
+# Official Feed
+reportedFeed = officialFeed[, .(geogrphicAreaM49, geographicAreaM49, measuredItemCPC, timePointYears, feed, 
+                            ObervationFlag, MethodFlag)]
 
-finalfeed <-finalfeed[order(finalfeed$area, finalfeed$year, finalfeed$item),]
+# rbind all datasets 
+feedData <- rbind(allocatedFeed, feedOnlyFeed, reportedFeed)
 
-cakes <- merge(psupply, areaname, all.x=T, by="area")
-cakes <- subset(cakes, , c(1,10,3,2,5,4))
-cakes$ObservationFlag <- rep("E", length(cakes$area))
-cakes$MethodFlag <- rep("b", length(cakes$area)) 
-cakes <- setnames(cakes, 6, "feed")
-
-finalfeed <- rbind(finalfeed, cakes)
-finalfeed <-finalfeed[order(finalfeed$area, finalfeed$year, finalfeed$item),]
-
-finalfeed <- subset(finalfeed, !is.na(areaname),)
-finalfeed <- merge(finalfeed, feedlist[, c(1,5)], all.x=T, by="item")
-finalfeed <- subset(finalfeed, , c(area, areaname, year, item, itemname, feed, ObservationFlag, MethodFlag, feedClassification))
-finalfeed <-finalfeed[order(finalfeed$area, finalfeed$year, finalfeed$item),]
-
-# csv output
-write.csv(finalfeed,  "feed_6-10.csv", row.names=F)
-
-end.time <- Sys.time()
-end.time-start_time
-## END
+setkey(feedData, geographicAreaM49, measuredItemCPC, timePointYears)
