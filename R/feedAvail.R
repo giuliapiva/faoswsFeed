@@ -61,6 +61,7 @@ form = as.formula(paste(paste(terms, collapse = " + "), "~", "variable"))
 avail = dcast.data.table(allData, form, value.var = "Value")
 
 #### Get rid of NAs
+avail = avail[!apply(avail, 1, function(x) all(is.na(x))),]
 avail[is.na(avail)] = 0
 
 ### 1.3 Calculate availability
@@ -73,7 +74,7 @@ avail[feedAvailability <= 0 , feedAvailability := feed]
 #Avail = within(Avail, { #Avail = ifelse(Avail <= 0, feed, Avail)
 #                         Avail = ifelse(flag == " ", feed, Avail)})
 
-avail[, .(geographicAreaM49, measuredItemCPC, timePointYears, feed, feedAvailability)]
+avail[, c("geographicAreaM49", "measuredItemCPC", "timePointYears", if(flags) "flagObservationStatus" else NULL, "feed", "feedAvailability"), with = FALSE]
 
 }
 
