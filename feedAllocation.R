@@ -1,6 +1,4 @@
 
-
-
 ##packages
 library(faosws)
 library(faoswsUtil)
@@ -40,8 +38,11 @@ feedOnlyFeeds = feedNutrients$measuredItemCPC[feedNutrients$feedClassification =
 # 3. Subtract Nutrients provided by FeedOnly items (oilcakes, brans, etc.)
   
 ## Retrieve Availability (Supply) of FeedOnly items
-## This should Return data.table[, .(measuredItemCPC, timePointYears, feedAvailability)]
-feedOnlyAvailability = feedAvail(area=1:299, year= 1990:2012, feedOnlyFeeds, stv=T, food=F, processed=F)
+## This should Return data.table[, .(geographicAreaM49, measuredItemCPC, timePointYears, feedAvailability)]
+feedOnlyAvailability = feedAvail(geographicAreaM49, timePointYears, feedOnlyFeeds)[,
+                             .(geographicAreaM49, measuredItemCPC, timePointYears, feedAvailability)]    
+                                                                              
+
 
 feedOnlyNutrients = merge(feedOnlyAvailability, feedNutrients, all.x=T)
 

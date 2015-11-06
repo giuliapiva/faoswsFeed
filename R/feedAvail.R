@@ -47,19 +47,19 @@ avail <- dcast.data.table(allData, geographicAreaM49 + measuredItemCPC + timePoi
     avail[is.na(avail)] <- 0
 
 ### 1.3 Calculate availability
-avail[, avail := production + imports - exports - 
-        processed - food - seed - other - waste]
+avail[, feedAvailability := production + imports - exports - 
+                        processed - food - seed - other - waste]
 avail <- avail[,]
 
-checkfeed <- avail[, .(checkfeed = sum(feed)), by = .(geographicAreaM49, measuredItemCPC)]
+#checkfeed <- avail[, .(checkfeed = sum(feed)), by = .(geographicAreaM49, measuredItemCPC)]
 
-avail[avail <= 0 , avail := feed]
+#avail[avail <= 0 , avail := feed]
 
 #If official figure exists, use that instead
 #Avail <- within(Avail, { #Avail <- ifelse(Avail <= 0, feed, Avail)
 #                         Avail <- ifelse(flag == " ", feed, Avail)})
 
-avail[, .(geographicAreaM49, measuredItemCPC, timePointYears, feed, avail)]
+avail[, .(geographicAreaM49, measuredItemCPC, timePointYears, feed, feedAvailability)]
 
 }
 
