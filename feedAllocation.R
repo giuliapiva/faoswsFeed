@@ -37,9 +37,11 @@ feedOnlyFeeds = feedNutrients$measuredItemCPC[feedNutrients$feedClassification =
   
 ## Retrieve Availability (Supply) of FeedOnly items
 ## This should Return data.table[, .(geographicAreaM49, measuredItemCPC, timePointYears, feedAvailability)]
-feedOnlyAvailability = feedAvail(geographicAreaM49, timePointYears, feedOnlyFeeds, vars = NULL)[,
-                             .(geographicAreaM49, measuredItemCPC, timePointYears, feedAvailability)]    
-                    
+feedOnlyData = feedAvail(geographicAreaM49, timePointYears, feedOnlyFeeds, vars = NULL, flags = TRUE)
+
+feedOnlyAvailability = feedOnlyData[!flagObservationStatus == " ", 
+                                    .(geographicAreaM49, measuredItemCPC, timePointYears, feedAvailability)]
+
 # only keep those without official feed                                                          
 feedOnlyAvailability[!feedflag == "",]
 
@@ -74,8 +76,10 @@ minusfeedOnlyDemand$minusfeedOnlyProteinDemand[minusfeedOnlyDemand$minusfeedOnly
 
 # Here we need to pull all official feed figures, so all feed elements with flag " "
 # officialFeed = data.table[, .(measuredItemCPC, timePointYears, officialFeedValue)]
-officialFeed = feedAvail(geographicArea49, timePointYears, c(potentialFeeds, feedOnlyfeeds), vars = NULL)[, 
-                                                                        feedflag == " "]# keep only official figures
+feedData = feedAvail(geographicArea49, timePointYears, c(potentialFeeds, feedOnlyfeeds), vars = NULL)
+
+officialFeed = feedData[flagObservationStatus == " ", .(geographicArea49, measuredItemCPC, timePointYears, 
+                                                        feed, flagObservationStatus)]
 
 officialFeedNutrients = merge(officialFeed, feedNutrients, all.x=T)
 
@@ -104,7 +108,7 @@ residualFeedDemand$residualProteinDemand[residualFeedDemand$residualProteinDeman
 # 4. Establish distributions of feed based on Availability 
 
 ## Retrieve Potential feed items data
-feedAvailability <- feedAvail(geographicAreaM49, timePointYears, potentialFeeds)[!feedflag == "", ]
+feedAvailability = feedAvail(geographicAreaM49, timePointYears, potentialFeeds)[!flagObservationStatus == " ", ]
                                                           
 # Should look something like 
 # feedAvailability = data.table(geographicAreaM49, timePointYears, measuredItemCPC, feedAvailability)
@@ -182,20 +186,19 @@ allocatedFeed = feedallocated[ ,.(geographicAreaM49, measuredItemCPC, timePointY
 setnames(allocatedFeed, allocatedFeed, "feed")
 
 # flags for allocated Feeds
-allocatedFeed[, ObservationFlag := rep("E", length(geographicAreaM49))]
-allocatedFeed[, MethodFlag := rep("e", length(geographicAreaM49))]
+allocatedFeed[, flagObservationStatus := rep("E", length(geographicAreaM49))]
 
 # Feed-only Feed
 feedOnlyFeed = feedOnlyAvailability[, .(geogrphicAreaM49, measuredItemCPC, timePointYears, feedAvailability)]
 setnames(feedOnlyFeed, "feedAvailability", "feed")    
 
 # flags for feedOnly Feed
-feedOnlyAvailability[, ObservationFlag := rep("E", length(geographicAreaM49))]
-feedOnlyAvailability[, MethodFlag := rep("b", length(geographicAreaM49))]
+feedOnlyAvailability[, flagObservationStatus := rep("E", length(geographicAreaM49))]
+
 
 # Official Feed
 reportedFeed = officialFeed[, .(geogrphicAreaM49, geographicAreaM49, measuredItemCPC, timePointYears, feed, 
-                            ObervationFlag, MethodFlag)]
+                            flagObservationStatus)]
 
 # rbind all datasets 
 feedData <- rbind(allocatedFeed, feedOnlyFeed, reportedFeed)
