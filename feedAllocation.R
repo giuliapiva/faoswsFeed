@@ -14,7 +14,6 @@ library(faoswsFeed)
 
 ## functions
 source('archive/R/feedAvail.r')
-source('archive/R/demandadjust.r')
 source('archive/R/optimize.r')
 
 #Set environment
@@ -39,10 +38,11 @@ feedOnlyFeeds = feedNutrients$measuredItemCPC[feedNutrients$feedClassification =
   
 ## Retrieve Availability (Supply) of FeedOnly items
 ## This should Return data.table[, .(geographicAreaM49, measuredItemCPC, timePointYears, feedAvailability)]
-feedOnlyAvailability = feedAvail(geographicAreaM49, timePointYears, feedOnlyFeeds)[,
+feedOnlyAvailability = feedAvail(geographicAreaM49, timePointYears, feedOnlyFeeds, vars = NULL)[,
                              .(geographicAreaM49, measuredItemCPC, timePointYears, feedAvailability)]    
-                                                                              
-
+                    
+# only keep those without official feed                                                          
+feedOnlyAvailability[!feedflag == "",]
 
 feedOnlyNutrients = merge(feedOnlyAvailability, feedNutrients, all.x=T)
 
@@ -75,6 +75,8 @@ minusfeedOnlyDemand$minusfeedOnlyProteinDemand[minusfeedOnlyDemand$minusfeedOnly
 
 # Here we need to pull all official feed figures, so all feed elements with flag " "
 # officialFeed = data.table[, .(measuredItemCPC, timePointYears, officialFeedValue)]
+officialFeed = feedAvail(geographicArea49, timePointYears, c(potentialFeeds, feedOnlyfeeds), vars = NULL)[, 
+                                                                        feedflag == " "]# keep oonly official figures
 
 officialFeedNutrients = merge(officialFeed, feedNutrients, all.x=T)
 
@@ -103,7 +105,8 @@ residualFeedDemand$residualProteinDemand[residualFeedDemand$residualProteinDeman
 # 4. Establish distributions of feed based on Availability 
 
 ## Retrieve Potential feed items data
-feedAvailability <- feedAvail(area=1:299, year=1990:2012, potentialFeeds)
+feedAvailability <- feedAvail(geographicAreaM49, timePointYears, potentialFeeds)[!feedflag == "", ]
+                                                          
 # Should look something like 
 # feedAvailability = data.table(geographicAreaM49, timePointYears, measuredItemCPC, feedAvailability)
 
