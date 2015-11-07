@@ -12,5 +12,6 @@ setnames(feedNutrients, c("measuredItemCPC", "energyContent", "proteinContent", 
 # convert energy from MJ per kg to MJ per tonne, convert protein % into share
 feedNutrients[, energyContent :=  energyContent * 1000]
 feedNutrients[, proteinContent :=  proteinContent / 100]
+setkey(feedNutrients, measuredItemCPC)
 
 devtools::use_data(feedNutrients, overwrite = TRUE)
