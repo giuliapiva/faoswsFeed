@@ -1,19 +1,9 @@
-
 ##packages
 library(faosws)
-library(faoswsUtil)
+#library(faoswsUtil)
 suppressPackageStartupMessages(library(data.table))
-#library(RJDBC)
-#library(stringr)
-#library(reshape2)
-#library(rJava)
 library(plyr)
-#library(DBI)
 library(faoswsFeed)
-
-## functions
-source('archive/R/feedAvail.r')
-source('archive/R/optimize.r')
 
 #Set environment
 if (CheckDebug()) {
@@ -26,26 +16,21 @@ if (CheckDebug()) {
 feedDemand = calculateFeedDemand()
 
 ## Potential Feeds (All feeditems excluding Oil meals, meals and brans)
-potentialFeeds = feedNutrients$measuredItemCPC[feedNutrients$feedClassification == "Potential Feed"]
+potentialFeeds = feedNutrients[feedClassification == "Potential Feed", measuredItemCPC]
 
 
 ## Protein meals and Items that have only feed purpose
-feedOnlyFeeds = feedNutrients$measuredItemCPC[feedNutrients$feedClassification == "FeedOnly"]
+feedOnlyFeeds = feedNutrients[feedClassification == "FeedOnly", measuredItemCPC]
 
 
 # 3. Subtract Nutrients provided by FeedOnly items (oilcakes, brans, etc.)
   
 ## Retrieve Availability (Supply) of FeedOnly items
 ## This should Return data.table[, .(geographicAreaM49, measuredItemCPC, timePointYears, feedAvailability)]
-feedOnlyData = feedAvail(geographicAreaM49, timePointYears, feedOnlyFeeds, vars = NULL, flags = TRUE)
+#Only those with no official data
+feedOnlyAvailability = feedAvail(flags = "", negate = TRUE)[, .(geographicAreaM49, measuredItemCPC, timePointYears, feedAvailability)]
 
-feedOnlyAvailability = feedOnlyData[!flagObservationStatus == " ", 
-                                    .(geographicAreaM49, measuredItemCPC, timePointYears, feedAvailability)]
-
-# only keep those without official feed                                                          
-feedOnlyAvailability[!feedflag == "",]
-
-feedOnlyNutrients = merge(feedOnlyAvailability, feedNutrients, all.x=T)
+feedOnlyNutrients = merge(feedOnlyAvailability, feedNutrients, all.x = T, by = "measuredItemCPC")
 
 ### calculate Nutrient Availability
 feedOnlyNutrients[, feedOnlyEnergyAvailability := feedAvailability * energyContent]
@@ -53,7 +38,7 @@ feedOnlyNutrients[, feedOnlyProteinAvailability := feedAvailability * proteinCon
 
 
 ### aggregate energy and protein availabilities from different items 
-feedOnlyNutrientSupply = feedOnlyNutrients[, lapply(na.omit(.SD), sum), by = .(geographicAreaM49, timePointYears),
+feedOnlyNutrientSupply = feedOnlyNutrients[, lapply(.SD, sum, na.rm = TRUE), by = .(geographicAreaM49, timePointYears),
                                  .SDcols = c("feedOnlyEnergyAvailability", "feedOnlyProteinAvailability")]
 
 
@@ -67,21 +52,18 @@ minusfeedOnlyDemand[, minusfeedOnlyProteinDemand := proteinDemand - feedOnlyProt
 # For validation: Here, we need a scatterplot with log(feedonlyProteinAviabilty) on the x - axis 
 # and log(energydemand)  on y axis
 
-# maybe there's a more elegant way of doing this
-minusfeedOnlyDemand$minusfeedOnlyEnergyDemand[minusfeedOnlyDemand$minusfeedOnlyEnergyDemand < 0] = 0
-minusfeedOnlyDemand$minusfeedOnlyProteinDemand[minusfeedOnlyDemand$minusfeedOnlyProteinDemand < 0 ] = 0
+# Set these to 0
+minusfeedOnlyDemand[minusfeedOnlyEnergyDemand < 0, minusfeedOnlyEnergyDemand := 0]
+minusfeedOnlyDemand[minusfeedOnlyProteinDemand < 0, minusfeedOnlyProteinDemand := 0]
 
 
 # Subtracting official feed 
 
 # Here we need to pull all official feed figures, so all feed elements with flag " "
 # officialFeed = data.table[, .(measuredItemCPC, timePointYears, officialFeedValue)]
-feedData = feedAvail(geographicArea49, timePointYears, c(potentialFeeds, feedOnlyfeeds), vars = NULL)
+officialFeed = feedAvail(measuredItem = c(potentialFeeds, feedOnlyFeeds), flags = "")
 
-officialFeed = feedData[flagObservationStatus == " ", .(geographicArea49, measuredItemCPC, timePointYears, 
-                                                        feed, flagObservationStatus)]
-
-officialFeedNutrients = merge(officialFeed, feedNutrients, all.x=T)
+officialFeedNutrients = merge(officialFeed, feedNutrients, all.x=T, by="measuredItemCPC")
 
 # Calculate nutrient availabilities
 officialFeedNutrients[, officialFeedEnergyAvailability := feed * energyContent]
@@ -89,7 +71,7 @@ officialFeedNutrients[, officialFeedProteinAvailability := feed * proteinContent
 
 
 ### aggregate energy and protein availabilities from different items 
-officialFeedNutrientSupply = officialFeedNutrients[, lapply(na.omit(.SD), sum), 
+officialFeedNutrientSupply = officialFeedNutrients[, lapply(.SD, sum, na.rm=TRUE), 
                                                    by = .(geographicAreaM49, timePointYears),
                                                   .SDcols = c("officialFeedEnergyAvailability", 
                                                               "officialFeedProteinAvailability")]
@@ -101,26 +83,26 @@ residualFeedDemand = merge(minusfeedOnlyDemand, officialFeedNutrientSupply)
 residualFeedDemand[, residualEnergyDemand := minusfeedOnlyEnergyDemand - officialFeedEnergyAvailability]
 residualFeedDemand[, residualProteinDemand := minusfeedOnlyEnergyDemand - officialFeedProteinAvailability]
 
-# Again, not very elegant
-residualFeedDemand$residualEnergyDemand[residualFeedDemand$residualEnergyDemand < 0] = 0
-residualFeedDemand$residualProteinDemand[residualFeedDemand$residualProteinDemand < 0] = 0
+# All that are less than 0 become 0
+residualFeedDemand[residualEnergyDemand < 0, residualEnergyDemand := 0]
+residualFeedDemand[residualProteinDemand < 0, residualProteinDemand := 0]
 
 # 4. Establish distributions of feed based on Availability 
 
 ## Retrieve Potential feed items data
-feedAvailability = feedAvail(geographicAreaM49, timePointYears, potentialFeeds)[!flagObservationStatus == " ", ]
+feedAvailability = feedAvail(measuredItem = potentialFeeds, flags = "", negate = TRUE)
                                                           
 # Should look something like 
 # feedAvailability = data.table(geographicAreaM49, timePointYears, measuredItemCPC, feedAvailability)
 
 ## Apply nutritive factors and calculate nutrient availability
-feedAvailabilityData <- merge(feedAvailability, feedNutrients, all.x=T)
+feedAvailabilityData <- merge(feedAvailability, feedNutrients, all.x = T)
 
-feedAvailabilityData[, energyAvailability := feedAvailability * eneryContent]
+feedAvailabilityData[, energyAvailability := feedAvailability * energyContent]
 feedAvailabilityData[, proteinAvailability := feedAvailability * proteinContent]
 
 ## Sum nutrient Availabilities for each country and year (for construction of shares)
-nutrientAvailability = officialFeedNutrients[, lapply(na.omit(.SD), sum), 
+nutrientAvailability = feedAvailabilityData[, lapply(.SD, sum, na.rm = TRUE), 
                                                 by = .(geographicAreaM49, timePointYears),
                                                 .SDcols = c("energyAvailability", 
                                                              "proteinAvailability")]
@@ -134,38 +116,44 @@ availabilityData = merge(feedAvailabilityData, nutrientAvailability,
 
 
 # Construct shares of feed availablility
-availabilityData[, energyShare = energyAvailability / sumEnergyAvailability]
-availabilityData[, proteinShare = proteinAvailability / sumProteinAvailability]
+availabilityData[, energyShare := energyAvailability / sumEnergyAvailability]
+availabilityData[, proteinShare := proteinAvailability / sumProteinAvailability]
+#Remove NaNs introduced by 0 / 0
+availabilityData[is.na(energyShare), energyShare := 0]
+availabilityData[is.na(proteinShare), energyShare := 0]
 
 # 5. Allocate Feed
 
 ## merge demand and availability data
 availabilityDemand = merge(residualFeedDemand, availabilityData, 
-                            by=c("geographicAreaM49", "timePointYears"))
+                            by = c("geographicAreaM49", "timePointYears"))
 
 ## apply availability shares to demand and convert back to quantites
 availabilityDemand[, energyBaseFeed := (energyShare * residualEnergyDemand) / energyContent]
 availabilityDemand[, proteinBaseFeed := (proteinShare * residualProteinDemand) / proteinContent]
+#Remove NaNs introduced by 0 / 0
+availabilityDemand[is.na(energyBaseFeed), energyBaseFeed := 0]
+availabilityDemand[is.na(proteinBaseFeed), proteinBaseFeed := 0]
 
 # simple version (without additional optimization:
 
 #
 
 # create dataframe listing all countries and years
-yearCountryList <- unique(availabilityDemand[, .(geographicAreaM49, timepointYears)])
+yearCountryList <- unique(availabilityDemand[, .(geographicAreaM49, timePointYears)])
 
 # create auxiliary funcion which returns all years for a given country
 years = function(x) {
-  yearCountryList$timePointYears[yearlist$geographicArea == x]
+  yearCountryList$timePointYears[yearCountryList$geographicAreaM49 == x]
   }
 
 ## Apply optimization function: note Avialability is not a constraint
 
 feedAllocated = data.table()
 
-for(i in unique(yearCountryList[, timePointYears]))
-  for(j in 1:length(yearCountryList$timePointYears[yearCountryList$geographicAreaM49 == i]))
-    feedAllocated = rbind(feedAllocated, optimize(i, years(i)[j] ))
+for(i in unique(yearCountryList[, geographicAreaM49]))
+  for(j in seq_along(yearCountryList[geographicAreaM49 == i, timePointYears]))
+    feedAllocated = rbind(feedAllocated, optimizeFeed(i, years(i)[j] ))
 
 
 ## Check if all conditions are met and  demand is met
@@ -182,25 +170,28 @@ for(i in unique(yearCountryList[, timePointYears]))
 
 ## Prepare all 3 feed type data for rbind
 # allocated Feed
-allocatedFeed = feedallocated[ ,.(geographicAreaM49, measuredItemCPC, timePointYears, allocatedFeed)]
-setnames(allocatedFeed, allocatedFeed, "feed")
+allocatedFeed = feedAllocated[ ,.(geographicAreaM49, measuredItemCPC, timePointYears, allocatedFeed)]
+setnames(allocatedFeed, "allocatedFeed", "feed")
 
 # flags for allocated Feeds
-allocatedFeed[, flagObservationStatus := rep("E", length(geographicAreaM49))]
+allocatedFeed[, flagObservationStatus := "E"]
 
 # Feed-only Feed
-feedOnlyFeed = feedOnlyAvailability[, .(geogrphicAreaM49, measuredItemCPC, timePointYears, feedAvailability)]
+feedOnlyFeed = feedOnlyAvailability[, .(geographicAreaM49, measuredItemCPC, timePointYears, feedAvailability)]
 setnames(feedOnlyFeed, "feedAvailability", "feed")    
 
 # flags for feedOnly Feed
-feedOnlyAvailability[, flagObservationStatus := rep("E", length(geographicAreaM49))]
+feedOnlyFeed[, flagObservationStatus := "E"]
 
 
 # Official Feed
-reportedFeed = officialFeed[, .(geogrphicAreaM49, geographicAreaM49, measuredItemCPC, timePointYears, feed, 
-                            flagObservationStatus)]
+reportedFeed = officialFeed[, .(geographicAreaM49, measuredItemCPC, timePointYears, feed)]
+#Add flag value
+reportedFeed[, flagObservationStatus := ""]
 
 # rbind all datasets 
 feedData <- rbind(allocatedFeed, feedOnlyFeed, reportedFeed)
 
 setkey(feedData, geographicAreaM49, measuredItemCPC, timePointYears)
+
+feedData
