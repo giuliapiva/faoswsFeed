@@ -28,7 +28,7 @@ feedOnlyFeeds = feedNutrients[feedClassification == "FeedOnly", measuredItemCPC]
 ## Retrieve Availability (Supply) of FeedOnly items
 ## This should Return data.table[, .(geographicAreaM49, measuredItemCPC, timePointYears, feedAvailability)]
 #Only those with no official data
-feedOnlyAvailability = feedAvail(flags = "", measuredItem = potentialFeeds, negate = TRUE)[, 
+feedOnlyAvailability = feedAvail(flags = "", measuredItem = feedOnlyFeeds, negate = TRUE)[, 
                                       .(geographicAreaM49, measuredItemCPC, timePointYears, feedAvailability)]
 
 feedOnlyNutrients = merge(feedOnlyAvailability, feedNutrients, all.x = T, by = "measuredItemCPC")
