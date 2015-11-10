@@ -6,7 +6,8 @@ Description: This package was written by Onno Hoffmeister and Bernhard Dalheimer
     to solve the problem of changing feed requirements in different countries over
     time as opposed to the existing static consumption model.
 Depends:
-    R (>= 3.2.2)
+    R (>= 3.2.2),
+    data.table
 Imports:
     faosws (>= 0.4.2)
 Suggests: countrycode, devtools
