@@ -3,6 +3,8 @@
 #' This function pulls in data from GLEAM to do so
 
 #' @param density_replacements Groups which use livestock density instead of agricultural productivity.
+#' 
+#' @export
 
 calculateIR <- function(density_replacements = "1"){
 

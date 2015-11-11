@@ -1,4 +1,8 @@
 #' Calculates protein and energy units 
+#' 
+#' Read in animal stocks and such to get that
+#' 
+#' @export
 
 calculateFeedDemand <- function(){
 

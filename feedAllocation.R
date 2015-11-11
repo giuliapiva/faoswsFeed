@@ -1,8 +1,6 @@
 ##packages
 library(faosws)
-#library(faoswsUtil)
 suppressPackageStartupMessages(library(data.table))
-library(plyr)
 library(faoswsFeed)
 
 #Set environment
