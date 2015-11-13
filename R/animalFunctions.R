@@ -2,7 +2,7 @@
 #' 
 #' Functions mostly used in animal functions
 #' 
-#' 
+#' @rdname animal-functions
 
 getProdData <- function(animal, fun, area, year){
   
