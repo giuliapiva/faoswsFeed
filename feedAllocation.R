@@ -44,15 +44,15 @@ setnames(officialFeed,
          paste(c("Value_measuredElement", "flagObservationStatus_measuredElement", "flagMethod_measuredElement"), feedItem, sep="_"),
          c("feed", "flagObservationStatus", "flagMethod"))
 
-#HORRIBLE HACK - concatenate keys in order to do anti join. See http://stackoverflow.com/a/33667203/1465387 with data.table 1.9.6
-officialFlagKeys <- apply(officialFeed[flagObservationStatus == "", .(geographicAreaM49, measuredItemCPC, timePointYears)], 1, paste, collapse="&")
+# Official feed is only that with official flags
+officialFeed <- officialFeed[flagObservationStatus == "",]
 
-#officialFeed = feedAvail(vars = "feed", measuredItem = c(potentialFeeds, feedOnlyFeeds), flags = "")
+#HORRIBLE HACK - concatenate keys in order to do anti join. See http://stackoverflow.com/a/33667203/1465387 with data.table 1.9.6
+officialFlagKeys <- apply(officialFeed[ , .(geographicAreaM49, measuredItemCPC, timePointYears)], 1, paste, collapse="&")
 
 # 3. Subtract Nutrients provided by FeedOnly items (oilcakes, brans, etc.)
   
 ## Retrieve Availability (Supply) of FeedOnly items
-## This should Return data.table[, .(geographicAreaM49, measuredItemCPC, timePointYears, feedAvailability)]
 #Only those with no official data
 feedOnlyAvailability = feedAvail(c("production", "imports", "exports"), 
                                  measuredItem = feedOnlyFeeds, amperflagskeys = officialFlagKeys, negate = TRUE)[, 
@@ -204,12 +204,8 @@ setnames(feedOnlyFeed, "feedAvailability", "feed")
 feedOnlyFeed[, `:=`(flagObservationStatus = "E",
                     flagMethod = "b")]
 
-
-# Official Feed
-reportedFeed = officialFeed[, .(geographicAreaM49, measuredItemCPC, timePointYears, feed, flagObservationStatus, flagMethod)]
-
 # rbind all datasets 
-feedData <- rbind(allocatedFeed, feedOnlyFeed, reportedFeed)
+feedData <- rbind(allocatedFeed, feedOnlyFeed)
 feedData[,measuredElement := "5520"]
 setnames(feedData, "feed", "Value")
 setcolorder(feedData, c("geographicAreaM49", "measuredElement", "measuredItemCPC", "timePointYears", "Value", "flagObservationStatus", "flagMethod"))
