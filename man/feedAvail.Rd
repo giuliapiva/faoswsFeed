@@ -4,22 +4,26 @@
 \alias{feedAvail}
 \title{Calculate Feed Availability}
 \usage{
-feedAvail(vars = c("food", "processed"),
-  measuredItem = feedNutrients$measuredItemCPC, flags = NULL,
-  negate = FALSE)
+feedAvail(vars, measuredItem = feedNutrients$measuredItemCPC,
+  amperflagskeys = NULL, negate = FALSE)
 }
 \arguments{
-\item{vars}{character. Variables that should be included along with production, feed, imports and exports}
+\item{vars}{character. Variables that should be included. one of
+"production", "seed", "waste", "feed", "processed", "other", "food",
+"imports", "exports"}
 
-\item{measuredItem}{character. Vector of CPC values by which the results should be subsetted}
+\item{measuredItem}{character. Vector of CPC values by which the results
+should be subsetted}
+
+\item{negate}{character. When flags is not NULL, keep only data without these
+flags}
 
 \item{flags}{character. If not NULL, subset keep only data with these flags}
-
-\item{negate}{character. When flags is not NULL, keep only data without these flags}
 }
 \description{
-This function provides feed availabilities. Using the equation:
-Production - Exports + Imports + Stockvariation = Food + Seed + Other Uses + Waste + Processed
-usage of single summands depends on user input. Data is downloaded from FAOSTAT sws
+This function provides feed availabilities. Using the equation: Production -
+Exports + Imports + Stockvariation = Food + Seed + Other Uses + Waste +
+Processed usage of single summands depends on user input. Data is downloaded
+from FAOSTAT sws
 }
 

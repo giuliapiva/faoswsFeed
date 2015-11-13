@@ -1,10 +1,8 @@
 #' Animal Functions
 #' 
+#' Functions mostly used in animal functions
 #' 
-
-getQueryKey <- function(dimension){
-  slot(swsContext.datasets[[1]]@dimensions[[dimension]], "keys")
-}
+#' 
 
 getProdData <- function(animal, fun, area, year){
   
