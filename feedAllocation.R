@@ -202,7 +202,7 @@ setnames(feedOnlyFeed, "feedAvailability", "feed")
 
 # flags for feedOnly Feed
 feedOnlyFeed[, `:=`(flagObservationStatus = "E",
-                    flagMethod = "e")]
+                    flagMethod = "b")]
 
 
 # Official Feed
@@ -210,7 +210,9 @@ reportedFeed = officialFeed[, .(geographicAreaM49, measuredItemCPC, timePointYea
 
 # rbind all datasets 
 feedData <- rbind(allocatedFeed, feedOnlyFeed, reportedFeed)
-setnames(feedData, "feed", "value")
-setkey(feedData, geographicAreaM49, measuredItemCPC, timePointYears)
+feedData[,measuredElement := "5520"]
+setnames(feedData, "feed", "Value")
+setcolorder(feedData, c("geographicAreaM49", "measuredElement", "measuredItemCPC", "timePointYears", "Value", "flagObservationStatus", "flagMethod"))
+setkey(feedData, geographicAreaM49, measuredElement, measuredItemCPC, timePointYears)
 
-#SaveData("agriculture", "agriculture", feedData)
+SaveData("agriculture", "agriculture", feedData)
