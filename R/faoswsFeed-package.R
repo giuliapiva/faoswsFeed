@@ -6,5 +6,7 @@
 #' @name faoswsFeed-package
 #' @aliases faoswsFeed
 #' @author Bernhard Dalheimer, Sebastian Campbell, Onno Hoffmeister
+#' 
+#' @import faosws
 
 NULL
