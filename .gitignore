@@ -8,6 +8,7 @@
 
 # Output files
 *.csv
+*.zip
 ## Except those in data-raw
 !data-raw/**/*.csv 
 ### But this one's not to be shared
