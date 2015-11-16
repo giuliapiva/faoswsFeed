@@ -3,3 +3,5 @@
 ^data-raw$
 ^validation$
 ^metadata.xml$
+^*\.zip$
+^feedAllocation\.R$

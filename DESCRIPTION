@@ -1,6 +1,6 @@
 Package: faoswsFeed
 Title: Calculate Feed requirements per country per year
-Version: 0.0.1
+Version: 0.1.0
 Authors@R: c(person("Bernhard", "Dalheimer", email = "Bernhard.Dalheimer@fao.org", role = "aut"),
              person("Sebastian", "Campbell", email = "Sebastian.Campbell@fao.org", role = c("aut", "cre")))
 Description: The methodology of this package was written by Onno Hoffmeister and Bernhard Dalheimer
