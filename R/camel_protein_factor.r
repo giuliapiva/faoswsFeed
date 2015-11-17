@@ -16,8 +16,7 @@ camel_protein_factor <- function(area, year) {
   #If data is empty, return it
   if (nrow(data) == 0) {
     data[, protein := numeric(0)]
-    data[, .(geographicAreaM49, timePointYears, protein)]
-    return(data)
+    return(data[, .(geographicAreaM49, timePointYears, protein)])
   }
   
   # All missing values are to be treated as zero
