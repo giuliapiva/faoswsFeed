@@ -6,7 +6,7 @@ buffalo_protein_factor <- function() {
   data <- buffalo_energy_factor()
   
   if(nrow(data) == 0){
-    setnames("energy", "protein")
+    setnames(data, "energy", "protein")
     return(data[, .(geographicAreaM49, timePointYears, protein)])
   }
   
