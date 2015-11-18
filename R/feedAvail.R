@@ -18,9 +18,9 @@
 
 feedAvail = function(vars, measuredItem = feedNutrients$measuredItemCPC, amperflagskeys = NULL, negate = FALSE) {
 
-  feedCodeTable = data.table(measuredElement = c("5510", "5525", "5015", "5520", "5023", "5153", "5141", "5600", "5900"),
-                             dataset = c("production", "production", "production", "production", "production", "production", "production", "trade", "trade"),
-                              variable = c("production", "seed", "waste", "feed", "processed", "other", "food", "imports", "exports"))
+  feedCodeTable = data.table(measuredElement = c("5510", "5023", "5141", "5600", "5900"),
+                             dataset = c("production", "production", "production", "trade", "trade"),
+                              variable = c("production", "processed", "food", "imports", "exports"))
   
   productionKey = DatasetKey(domain = "agriculture", dataset = "agriculture",
                        dimensions = list(
@@ -92,7 +92,7 @@ avail[is.na(avail)] = 0
 
 ### 1.3 Calculate availability
 avail[, feedAvailability := production + imports - exports - 
-                        processed - food - seed - other - waste]
+                        processed - food]
 
 avail[feedAvailability <= 0 , feedAvailability := feed]
 
