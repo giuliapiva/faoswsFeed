@@ -194,6 +194,8 @@ aquaDemandData[, aquaProteinDemand := aquaProduction * feedConversionRate * prop
 aquaDemandTable = aquaDemandData[, lapply(.SD, sum), by = .(geographicAreaM49, timePointYears),
                             .SDcols = c("aquaEnergyDemand", "aquaProteinDemand")]
 
+setkey(aquaDemandTable, geographicAreaM49, timePointYears)
+
 
 devtools::use_data(aquaDemandTable, overwrite = TRUE)
 
