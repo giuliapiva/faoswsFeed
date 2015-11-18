@@ -94,13 +94,11 @@ avail[is.na(avail)] = 0
 avail[, feedAvailability := production + imports - exports - 
                         processed - food]
 
-avail[feedAvailability <= 0 , feedAvailability := feed]
-
 #If official figure exists, use that instead
 #Avail = within(Avail, { #Avail = ifelse(Avail <= 0, feed, Avail)
 #                         Avail = ifelse(flag == " ", feed, Avail)})
 
-avail <- avail[, .(geographicAreaM49, measuredItemCPC, timePointYears, feed, feedAvailability)]
+avail <- avail[, .(geographicAreaM49, measuredItemCPC, timePointYears, feedAvailability)]
 setkey(avail, geographicAreaM49, measuredItemCPC, timePointYears)
 
 avail
