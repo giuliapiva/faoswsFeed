@@ -8,17 +8,6 @@
 
 calculateIR <- function(density_replacements = "1"){
 
-
-#2005 intensification data
-s2005 <- data.table(read.csv("data-raw/IR_factor/gleam2005.csv",
-                             colClasses = c("character", "NULL", "integer", "character", "numeric")),
-                    key = c("geographicAreaM49", "timePointYears", "AnimalGroup"))
-#Remove NA M49 codes -  Channel Islands
-s2005 <- s2005[!is.na(geographicAreaM49),]
-s2005[,AnimalGroup := as.character(AnimalGroup)]
-setnames(s2005, "AnimalGroup", "animalGroup")
-setkey(s2005, geographicAreaM49, timePointYears, animalGroup)
-
 livestockDensity <- calculateLivestockDensity(animalCPCGroup[animalGroup %in% density_replacements, measuredItemCPC],
                                               addyear = "2005")
 
@@ -33,6 +22,7 @@ mergeAnimalkeys <- animalCoefficients[mergeAnimalkeys]
 setkey(mergeAnimalkeys, geographicAreaM49, timePointYears, animalGroup)
 
 #Merge data for all years together
+## TODO come back and add `on` argument to these merges
 rawLabor <- livestockDensity[mergeAnimalkeys[wdi]]
 #For cattle (code 1) use livestock density instead of agricultural productivity
 rawLabor[,densprod := productivity]
