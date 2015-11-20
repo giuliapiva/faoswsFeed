@@ -3,15 +3,26 @@ Title: Calculate Feed requirements per country per year
 Version: 0.1.1
 Authors@R: c(person("Bernhard", "Dalheimer", email = "Bernhard.Dalheimer@fao.org", role = "aut"),
              person("Sebastian", "Campbell", email = "Sebastian.Campbell@fao.org", role = c("aut", "cre")))
-Description: The methodology of this package was written by Onno Hoffmeister and Bernhard Dalheimer
-    to solve the problem of changing feed requirements in different countries over
-    time as opposed to the existing static consumption model.
+Description: The methodology of this package was written by Onno Hoffmeister
+    and Bernhard Dalheimer to solve the problem of changing feed requirements in
+    different countries over time as opposed to the existing static consumption
+    model.
 Depends:
     R (>= 3.1.2),
     data.table
 Imports:
     faosws (>= 0.4.2)
-Suggests: countrycode, devtools
+Suggests:
+    countrycode,
+    devtools
 License: FAO
+swsDatasetDepends:
+    agriculture:agriculture,
+    trade:total_trade_CPC,
+    Land:land
+swsModuleDepends:
+    faoswsFood,
+    faoswsProduction,
+    tradeproc
 LazyData: true
-RoxygenNote: 5.0.0
+RoxygenNote: 5.0.1
