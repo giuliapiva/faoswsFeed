@@ -5,9 +5,16 @@ library(faoswsFeed)
 
 #Set environment
 if (CheckDebug()) {
-  SetClientFiles("~/certificates/production")
+  #SetClientFiles("~/certificates/production")
+  SetClientFiles("~/certificates/qa")
   #GetTestEnvironment("https://hqlprswsas1.hq.un.fao.org:8181/sws", "ebdda55c-21a4-4bdd-9d0c-5098cec843f7")
-  GetTestEnvironment("https://hqlprswsas1.hq.un.fao.org:8181/sws", "f45d0a2a-a798-435d-84e9-897a572c0d10")
+  #GetTestEnvironment("https://hqlprswsas1.hq.un.fao.org:8181/sws", "f45d0a2a-a798-435d-84e9-897a572c0d10")
+  #GetTestEnvironment("https://hqlprswsas1.hq.un.fao.org:8181/sws", "326db9b9-411d-4a0f-b1a9-0ac6ec4b4bad")
+  #GetTestEnvironment("https://hqlqasws1.hq.un.fao.org:8181/sws", "e412705a-f02c-4dfa-85c4-1d1132b58dcf")
+  #GetTestEnvironment("https://hqlqasws1.hq.un.fao.org:8181/sws", "0bb0db3f-8681-4a4a-bf14-e36635574f30")
+  #GetTestEnvironment("https://hqlqasws1.hq.un.fao.org:8181/sws", "98a2d80b-e55b-424a-af62-05890a9bcb6b")
+  #GetTestEnvironment("https://hqlqasws1.hq.un.fao.org:8181/sws", "af9323ee-8878-4870-b559-851c2bf5558a")
+  GetTestEnvironment("https://hqlqasws1.hq.un.fao.org:8181/sws", "fbbfebbe-2eae-4e19-8d46-514345bcdbf5")
 }
 
 
@@ -193,7 +200,7 @@ allocatedFeed = feedAllocated[ ,.(geographicAreaM49, measuredItemCPC, timePointY
 setnames(allocatedFeed, "allocatedFeed", "feed")
 
 # flags for allocated Feeds
-allocatedFeed[, `:=`(flagObservationStatus = "E",
+allocatedFeed[, `:=`(flagObservationStatus = "I",
                      flagMethod = "e")]
 
 # Feed-only Feed
@@ -201,7 +208,7 @@ feedOnlyFeed = feedOnlyAvailability[, .(geographicAreaM49, measuredItemCPC, time
 setnames(feedOnlyFeed, "feedAvailability", "feed")    
 
 # flags for feedOnly Feed
-feedOnlyFeed[, `:=`(flagObservationStatus = "E",
+feedOnlyFeed[, `:=`(flagObservationStatus = "I",
                     flagMethod = "b")]
 
 # rbind all datasets 
