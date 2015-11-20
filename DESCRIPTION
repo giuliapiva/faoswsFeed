@@ -9,9 +9,9 @@ Description: The methodology of this package was written by Onno Hoffmeister
     model.
 Depends:
     R (>= 3.1.2),
-    data.table
-Imports:
     faosws (>= 0.4.2)
+Imports:
+    data.table
 Suggests:
     countrycode,
     devtools
