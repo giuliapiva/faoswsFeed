@@ -18,7 +18,7 @@
 
 feedAvail = function(vars, measuredItem = feedNutrients$measuredItemCPC, amperflagskeys = NULL, negate = FALSE) {
 
-  feedCodeTable = data.table(measuredElement = c("5510", "5023", "5141", "5600", "5900"),
+  feedCodeTable = data.table(measuredElement = c("5510", "5141", "5600", "5900"),
                              dataset = c("production", "production", "trade", "trade"),
                               variable = c("production", "food", "imports", "exports"))
   
