@@ -127,7 +127,7 @@ residualFeedDemand[residualProteinDemand < 0, residualProteinDemand := 0]
 # 4. Establish distributions of feed based on Availability 
 
 ## Retrieve Potential feed items data
-feedAvailability = feedAvail(vars = c("production", "imports", "exports", "food", "processed"), 
+feedAvailability = feedAvail(vars = c("production", "imports", "exports", "food"), 
                              measuredItem = potentialFeeds, amperflagskeys = officialFlagKeys, negate = TRUE)
                                                           
 # Should look something like 
