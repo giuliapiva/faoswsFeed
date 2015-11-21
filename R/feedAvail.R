@@ -74,6 +74,7 @@ allData =  merge(allData, feedCodeTable, all.y = TRUE, by = "measuredElement")
 avail = dcast.data.table(allData, geographicAreaM49 + measuredItemCPC + timePointYears ~ variable, value.var = "Value")
 
 # If we want to include or exclude based on flags
+# Replace this with a data.table anti join
 if(!is.null(amperflagskeys)){
   amperkeys <- apply(avail[,.(geographicAreaM49, measuredItemCPC, timePointYears)], 1, paste, collapse="&")
   if(negate){
