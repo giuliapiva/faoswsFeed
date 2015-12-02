@@ -12,11 +12,11 @@ cpcCodes <- GetCodeList("agriculture", "aproduction", "measuredItemCPC")[,.(code
 setnames(cpcCodes, c("code", "description"), c("measuredItemCPC", "CPCDescription"))
 
 #Get element codes to merge (from production and trade)
-## WARNING: Making the false assumption (for simplicity, but not to hard to change) which seems to work
-elementCodes <- rbind(GetCodeList("agriculture", "agriculture", "measuredElement", 
-                                  unique(codeTable[table == "production",measuredElement]))[,.(code, description)], 
+## WARNING: Making the false assumption that there is no overlap in codes (for simplicity, but not to hard to change) which seems to work
+elementCodes <- rbind(GetCodeList("agriculture", "aproduction", "measuredElement", 
+                                  unique(codeTable[table == "production", measuredElement]))[,.(code, description)], 
                        GetCodeList("trade", "total_trade_CPC", "measuredElementTrade", 
-                                   unique(codeTable[table == "trade",measuredElement]))[,.(code, description)]
+                                   unique(codeTable[table == "trade", measuredElement]))[,.(code, description)]
                       )
 setnames(elementCodes, c("code", "description"), c("measuredElement", "elementDescription"))
 

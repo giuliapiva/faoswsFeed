@@ -30,7 +30,7 @@ feedOnlyFeeds = feedNutrients[feedClassification == "FeedOnly", measuredItemCPC]
 # Getofficial feed data
 #define measuredElement for Feed
 feedItem = "5520"
-officialKey = DatasetKey(domain = "agriculture", dataset = "agriculture",
+officialKey = DatasetKey(domain = "agriculture", dataset = "aproduction",
                           dimensions = list(
                             Dimension(name = "geographicAreaM49", keys = getQueryKey("geographicAreaM49")),
                             Dimension(name = "measuredItemCPC", keys = c(potentialFeeds, feedOnlyFeeds)),
@@ -218,4 +218,4 @@ setnames(feedData, "feed", "Value")
 setcolorder(feedData, c("geographicAreaM49", "measuredElement", "measuredItemCPC", "timePointYears", "Value", "flagObservationStatus", "flagMethod"))
 setkey(feedData, geographicAreaM49, measuredElement, measuredItemCPC, timePointYears)
 
-SaveData("agriculture", "agriculture", feedData)
+SaveData("agriculture", "aproduction", feedData)

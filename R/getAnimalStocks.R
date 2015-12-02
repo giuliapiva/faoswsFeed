@@ -3,7 +3,7 @@ getAnimalStocks <- function(stockKeys = c("5111", "5112"),  thousandHeads = "511
   # Retrieve all animals
   animalKeys = stockCodes[, measuredItemCPC]
   
-  key = DatasetKey(domain = "agriculture", dataset = "agriculture",
+  key = DatasetKey(domain = "agriculture", dataset = "aproduction",
                    dimensions = list(
                      Dimension(name = "geographicAreaM49", keys = getQueryKey("geographicAreaM49")), #user input
                      Dimension(name = "measuredItemCPC", keys = animalKeys),

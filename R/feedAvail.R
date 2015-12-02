@@ -22,7 +22,7 @@ feedAvail = function(vars, measuredItem = feedNutrients$measuredItemCPC, amperfl
                              dataset = c("production", "production", "production", "trade", "trade"),
                               variable = c("production", "processed", "food", "imports", "exports"))
   
-  productionKey = DatasetKey(domain = "agriculture", dataset = "agriculture",
+  productionKey = DatasetKey(domain = "agriculture", dataset = "aproduction",
                        dimensions = list(
                          Dimension(name = "geographicAreaM49", keys = getQueryKey("geographicAreaM49")),
                          Dimension(name = "measuredItemCPC", keys = measuredItem),
