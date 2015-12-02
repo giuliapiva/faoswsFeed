@@ -3,6 +3,11 @@
 #' Functions mostly used in animal functions
 #' 
 #' @rdname animal-functions
+#' 
+#' @param animal character of animal as listed in \code{\link{codeTable}}.
+#' @param fun character. Whether for protein or energy function
+#' @param area character. M49 area codes
+#' @param year character. Years
 
 getProdData <- function(animal, fun, area, year){
   

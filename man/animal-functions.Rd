@@ -6,6 +6,15 @@
 \usage{
 getProdData(animal, fun, area, year)
 }
+\arguments{
+\item{animal}{character of animal as listed in \code{\link{codeTable}}.}
+
+\item{fun}{character. Whether for protein or energy function}
+
+\item{area}{character. M49 area codes}
+
+\item{year}{character. Years}
+}
 \description{
 Functions mostly used in animal functions
 }
