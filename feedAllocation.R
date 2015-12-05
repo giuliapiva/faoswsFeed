@@ -185,7 +185,7 @@ years = function(x) {
   yearCountryList$timePointYears[yearCountryList$geographicAreaM49 == x]
   }
 
-## Apply optimization function: note Avialability is not a constraint
+## Apply optimization function: note Availability is not a constraint
 
 feedAllocated = data.table()
 

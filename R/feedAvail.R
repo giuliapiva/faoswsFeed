@@ -95,6 +95,11 @@ avail[is.na(avail)] = 0
 avail[, feedAvailability := production + imports - exports - 
                         processed - food]
 
+# Replace all < 0  with 0
+
+avail[feedAvailability < 0, feedAvailability := 0]
+
+
 #If official figure exists, use that instead
 #Avail = within(Avail, { #Avail = ifelse(Avail <= 0, feed, Avail)
 #                         Avail = ifelse(flag == " ", feed, Avail)})
