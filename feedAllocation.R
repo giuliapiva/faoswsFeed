@@ -14,7 +14,8 @@ if (CheckDebug()) {
   #GetTestEnvironment("https://hqlqasws1.hq.un.fao.org:8181/sws", "0bb0db3f-8681-4a4a-bf14-e36635574f30")
   #GetTestEnvironment("https://hqlqasws1.hq.un.fao.org:8181/sws", "98a2d80b-e55b-424a-af62-05890a9bcb6b")
   #GetTestEnvironment("https://hqlqasws1.hq.un.fao.org:8181/sws", "af9323ee-8878-4870-b559-851c2bf5558a")
-  GetTestEnvironment("https://hqlqasws1.hq.un.fao.org:8181/sws", "fbbfebbe-2eae-4e19-8d46-514345bcdbf5")
+  #GetTestEnvironment("https://hqlqasws1.hq.un.fao.org:8181/sws", "fbbfebbe-2eae-4e19-8d46-514345bcdbf5")
+  GetTestEnvironment("https://hqlqasws1.hq.un.fao.org:8181/sws", "2b5a3afd-4d70-4f4e-9665-e0f4c2349c9e")
 }
 
 
@@ -215,7 +216,13 @@ feedOnlyFeed[, `:=`(flagObservationStatus = "I",
 feedData <- rbind(allocatedFeed, feedOnlyFeed)
 feedData[,measuredElement := "5520"]
 setnames(feedData, "feed", "Value")
+
+#Remove absurdly high values
+feedData <- feedData[Value < 10e22,]
+
 setcolorder(feedData, c("geographicAreaM49", "measuredElement", "measuredItemCPC", "timePointYears", "Value", "flagObservationStatus", "flagMethod"))
 setkey(feedData, geographicAreaM49, measuredElement, measuredItemCPC, timePointYears)
 
-SaveData("agriculture", "aproduction", feedData)
+results <- SaveData("agriculture", "aproduction", feedData)
+
+paste0(paste(names(results), unlist(results), collapse = "\n", sep=": "), "\n\nModule completed successfully")
