@@ -36,7 +36,8 @@ sheep_protein_factor <- function() {
     liveweight <- Carcass.Wt / .43
     
     milkpersheep <- Production * 1000 / Stocks
-    metabolicweight <- liveweight ^ 0.75
+    kleiberconstant <- 0.75
+    metabolicweight <- liveweight ^ kleiberconstant
     
     weightgain <- (((Slaughtered + Exports - Imports + Stocksnext - Stocks 
                         - Stocks * 0.044) * liveweight) / Stocks) / 365

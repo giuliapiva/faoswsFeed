@@ -27,7 +27,8 @@ chicken_protein_factor <- function() {
   data <- within(data, {
     Carcass.Wt <- Carcass.Wt / 1000
     liveweight <- Carcass.Wt / 0.68
-    metabolicweight <- liveweight ^ 0.75
+    kleiberconstant <- 0.75
+    metabolicweight <- liveweight ^ kleiberconstant
     protein <- (liveweight * 0.06 * 0.19 * 1000) / 874.1886
   })
   

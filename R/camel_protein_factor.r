@@ -25,7 +25,8 @@ camel_protein_factor <- function(area, year) {
   data <- within(data, {
     
     liveweight <- Carcass.Wt / 0.60
-    metabolicweight <- liveweight ^ 0.75
+    kleiberconstant <- 0.75
+    metabolicweight <- liveweight ^ kleiberconstant
     protein <- (0.96 * liveweight + 0.06 * liveweight ^ 0.75) / 874.1886
   })
   

@@ -212,9 +212,11 @@ setnames(feedOnlyFeed, "feedAvailability", "feed")
 feedOnlyFeed[, `:=`(flagObservationStatus = "I",
                     flagMethod = "b")]
 
+feedCode <- "5520"
+
 # rbind all datasets 
 feedData <- rbind(allocatedFeed, feedOnlyFeed)
-feedData[,measuredElement := "5520"]
+feedData[,measuredElement := feedCode]
 setnames(feedData, "feed", "Value")
 
 #Remove absurdly high values

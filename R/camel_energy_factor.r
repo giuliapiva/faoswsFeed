@@ -24,7 +24,8 @@ camel_energy_factor <- function() {
   data <- within(data, {
     
     liveweight <- Carcass.Wt / 0.62
-    metabolicweight <- liveweight ^ 0.75
+    kleiberconstant <- 0.75
+    metabolicweight <- liveweight ^ kleiberconstant
     energy <- ((0.12 * metabolicweight * 4.184) * 365) / 35600
   })
   

@@ -13,7 +13,8 @@ buffalo_protein_factor <- function() {
   data[is.na(data)] <- 0
   
   data <- within(data, {
-    metabolicweight <- liveweight ^ 0.75
+    kleiberconstant <- 0.75
+    metabolicweight <- liveweight ^ kleiberconstant
     re <- 0.0635 * (0.96 * liveweight) * 0.75 * (weightgain * 0.96) * 1.097
     beefprotein <- (3.8 * (0.96 * liveweight) ^ 0.75 + (weightgain * (268 - (29.4 * (re / weightgain))))) / 874.1886
     beefprotein[weightgain = 0] <- (3.8 * (0.96 * liveweight[weightgain = 0]) ^ 0.75)/874.1886

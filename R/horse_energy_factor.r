@@ -25,7 +25,8 @@ horse_energy_factor <- function() {
   within(data, {
     # No Conversion: Carcass.Wt comes in kg
     liveweight <- Carcass.Wt / 0.62
-    metabolicweight <- liveweight ^ 0.75
+    kleiberconstant <- 0.75
+    metabolicweight <- liveweight ^ kleiberconstant
     energy <- ((0.55 * metabolicweight + 0.00495 * liveweight + 4.184) * 365) / 35600
   })
   

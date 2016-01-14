@@ -12,7 +12,8 @@ if(nrow(data) == 0){
     #no conversion: Carcass.Wt comes in kg
     liveweight <- Carcass.Wt / .75
 
-    metabolicweight <- liveweight ^ 0.75
+    kleiberconstant <- 0.75
+    metabolicweight <- liveweight ^ kleiberconstant
     
     
     protein <- (1.0522 * 15.51 * ((0.036 * liveweight ^ 0.75) +

@@ -31,7 +31,8 @@ chicken_energy_factor <- function() {
     Stocks <- Stocks * 1000
     Carcass.Wt <- Carcass.Wt / 1000
     liveweight <- Carcass.Wt / 0.68
-    metabolicweight <- liveweight ^ 0.75
+    kleiberconstant <- 0.75
+    metabolicweight <- liveweight ^ kleiberconstant
     
     if (all(Laying == 0))  
     {energy <- (metabolicweight * 78.3 *2.5 * 365 * 0.0041868) / 35600

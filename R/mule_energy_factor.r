@@ -27,7 +27,8 @@ mule_energy_factor <- function() {
     
     #No Conversion: Carcass.Wt comes in kg
     liveweight <- Carcass.Wt / 0.63
-    metabolicweight <- liveweight ^ 0.75
+    kleiberconstant <- 0.75
+    metabolicweight <- liveweight ^ kleiberconstant
     energy <- (0.1548 *  liveweight) * 356 / 35600 
   })
   

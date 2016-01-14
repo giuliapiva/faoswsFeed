@@ -27,7 +27,8 @@ ass_protein_factor <- function() {
   data <- within(data, {
     #No Conversion: Carcass.Wt comes in kg
     liveweight <- Carcass.Wt / 0.63
-    metabolicweight <- liveweight ^ 0.75
+    kleiberconstant <- 0.75
+    metabolicweight <- liveweight ^ kleiberconstant
     protein <- (2.7 * metabolicweight) / 874.1886
   })
   

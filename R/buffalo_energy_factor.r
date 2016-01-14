@@ -43,7 +43,8 @@ buffalo_energy_factor <- function() {
     liveweight <- Carcass.Wt / lw.constant
     
     milkpercow <- Milk.Production * 1000 / Milk.Animals
-    metabolicweight <- liveweight ^ 0.75
+    kleiberconstant <- 0.75
+    metabolicweight <- liveweight ^ kleiberconstant
     
     weightgain <- (((Slaughtered + Exports - Imports + Stocksnext - Stocks - Stocks * 0.032) 
                     * liveweight) 

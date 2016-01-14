@@ -24,7 +24,8 @@ mule_protein_factor <- function() {
   
   data <- within(data, {
     #No Conversion: Carcass.Wt comes in kg
-    liveweight <- Carcass.Wt / 0.63
+    kleiberconstant <- 0.75
+    metabolicweight <- liveweight ^ kleiberconstant
     metabolicweight <- liveweight ^ 0.75
     protein <- (2.7 * metabolicweight) / 874.1886
   })

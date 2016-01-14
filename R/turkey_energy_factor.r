@@ -27,7 +27,8 @@ turkey_energy_factor <- function() {
     #Conversion from g into kg
     Carcass.Wt <- Carcass.Wt / 1000
     liveweight <- Carcass.Wt / 0.68
-    metabolicweight <- liveweight ^ 0.75
+    kleiberconstant <- 0.75
+    metabolicweight <- liveweight ^ kleiberconstant
     energy <- (metabolicweight * 78.3 * 3.4 * 365 * 0.0041868) / 35600
     
     })
