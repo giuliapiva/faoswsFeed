@@ -4,7 +4,14 @@
 \alias{getQueryKey}
 \title{Get Query Key}
 \usage{
-getQueryKey(dimension)
+getQueryKey(dimension, datasetkey = swsContext.datasets[[1]])
+}
+\arguments{
+\item{dimension}{character. Name of dimension you wish to extract from
+DatasetKey}
+
+\item{datasetkey}{Datasetkey. DatasetKey from which you wish to extract
+dimensions}
 }
 \description{
 Get a data key from the query

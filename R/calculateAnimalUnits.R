@@ -1,10 +1,37 @@
+#' Calculate protein and energy demand of individual animals
+#' 
+#' The main output of this function is a data.table of Animal Unit Indices
+#' (AUIs)
+#' 
+#' @section Animals:
+#' The module currently has equations for the following animals:
+#' 
+#' \itemize{
+#' \item 1. Cattle
+#' \item 2. Buffalo
+#' \item 3. Sheep
+#' \item 4. Goats
+#' \item 5. Camels
+#' \item 6. Pigs
+#' \item 7. Chickens
+#' \item 8. Ducks
+#' \item 9. Geese
+#' \item 10. Turkeys
+#' \item 11. Asses
+#' \item 12. Horses
+#' \item 13. Mules
+#' \item 14. Rabbits
+#' }
+#' 
+#' @export
+
 calculateAnimalUnits <- function(){
 
 ## 2. COMPILE INDICEs
 
 keys <- c("geographicAreaM49", "timePointYears", "measuredItemCPC")
 
-## 2.1 Cattle
+## 1. Cattle
 
 # energy
 ce <- cattle_energy_factor() 
@@ -17,7 +44,7 @@ cp <- cattle_protein_factor()
 cattle <- merge(ce, cp, all = T)
 
 
-## 2.2 Buffaloes
+## 2. Buffalo
 
 #energy
 be <- buffalo_energy_factor()
@@ -29,7 +56,7 @@ be <- be[,.(geographicAreaM49, timePointYears, measuredItemCPC, energy)]
 bp <- buffalo_protein_factor()
 buffalo <- merge(be, bp, all = T)
 
-## 2.3 Sheep
+## 3. Sheep
 
 #energy
 se <- sheep_energy_factor()
@@ -41,7 +68,7 @@ se <- se[, .(geographicAreaM49, timePointYears, measuredItemCPC, energy)]
 sp <- sheep_protein_factor() 
 sheep <- merge(se, sp, all = T)
 
-## 2.4 Goats
+## 4. Goats
 
 #energy
 ge <- goat_energy_factor()
@@ -53,7 +80,7 @@ ge <- ge[, .(geographicAreaM49, timePointYears, measuredItemCPC, energy)]
 gp <- goat_protein_factor() 
 goat <- merge(ge, gp, all = T)
 
-## 2.5 Camels
+## 5. Camels
 
 #energy
 cae <- camel_energy_factor()
@@ -65,7 +92,7 @@ cae <- cae[, .(geographicAreaM49, timePointYears, measuredItemCPC, energy)]
 cap <- camel_protein_factor()
 camel <- merge(cae, cap, all = T)
 
-## 2.6 Pigs
+## 6. Pigs
 
 #energy
 pe <- pig_energy_factor()
@@ -77,7 +104,7 @@ pe <- pe[,.(geographicAreaM49, timePointYears, measuredItemCPC, energy)]
 pp <- pig_protein_factor() 
 pig <- merge(pe, pp, all = T)
 
-## 2.7 Chickens
+## 7. Chickens
 
 #energy
 che <- chicken_energy_factor()
@@ -90,7 +117,7 @@ chp <- chicken_protein_factor()
 chicken <- merge(che, chp, all = T)
 
 
-## 2.8 Ducks
+## 8. Ducks
 
 #energy
 de <- duck_energy_factor()
@@ -102,7 +129,7 @@ de <- de[, .(geographicAreaM49, timePointYears, measuredItemCPC, energy)]
 dp <- duck_protein_factor() 
 duck <- merge(de, dp, all = T)
 
-## 2.9 Geese
+## 9. Geese
 
 #energy
 goo <- goose_energy_factor()
@@ -114,7 +141,7 @@ goo <- goo[, .(geographicAreaM49, timePointYears, measuredItemCPC, energy)]
 gep <- goose_protein_factor() 
 goose <- merge(goo, gep, all = T)
 
-## 2.10 Turkeys
+## 10. Turkeys
 
 #energy
 te <- turkey_energy_factor()
@@ -126,7 +153,7 @@ te <- te[, .(geographicAreaM49, timePointYears, measuredItemCPC, energy)]
 tp <- turkey_protein_factor() 
 turkey <- merge(te, tp, all = T)
 
-## 2.11 Asses
+## 11. Asses
 
 #energy
 ae <- ass_energy_factor()
@@ -138,7 +165,9 @@ ae <- ae[, .(geographicAreaM49, timePointYears, measuredItemCPC, energy)]
 ap <- ass_protein_factor()
 ass <- merge(ae, ap, all = T)
 
-# 2.12 Horses
+## 12. Horses
+
+#energy
 he <- horse_energy_factor()
 he$measuredItemCPC <- stockCodes["horse", measuredItemCPC]
 setkeyv(he, keys)
@@ -148,7 +177,9 @@ he <- he[, .(geographicAreaM49, timePointYears, measuredItemCPC, energy)]
 hp <- horse_protein_factor()
 horse <- merge(he, hp, all = T)
 
-# 2.13 Mules
+## 13. Mules
+
+#energy
 me <- mule_energy_factor()
 me$measuredItemCPC <- stockCodes["mule", measuredItemCPC]
 setkeyv(me, keys)
@@ -158,8 +189,9 @@ me <- me[, .(geographicAreaM49, timePointYears, measuredItemCPC, energy)]
 mp <- mule_protein_factor()
 mule <- merge(me, mp, all = T)
 
-# 2.14 Rabbits
+## 14. Rabbits
 
+#energy
 re <- rabbit_energy_factor()
 re$measuredItemCPC <- stockCodes["rabbit", measuredItemCPC]
 setkeyv(re, keys)

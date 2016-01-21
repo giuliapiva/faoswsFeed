@@ -6,8 +6,13 @@
 \usage{
 optimizeFeed(x, y)
 }
+\arguments{
+\item{x}{character. M49 area code, length 1.}
+
+\item{y}{character. Year, length 1.}
+}
 \description{
 This function optimizes the amount of feed (in metric tonnes) of each commodity such that 
-energy and protein requiremetns are both fulfilled using a linear program
+energy and protein requirements are both fulfilled using a linear program.
 }
 

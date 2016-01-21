@@ -9,13 +9,15 @@ getProdData(animal, fun, area, year)
 \arguments{
 \item{animal}{character of animal as listed in \code{\link{codeTable}}.}
 
-\item{fun}{character. Whether for protein or energy function}
+\item{fun}{character. Whether for protein or energy function - All of the
+form {animal}_{energy|protein}_factor}
 
 \item{area}{character. M49 area codes}
 
 \item{year}{character. Years}
 }
 \description{
-Functions mostly used in animal functions
+Functions mostly used in animal functions. These are for retrieving data from
+the SWS.
 }
 

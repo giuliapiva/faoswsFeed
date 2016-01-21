@@ -85,7 +85,7 @@ minusfeedOnlyDemand = merge(feedDemand, feedOnlyNutrientSupply, all.x = T)
 minusfeedOnlyDemand[, minusfeedOnlyEnergyDemand := energyDemand - feedOnlyEnergyAvailability]
 minusfeedOnlyDemand[, minusfeedOnlyProteinDemand := proteinDemand - feedOnlyProteinAvailability]
 
-# For validation: Here, we need a scatterplot with log(feedonlyProteinAviabilty) on the x - axis 
+# For validation: Here, we need a scatterplot with log(feedonlyProteinAvailability) on the x - axis 
 # and log(energydemand)  on y axis
 
 # Set these to 0
@@ -173,10 +173,6 @@ availabilityDemand[, proteinBaseFeed := (proteinShare * residualProteinDemand) /
 #Remove NaNs introduced by 0 / 0
 availabilityDemand[is.na(energyBaseFeed), energyBaseFeed := 0]
 availabilityDemand[is.na(proteinBaseFeed), proteinBaseFeed := 0]
-
-# simple version (without additional optimization:
-
-#
 
 # create dataframe listing all countries and years
 yearCountryList <- unique(availabilityDemand[, .(geographicAreaM49, timePointYears)])
