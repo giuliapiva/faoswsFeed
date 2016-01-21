@@ -8,12 +8,15 @@ calculateFeedDemand <- function(){
 
 ## FS and FCL code are on FAOStat 1 > SUA Working
 animalHeads = getAnimalStocks()
+#saveRDS(animalHeads, "rdata/animalHeads.rda")
 
 animalUnit = calculateAnimalUnits()
+#saveRDS(animalUnit, "rdata/animalUnit.rda")
                   
 ## intensity factors
 
 intensityFactor <- calculateIR()
+#saveRDS(intensityFactor, "rdata/intensityFactor.rda")
 
 # compile Total Feed Demand in Energy and Protein
 
@@ -48,6 +51,7 @@ setnames(livestockDemand, c("geographicAreaM49", "timePointYears",
 ## add aquaculture
 
 aquaDemand <- calculateAquaDemand()
+#saveRDS(aquaDemand, "rdata/aquaDemand.rda")
 
 feedDemandData = merge(livestockDemand, aquaDemand, 
                        by = c("geographicAreaM49", "timePointYears"),
@@ -64,5 +68,6 @@ feedDemandData[, proteinDemand := livestockProteinDemand + aquaProteinDemand]
 feedDemand = feedDemandData[, .(geographicAreaM49, timePointYears, energyDemand, proteinDemand)]
 
 feedDemand
+#saveRDS(feedDemand, "rdata/feedDemand.rda")
 
 }

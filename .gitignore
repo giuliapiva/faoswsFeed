@@ -20,3 +20,4 @@ data/s2005.rda
 # Folders to ignore
 archive/*
 validation/*
+rdata/*

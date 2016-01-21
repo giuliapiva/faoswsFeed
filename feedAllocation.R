@@ -20,6 +20,7 @@ if (CheckDebug()) {
 
 
 feedDemand = calculateFeedDemand()
+#saveRDS(feedDemand, "rdata/feedDemand.rda")
 
 ## Potential Feeds (All feeditems excluding Oil meals, meals and brans)
 potentialFeeds = feedNutrients[feedClassification == "Potential Feed", measuredItemCPC]
@@ -54,6 +55,8 @@ setnames(officialFeed,
 
 # Official feed is only that with official flags
 officialFeed <- officialFeed[flagObservationStatus == "",]
+#saveRDS(officialFeed, "rdata/officialFeed.rda")
+
 
 #HORRIBLE HACK - concatenate keys in order to do anti join. See http://stackoverflow.com/a/33667203/1465387 with data.table 1.9.6
 officialFlagKeys <- apply(officialFeed[ , .(geographicAreaM49, measuredItemCPC, timePointYears)], 1, paste, collapse="&")
@@ -208,11 +211,9 @@ setnames(feedOnlyFeed, "feedAvailability", "feed")
 feedOnlyFeed[, `:=`(flagObservationStatus = "I",
                     flagMethod = "b")]
 
-feedCode <- "5520"
-
 # rbind all datasets 
 feedData <- rbind(allocatedFeed, feedOnlyFeed)
-feedData[,measuredElement := feedCode]
+feedData[,measuredElement := feedItem]
 setnames(feedData, "feed", "Value")
 
 #Remove absurdly high values
@@ -220,6 +221,8 @@ feedData <- feedData[Value < 10e22,]
 
 setcolorder(feedData, c("geographicAreaM49", "measuredElement", "measuredItemCPC", "timePointYears", "Value", "flagObservationStatus", "flagMethod"))
 setkey(feedData, geographicAreaM49, measuredElement, measuredItemCPC, timePointYears)
+
+#saveRDS(feedData, "rdata/feedData.rda")
 
 results <- SaveData("agriculture", "aproduction", feedData)
 
