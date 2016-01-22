@@ -50,7 +50,7 @@ officialFeed = GetData(officialKey, pivoting = c(Pivoting(code = "timePointYears
 
 
 setnames(officialFeed, 
-         paste(c("Value_measuredElement", "flagObservationStatus_measuredElement", "flagMethod_measuredElement"), feedItem, sep="_"),
+         paste(c("Value_measuredElement", "flagObservationStatus_measuredElement", "flagMethod_measuredElement"), feedItem, sep = "_"),
          c("feed", "flagObservationStatus", "flagMethod"))
 
 # Official feed is only that with official flags
@@ -59,7 +59,7 @@ officialFeed <- officialFeed[flagObservationStatus == "",]
 
 
 #HORRIBLE HACK - concatenate keys in order to do anti join. See http://stackoverflow.com/a/33667203/1465387 with data.table 1.9.6
-officialFlagKeys <- apply(officialFeed[ , .(geographicAreaM49, measuredItemCPC, timePointYears)], 1, paste, collapse="&")
+officialFlagKeys <- apply(officialFeed[ , .(geographicAreaM49, measuredItemCPC, timePointYears)], 1, paste, collapse = "&")
 
 # 3. Subtract Nutrients provided by FeedOnly items (oilcakes, brans, etc.)
   
@@ -101,7 +101,7 @@ minusfeedOnlyDemand[minusfeedOnlyProteinDemand < 0, minusfeedOnlyProteinDemand :
 # Here we need to pull all official feed figures, so all feed elements with flag " "
 # officialFeed = data.table[, .(measuredItemCPC, timePointYears, officialFeedValue)]
 
-officialFeedNutrients = merge(officialFeed, feedNutrients, all.x=T, by="measuredItemCPC")
+officialFeedNutrients = merge(officialFeed, feedNutrients, all.x = T, by = "measuredItemCPC")
 
 # Calculate nutrient availabilities
 officialFeedNutrients[, officialFeedEnergyAvailability := feed * energyContent]
@@ -109,7 +109,7 @@ officialFeedNutrients[, officialFeedProteinAvailability := feed * proteinContent
 
 
 ### aggregate energy and protein availabilities from different items 
-officialFeedNutrientSupply = officialFeedNutrients[, lapply(.SD, sum, na.rm=TRUE), 
+officialFeedNutrientSupply = officialFeedNutrients[, lapply(.SD, sum, na.rm = TRUE), 
                                                    by = .(geographicAreaM49, timePointYears),
                                                   .SDcols = c("officialFeedEnergyAvailability", 
                                                               "officialFeedProteinAvailability")]
@@ -189,8 +189,8 @@ years = function(x) {
 
 feedAllocated = data.table()
 
-for(i in unique(yearCountryList[, geographicAreaM49]))
-  for(j in seq_along(yearCountryList[geographicAreaM49 == i, timePointYears]))
+for (i in unique(yearCountryList[, geographicAreaM49]))
+  for (j in seq_along(yearCountryList[geographicAreaM49 == i, timePointYears]))
     feedAllocated = rbind(feedAllocated, optimizeFeed(i, years(i)[j] ))
 
 
@@ -226,4 +226,4 @@ setkey(feedData, geographicAreaM49, measuredElement, measuredItemCPC, timePointY
 
 results <- SaveData("agriculture", "aproduction", feedData)
 
-paste0(paste(names(results), unlist(results), collapse = "\n", sep=": "), "\n\nModule completed successfully")
+paste0(paste(names(results), unlist(results), collapse = "\n", sep = ": "), "\n\nModule completed successfully")

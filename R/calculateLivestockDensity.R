@@ -8,12 +8,15 @@ calculateLivestockDensity = function(cattleCPC = "02111", addyear) {
     year <- unique(c(year, addyear))
     }
   
+  meadowsKey <- "6655"
+  areaKey <- "5110"
+  
   ## Get data for permanent meadows and pastures
   key = DatasetKey(domain = "Land", dataset = "land",
                    dimensions = list(
                      Dimension(name = "geographicAreaM49", keys = getQueryKey("geographicAreaM49")), 
-                     Dimension(name = "itemLand", keys = "6655"), 
-                     Dimension(name = "landElement", keys = "5110"),
+                     Dimension(name = "itemLand", keys = meadowsKey), 
+                     Dimension(name = "landElement", keys = areaKey),
                      Dimension(name = "timePointYears", keys = year) 
                      
                    ),
