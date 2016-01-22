@@ -5,7 +5,7 @@
 \title{Calculate Feed Availability}
 \usage{
 feedAvail(vars, measuredItem = feedNutrients$measuredItemCPC,
-  amperflagskeys = NULL, negate = FALSE)
+  officialData = NULL, negate = FALSE)
 }
 \arguments{
 \item{vars}{character. Variables that should be included. one of
@@ -15,10 +15,10 @@ feedAvail(vars, measuredItem = feedNutrients$measuredItemCPC,
 \item{measuredItem}{character. Vector of CPC values by which the results
 should be subsetted}
 
+\item{officialData}{data.table. A table containing all official feed values.}
+
 \item{negate}{character. When flags is not NULL, keep only data without these
 flags}
-
-\item{flags}{character. If not NULL, subset keep only data with these flags}
 }
 \description{
 This function provides feed availabilities. Using the equation: Production -

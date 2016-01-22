@@ -57,17 +57,12 @@ setnames(officialFeed,
 officialFeed <- officialFeed[flagObservationStatus == "",]
 #saveRDS(officialFeed, "rdata/officialFeed.rda")
 
-
-#HORRIBLE HACK - concatenate keys in order to do anti join. See http://stackoverflow.com/a/33667203/1465387 with data.table 1.9.6
-officialFlagKeys <- apply(officialFeed[ , .(geographicAreaM49, measuredItemCPC, timePointYears)], 1, paste, collapse = "&")
-
 # 3. Subtract Nutrients provided by FeedOnly items (oilcakes, brans, etc.)
   
 ## Retrieve Availability (Supply) of FeedOnly items
 #Only those with no official data
 feedOnlyAvailability = feedAvail(c("production", "imports", "exports"), 
-                                 measuredItem = feedOnlyFeeds, amperflagskeys = officialFlagKeys, negate = TRUE)[, 
-                                      .(geographicAreaM49, measuredItemCPC, timePointYears, feedAvailability)]
+                                 measuredItem = feedOnlyFeeds, officialData = officialFeed, negate = TRUE)
 
 feedOnlyNutrients = merge(feedOnlyAvailability, feedNutrients, all.x = T, by = "measuredItemCPC")
 
@@ -132,7 +127,7 @@ residualFeedDemand[residualProteinDemand < 0, residualProteinDemand := 0]
 
 ## Retrieve Potential feed items data
 feedAvailability = feedAvail(vars = c("production", "imports", "exports", "food", "processed"), 
-                             measuredItem = potentialFeeds, amperflagskeys = officialFlagKeys, negate = TRUE)
+                             measuredItem = potentialFeeds, officialData = officialFeed, negate = TRUE)
                                                           
 # Should look something like 
 # feedAvailability = data.table(geographicAreaM49, timePointYears, measuredItemCPC, feedAvailability)

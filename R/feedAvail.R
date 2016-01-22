@@ -10,13 +10,13 @@
 #'   "imports", "exports"
 #' @param measuredItem character. Vector of CPC values by which the results
 #'   should be subsetted
-#' @param flags character. If not NULL, subset keep only data with these flags
+#' @param officialData data.table. A table containing all official feed values.
 #' @param negate character. When flags is not NULL, keep only data without these
 #'   flags
 #'   
 #' @export
 
-feedAvail = function(vars, measuredItem = feedNutrients$measuredItemCPC, amperflagskeys = NULL, negate = FALSE) {
+feedAvail = function(vars, measuredItem = feedNutrients$measuredItemCPC, officialData = NULL, negate = FALSE) {
 
   feedCodeTable = data.table(measuredElement = c("5510", "5023", "5141", "5600", "5900"),
                              dataset = c("production", "production", "production", "trade", "trade"),
@@ -74,15 +74,13 @@ allData =  merge(allData, feedCodeTable, all.y = TRUE, by = "measuredElement")
 avail = dcast.data.table(allData, geographicAreaM49 + measuredItemCPC + timePointYears ~ variable, value.var = "Value")
 
 # If we want to include or exclude based on flags
-#!!! Replace this with a data.table anti join !!!
-if (!is.null(amperflagskeys)) {
-  amperkeys <- apply(avail[,.(geographicAreaM49, measuredItemCPC, timePointYears)], 1, paste, collapse = "&")
+if (!is.null(officialData)) {
   if (negate) {
     # Include only flags which don't correspond with feed official data
-    avail <- avail[!(amperkeys %in% amperflagskeys),]
+    avail <- avail[!officialData, on=c("geographicAreaM49", "measuredItemCPC", "timePointYears")]
   } else {
     # Include only flags which correspond with feed official data
-    avail <- avail[amperkeys %in% amperflagskeys,]
+    avail <- avail[officialData, on=c("geographicAreaM49", "measuredItemCPC", "timePointYears")]
   }
 }
 
