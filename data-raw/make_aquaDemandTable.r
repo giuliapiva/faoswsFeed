@@ -40,7 +40,7 @@ setnames(aquaProductionLongData, c("variable", "value"), c("timePointYears", "aq
 aquaProductionLongData[, timePointYears := gsub("X", "", timePointYears)]
 
 # fish data and species map
-speciesMap = data.table(read.csv("data-raw/speciesMap.csv"))
+speciesMap = data.table(read.csv("data-raw/aquaData/speciesMap.csv"))
 
 # merge production data with species groups
 aquaProductionMergedData = merge(aquaProductionLongData, speciesMap, 
@@ -57,7 +57,7 @@ setkey(aquaProduction, geographicAreaM49, timePointYears)
 
 
 ## import parameter survey data
-parameters <- data.table(read.csv('data-raw/aquaSurveyData.csv'))
+parameters <- data.table(read.csv('data-raw/aquaData/aquaSurveyData.csv'))
 
 
 ## predict missing parameter values
@@ -108,7 +108,7 @@ aquaProductionParameters = merge(aquaProduction,
   
 
 # Country Specific Survey Data on fcr
-pointData = data.table(read.csv('data-raw/fcr2006.csv')) 
+pointData = data.table(read.csv('data-raw/aquaData/fcr2006.csv')) 
 
 pointData[, geographicAreaM49 := as.character(countrycode(area.code, 
                                              origin = "fao", 
@@ -183,7 +183,7 @@ ifelse(aquaFitted$timePointYears == x & x < unique(surveyData$timePointYears),
 
 
 # merge with nutrient factors
-fishData = data.table(read.csv("data-raw/aquaTable.csv"))
+fishData = data.table(read.csv("data-raw/aquaData/aquaTable.csv"))
 aquaDemandData = merge(aquaProductionFull, fishData, by = "aquaSpecies") 
    
 # Calculate Aquafeed demand
