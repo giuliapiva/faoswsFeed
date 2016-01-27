@@ -6,14 +6,14 @@
 \title{Code table for animal functions}
 \format{a data.table with 54 rows and 8 columns
 \itemize{
- \item module, name of animal species
+ \item module, Name of animal and animal function
  \item fun, Demand estimation type (energy or protein)
- \item table, dataset from which data are to be retrieved
+ \item table, Dataset from which data are to be retrieved
  \item measuredItemCPC, key, CPC code for animal species, meat or milk
- \item CPCDescription, description of CPC element
- \item measuredElement, key, code for element
- \item elementDescription, name of element
- \item variable, variable name used in aniaml requrirements functions
+ \item CPCDescription, Description of CPC element
+ \item measuredElement, key, Code for element
+ \item elementDescription, Name of element
+ \item variable, Variable name used in animal requrirements functions
  }}
 \usage{
 codeTable

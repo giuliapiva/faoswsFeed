@@ -6,7 +6,7 @@
 \title{Animal names and Codes}
 \format{a data.table with 14 rows and 2 columns
 \itemize{
- \item module, key, name of animal species 
+ \item module, key, Name of animal species 
  \item measuredItemCPC, key, CPC code for animal species
 }}
 \usage{

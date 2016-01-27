@@ -4,14 +4,14 @@
 #' 
 #' @format a data.table with 54 rows and 8 columns
 #' \itemize{
-#'  \item module, name of animal species
+#'  \item module, Name of animal and animal function
 #'  \item fun, Demand estimation type (energy or protein)
-#'  \item table, dataset from which data are to be retrieved
+#'  \item table, Dataset from which data are to be retrieved
 #'  \item measuredItemCPC, key, CPC code for animal species, meat or milk
-#'  \item CPCDescription, description of CPC element
-#'  \item measuredElement, key, code for element
-#'  \item elementDescription, name of element
-#'  \item variable, variable name used in aniaml requrirements functions
+#'  \item CPCDescription, Description of CPC element
+#'  \item measuredElement, key, Code for element
+#'  \item elementDescription, Name of element
+#'  \item variable, Variable name used in animal requrirements functions
 #'  }
 #'  
 
@@ -24,7 +24,7 @@
 #' @format a data.table with 54 rows and 8 columns
 #' \itemize{
 #'  \item animalGroup, key, Animal group
-#'  \item coefficient, coefficient 
+#'  \item coefficient, Coefficient 
 #' }
 #' 
 
@@ -34,15 +34,15 @@
 #' 
 #' Eventually, when fisheries is integrated into the new working system, this
 #' will be replaced with calculations from live data. For now it's a flat table.
-#' It's based on n csvs which come from FAOSTAT aquaculture.
+#' It's based on 5 csvs which come from FAOSTAT aquaculture.
 #' (\url{http://www.fao.org/fishery/statistics/global-aquaculture-production/query/en})
 #' 
 #' @format a data.table with 4632 rows and 4 columns
 #' \itemize{
 #'  \item geographicAreaM49, key, M49 code for country
 #'  \item timepointYears, key, Year
-#'  \item aquaEnergyDemand, energy demand for given country and year in MJ
-#'  \item aquaProteinDemand protein demand for a given country and year in Mt?
+#'  \item aquaEnergyDemand, Energy demand for given country and year in MJ
+#'  \item aquaProteinDemand, Protein demand for a given country and year in Mt?
 #'  }
 #' 
 
@@ -72,9 +72,9 @@
 #' @format a data.table with 206 rows and 4 columns
 #' \itemize{
 #'  \item measuredItemCPC, key, CPC code of items 
-#'  \item energyContent, key, energy content in MJ per MT dry matter
-#'  \item proteinContent, share of protein content per unit
-#'  \item feedClassification, Extend to which the item is used as feed 
+#'  \item energyContent, key, Energy content in megajoules (MJ) per metric tonne (MT) dry matter
+#'  \item proteinContent, Share of protein content per unit
+#'  \item feedClassification, Extent to which the item is used as feed 
 #'  }
 #' 
 
@@ -93,7 +93,7 @@
 #'  \item animalGroup, key, Animal Group
 #'  \item timepointYears, key, Year
 #'  \item measuredItemCPC, key, CPC code for items 
-#'  \item intensity, intensity factor for 2005
+#'  \item intensity, Intensity factor for 2005
 #' }
 #' 
 
@@ -105,7 +105,7 @@
 #' 
 #' @format a data.table with 14 rows and 2 columns
 #' \itemize{
-#'  \item module, key, name of animal species 
+#'  \item module, key, Name of animal species 
 #'  \item measuredItemCPC, key, CPC code for animal species
 #' }
 #'
@@ -122,7 +122,7 @@
 #' \itemize{
 #'  \item geographicAreaM49, key, M49 code for country
 #'  \item timepointYears, key, Year
-#'  \item productivity, labor productivty in agriculture as value added per worker in constant 2005 US$
+#'  \item productivity, Labour productivty in agriculture as value added per worker in constant 2005 US$
 #' }
 #' 
 

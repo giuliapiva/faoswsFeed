@@ -10,7 +10,7 @@
  \item animalGroup, key, Animal Group
  \item timepointYears, key, Year
  \item measuredItemCPC, key, CPC code for items 
- \item intensity, intensity factor for 2005
+ \item intensity, Intensity factor for 2005
 }}
 \usage{
 s2005

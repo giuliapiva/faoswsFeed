@@ -7,7 +7,7 @@
 \format{a data.table with 54 rows and 8 columns
 \itemize{
  \item animalGroup, key, Animal group
- \item coefficient, coefficient 
+ \item coefficient, Coefficient 
 }}
 \usage{
 animalCoefficients

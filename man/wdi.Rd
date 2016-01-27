@@ -8,7 +8,7 @@
 \itemize{
  \item geographicAreaM49, key, M49 code for country
  \item timepointYears, key, Year
- \item productivity, labor productivty in agriculture as value added per worker in constant 2005 US$
+ \item productivity, Labour productivty in agriculture as value added per worker in constant 2005 US$
 }}
 \usage{
 wdi
