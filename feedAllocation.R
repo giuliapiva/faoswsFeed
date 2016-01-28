@@ -117,7 +117,7 @@ residualFeedDemand[is.na(residualFeedDemand)] <- 0
 
 # subtract official feed nutrients
 residualFeedDemand[, residualEnergyDemand := minusfeedOnlyEnergyDemand - officialFeedEnergyAvailability]
-residualFeedDemand[, residualProteinDemand := minusfeedOnlyEnergyDemand - officialFeedProteinAvailability]
+residualFeedDemand[, residualProteinDemand := minusfeedOnlyProteinDemand - officialFeedProteinAvailability]
 
 # All that are less than 0 become 0
 residualFeedDemand[residualEnergyDemand < 0, residualEnergyDemand := 0]
@@ -157,7 +157,7 @@ availabilityData[, energyShare := energyAvailability / sumEnergyAvailability]
 availabilityData[, proteinShare := proteinAvailability / sumProteinAvailability]
 #Remove NaNs introduced by 0 / 0
 availabilityData[is.na(energyShare), energyShare := 0]
-availabilityData[is.na(proteinShare), energyShare := 0]
+availabilityData[is.na(proteinShare), proteinShare := 0]
 
 # 5. Allocate Feed
 
