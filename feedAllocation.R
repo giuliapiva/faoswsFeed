@@ -110,7 +110,7 @@ officialFeedNutrientSupply = officialFeedNutrients[, lapply(.SD, sum, na.rm = TR
                                                               "officialFeedProteinAvailability")]
 
 # merge with residual demand
-residualFeedDemand = merge(minusfeedOnlyDemand, officialFeedNutrientSupply)
+residualFeedDemand = merge(minusfeedOnlyDemand, officialFeedNutrientSupply, all.x = TRUE)
 
 #Remove all NAs introduced by the merge
 residualFeedDemand[is.na(residualFeedDemand)] <- 0
