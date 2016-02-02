@@ -25,10 +25,8 @@ The module currently has equations for the following animals:
 \item 8. Ducks
 \item 9. Geese
 \item 10. Turkeys
-\item 11. Asses
-\item 12. Horses
-\item 13. Mules
-\item 14. Rabbits
+\item 11. Horses
+\item 12. Rabbits
 }
 }
 
