@@ -2,7 +2,8 @@ sheep_protein_factor <- function() {
 
   
   queryYear <- getQueryKey("timePointYears")
-  year <- c(queryYear, max(as.numeric((queryYear))) + 1)
+  newYear <- as.character(max(as.numeric((queryYear))) + 1)
+  year <- c(queryYear, newYear)
   area <- getQueryKey("geographicAreaM49")
   
   prodData <-  getProdData(animal = "sheep", fun = "protein", area = area, year = year)
@@ -20,7 +21,7 @@ sheep_protein_factor <- function() {
   #If data is empty, return it
   if (nrow(data) == 0) {
     data[,protein := numeric(0)]
-    return(data[timePointYears != max(as.numeric(timePointYears)), .(geographicAreaM49, timePointYears, protein)])
+    return(data[!(timePointYears %in% newYear), .(geographicAreaM49, timePointYears, protein)])
   }
   
   # All missing values are to be treated as zero
@@ -71,7 +72,7 @@ sheep_protein_factor <- function() {
     protein <- (rdp + udp) / 874.1886
   })
   
-  data[timePointYears != max(as.numeric(timePointYears)), .(geographicAreaM49, timePointYears, protein)]
+  data[!(timePointYears %in% newYear), .(geographicAreaM49, timePointYears, protein)]
 
 }
 

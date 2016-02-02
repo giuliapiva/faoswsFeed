@@ -6,7 +6,8 @@ cattle_energy_factor <- function() {
   #}
 
   queryYear <- getQueryKey("timePointYears")
-  year <- c(queryYear, max(as.numeric((queryYear))) + 1)
+  newYear <- as.character(max(as.numeric((queryYear))) + 1)
+  year <- c(queryYear, newYear)
   area <- getQueryKey("geographicAreaM49")
   
   prodData <-  getProdData(animal = "cattle", fun = "energy", area = area, year = year)
@@ -25,7 +26,7 @@ cattle_energy_factor <- function() {
   #If data is empty, return it
   if (nrow(data) == 0) {
     data[,energy := numeric(0)]
-    return(data[timePointYears != max(as.numeric(timePointYears)),])
+    return(data[!(timePointYears %in% newYear),])
     }
   
   # All missing values are to be treated as zero
@@ -55,7 +56,7 @@ cattle_energy_factor <- function() {
     energy <- (milkenergy * Milk.Animals + beefenergy * Beef.Animals)/Stocks
   })
   
-  data[timePointYears != max(as.numeric(timePointYears)),  
+  data[!(timePointYears %in% newYear),  
   .(geographicAreaM49, timePointYears, energy, Milk.Animals, milkenergy,  Beef.Animals, beefenergy, liveweight, weightgain, milkpercow
     )]
   
