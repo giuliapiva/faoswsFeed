@@ -29,7 +29,7 @@ calculateLivestockDensity = function(cattleCPC = "02111", addyear) {
   
   setnames(permanentMeadows, "Value", "permanentMeadows")
   
-  animalHeads = getAnimalStocks()
+  animalHeads = getAnimalStocks(addyear = addyear)
   
   # merge with cattle head data
   livestockDensityData = merge(animalHeads[measuredItemCPC %in% cattleCPC,], permanentMeadows, 

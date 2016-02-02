@@ -1,4 +1,12 @@
-getAnimalStocks <- function(stockKeys = c("5111", "5112"),  thousandHeads = "5112"){
+getAnimalStocks <- function(stockKeys = c("5111", "5112"),  thousandHeads = "5112", addyear){
+  
+  year <- getQueryKey("timePointYears")
+  
+  #Add year is to add year 2005 for the livestock density calculation
+  if(!missing(addyear)){
+    stopifnot(is.character(addyear))
+    year <- unique(c(year, addyear))
+  }
   
   # Retrieve all animals
   animalKeys = stockCodes[, measuredItemCPC]
@@ -8,7 +16,7 @@ getAnimalStocks <- function(stockKeys = c("5111", "5112"),  thousandHeads = "511
                      Dimension(name = "geographicAreaM49", keys = getQueryKey("geographicAreaM49")), #user input
                      Dimension(name = "measuredItemCPC", keys = animalKeys),
                      Dimension(name = "measuredElement", keys = stockKeys),
-                     Dimension(name = "timePointYears", keys = getQueryKey("timePointYears")) #user input
+                     Dimension(name = "timePointYears", keys = year) #user input
                    ),
                    sessionId =  slot(swsContext.datasets[[1]], "sessionId")
   )
