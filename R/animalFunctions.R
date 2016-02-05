@@ -25,8 +25,11 @@ getProdData <- function(animal, fun, area, year){
                        ),
                        sessionId =  slot(swsContext.datasets[[1]], "sessionId")
   )
-  GetData(prodKey, flags = FALSE)
   
+  prodData <- removeMissingFlags(GetData(prodKey, flags = TRUE))
+  prodData[,`:=`(flagObservationStatus = NULL,
+                    flagMethod = NULL)]
+  prodData
 }
 
 getTradeData <- function(animal, fun, area, year) {
@@ -46,5 +49,21 @@ getTradeData <- function(animal, fun, area, year) {
   
   tradeData <- GetData(tradeKey, flags = FALSE)
   setnames(tradeData, "measuredElementTrade", "measuredElement")
+  
+}
+
+removeMissingFlags <- function(data, delete = FALSE, observationFlag = "flagObservationStatus", 
+                               methodFlag = "flagMethod", missingCode = "M"){
+  workingdata <- copy(data)
+  workingdata <- workingdata[get(observationFlag) != missingCode,]
+  
+  if(delete){
+    # There may not be a method flag
+    to_delete <- setdiff(names(workingdata), c(observationFlag, methodFlag))
+    workingdata <- workingdata[,to_delete, with = FALSE]
+  }
+  
+  workingdata
+  
   
 }

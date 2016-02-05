@@ -33,7 +33,9 @@ feedAvail = function(vars, measuredItem = feedNutrients$measuredItemCPC, officia
                        sessionId =  slot(swsContext.datasets[[1]], "sessionId")
                    )
   
-  productionData = GetData(productionKey, flags = FALSE)
+  productionData = removeMissingFlags(GetData(productionKey, flags = TRUE))
+  productionData[,`:=`(flagObservationStatus = NULL,
+                 flagMethod = NULL)]
   
   if(nrow(feedCodeTable[variable %in% vars & dataset == "trade"]) != 0) {
     #Remove this column so the rbind goes ahead

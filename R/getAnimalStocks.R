@@ -21,7 +21,12 @@ getAnimalStocks <- function(stockKeys = c("5111", "5112"),  thousandHeads = "511
                    sessionId =  slot(swsContext.datasets[[1]], "sessionId")
   )
   #define this as a subset of the larger data
-  animalHeads = GetData(key, flags = FALSE)
+  animalHeads = GetData(key, flags = TRUE)
+  
+  # Remove missing flags
+  animalHeads <- removeMissingFlags(animalHeads)
+  animalHeads[,`:=`(flagObservationStatus = NULL,
+                    flagMethod = NULL)]
   
   setnames(animalHeads, "Value", "animalHeads")
   
