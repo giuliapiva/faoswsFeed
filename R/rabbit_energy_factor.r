@@ -27,7 +27,7 @@ rabbit_energy_factor <- function() {
     #Conversion from g into kg
     Carcass.Wt <- Carcass.Wt / 1000
     liveweight <- Carcass.Wt / 0.55
-    energy <- (200 * 0.0041868 * liveweight * 365) / 35600
+    energy <- ((200/3) * 0.0041868 * liveweight * 365) / 35600
   })
   
 }
