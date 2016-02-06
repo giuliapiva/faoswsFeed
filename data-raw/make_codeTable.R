@@ -13,17 +13,20 @@ setnames(cpcCodes, c("code", "description"), c("measuredItemCPC", "CPCDescriptio
 
 #Get element codes to merge (from production and trade)
 ## WARNING: Making the false assumption that there is no overlap in codes (for simplicity, but not to hard to change) which seems to work
-elementCodes <- rbind(GetCodeList("agriculture", "aproduction", "measuredElement", 
+elementCodes <- rbindlist(list(GetCodeList("agriculture", "aproduction", "measuredElement", 
                                   unique(codeTable[table == "production", measuredElement]))[,.(code, description)], 
                        GetCodeList("trade", "total_trade_CPC", "measuredElementTrade", 
                                    unique(codeTable[table == "trade", measuredElement]))[,.(code, description)]
-                      )
+                      ))
 setnames(elementCodes, c("code", "description"), c("measuredElement", "elementDescription"))
 
 cpcMerge <- merge(cpcCodes, codeTable, by = "measuredItemCPC")
 allCodes <- merge(cpcMerge, elementCodes, by = "measuredElement")
 
-setcolorder(allCodes, c("module", "fun", "table", "measuredItemCPC", "CPCDescription", "measuredElement", "elementDescription", "variable"))
+#Add FS codes
+allCodes[,measuredItemFS := cpc2fcl(measuredItemCPC)]
+
+setcolorder(allCodes, c("module", "fun", "table", "measuredItemFS", "measuredItemCPC", "CPCDescription", "measuredElementFS", "measuredElement", "elementDescription", "variable"))
 setkey(allCodes, measuredItemCPC, measuredElement)
 
 codeTable <- allCodes
