@@ -5,7 +5,7 @@ goose_protein_factor <- function() {
   area <- getQueryKey("geographicAreaM49")
   #area <- na.omit(fs2m49(as.character((1:299)[-22])))
   
-  rawData <-  getProdData(animal = "goose", fun = "protein", area = area, year = year)
+  rawData <-  getProdData(animal = "goose", func = "protein", area = area, year = year)
   
   namedData <- merge(rawData, codeTable[module == "goose" & fun == "protein", .(measuredItemCPC, measuredElement, variable)], 
                      by = c("measuredElement", "measuredItemCPC"), all.y = TRUE)

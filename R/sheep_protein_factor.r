@@ -6,8 +6,8 @@ sheep_protein_factor <- function() {
   year <- c(queryYear, newYear)
   area <- getQueryKey("geographicAreaM49")
   
-  prodData <-  getProdData(animal = "sheep", fun = "protein", area = area, year = year)
-  tradeData <- getTradeData(animal = "sheep", fun = "protein", area = area, year = year)
+  prodData <-  getProdData(animal = "sheep", func = "protein", area = area, year = year)
+  tradeData <- getTradeData(animal = "sheep", func = "protein", area = area, year = year)
   
   rawData <- rbind(prodData, tradeData)
   

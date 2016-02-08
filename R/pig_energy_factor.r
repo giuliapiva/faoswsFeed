@@ -8,7 +8,7 @@ pig_energy_factor <- function() {
   year <- getQueryKey("timePointYears")
   area <- getQueryKey("geographicAreaM49")
   
-  rawData <-  getProdData(animal = "pig", fun = "energy", area = area, year = year)
+  rawData <-  getProdData(animal = "pig", func = "energy", area = area, year = year)
   
   namedData <- merge(rawData, codeTable[module == "pig" & fun == "energy", .(measuredItemCPC, measuredElement, variable)], 
                      by = c("measuredElement", "measuredItemCPC"), all.y = TRUE)

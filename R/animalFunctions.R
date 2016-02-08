@@ -11,9 +11,9 @@
 #' @param area character. M49 area codes
 #' @param year character. Years
 
-getProdData <- function(animal, fun, area, year){
+getProdData <- function(animal, func, area, year){
   
-  prodCodes <- codeTable[module == animal & fun == fun & table == "production", ]
+  prodCodes <- codeTable[module == animal & fun == func & table == "production", ]
   
   
   prodKey = DatasetKey(domain = "agriculture", dataset = "aproduction",
@@ -32,9 +32,9 @@ getProdData <- function(animal, fun, area, year){
   prodData
 }
 
-getTradeData <- function(animal, fun, area, year) {
+getTradeData <- function(animal, func, area, year) {
   
-  tradeCodes <-  codeTable[module == animal & fun == fun & table == "trade",]
+  tradeCodes <-  codeTable[module == animal & fun == func & table == "trade",]
   
   tradeKey = DatasetKey(
     domain = "trade", dataset = "total_trade_CPC",

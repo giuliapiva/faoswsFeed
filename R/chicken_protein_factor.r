@@ -4,7 +4,7 @@ chicken_protein_factor <- function() {
   year <- getQueryKey("timePointYears")
   area <- getQueryKey("geographicAreaM49")
   
-  rawData <-  getProdData(animal = "chicken", fun = "protein", area = area, year = year)
+  rawData <-  getProdData(animal = "chicken", func = "protein", area = area, year = year)
   
   namedData <- merge(rawData, codeTable[module == "chicken" & fun == "protein",.(measuredItemCPC, measuredElement, variable)], 
                      by = c("measuredElement", "measuredItemCPC"), all.y = TRUE)

@@ -4,7 +4,7 @@ camel_protein_factor <- function(area, year) {
   year <- getQueryKey("timePointYears")
   area <- getQueryKey("geographicAreaM49")
   
-  rawData <-  getProdData(animal = "camel", fun = "protein", area = area, year = year)
+  rawData <-  getProdData(animal = "camel", func = "protein", area = area, year = year)
   
   namedData <- merge(rawData, codeTable[module == "camel" & fun == "protein",.(measuredItemCPC, measuredElement, variable)], 
                      by = c("measuredElement", "measuredItemCPC"), all.y = TRUE)

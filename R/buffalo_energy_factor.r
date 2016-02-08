@@ -5,8 +5,8 @@ buffalo_energy_factor <- function() {
   year <- c(queryYear, newYear)
   area <- getQueryKey("geographicAreaM49")
   
-  prodData <-  getProdData(animal = "buffalo", fun = "energy", area = area, year = year)
-  tradeData <- getTradeData(animal = "buffalo", fun = "energy", area = area, year = year)
+  prodData <-  getProdData(animal = "buffalo", func = "energy", area = area, year = year)
+  tradeData <- getTradeData(animal = "buffalo", func = "energy", area = area, year = year)
 
   rawData <- rbind(prodData, tradeData)
   

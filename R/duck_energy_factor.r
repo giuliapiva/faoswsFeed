@@ -4,7 +4,7 @@ duck_energy_factor <- function() {
   area <- getQueryKey("geographicAreaM49")
   #area <- na.omit(fs2m49(as.character((1:299)[-22])))
   
-  rawData <-  getProdData(animal = "duck", fun = "energy", area = area, year = year)
+  rawData <-  getProdData(animal = "duck", func = "energy", area = area, year = year)
   
   namedData <- merge(rawData, codeTable[module == "duck" & fun == "energy", .(measuredItemCPC, measuredElement, variable)], 
                      by = c("measuredElement", "measuredItemCPC"), all.y = TRUE)

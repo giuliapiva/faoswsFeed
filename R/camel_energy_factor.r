@@ -3,7 +3,7 @@ camel_energy_factor <- function() {
   year <- getQueryKey("timePointYears")
   area <- getQueryKey("geographicAreaM49")
   
-  rawData <-  getProdData(animal = "camel", fun = "energy", area = area, year = year)
+  rawData <-  getProdData(animal = "camel", func = "energy", area = area, year = year)
   
   namedData <- merge(rawData, codeTable[module == "camel" & fun == "energy",.(measuredItemCPC, measuredElement, variable)], 
                      by = c("measuredElement", "measuredItemCPC"), all.y = TRUE)

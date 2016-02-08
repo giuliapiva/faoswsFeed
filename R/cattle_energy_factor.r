@@ -10,8 +10,8 @@ cattle_energy_factor <- function() {
   year <- c(queryYear, newYear)
   area <- getQueryKey("geographicAreaM49")
   
-  prodData <-  getProdData(animal = "cattle", fun = "energy", area = area, year = year)
-  tradeData <- getTradeData(animal = "cattle", fun = "energy", area = area, year = year)
+  prodData <-  getProdData(animal = "cattle", func = "energy", area = area, year = year)
+  tradeData <- getTradeData(animal = "cattle", func = "energy", area = area, year = year)
   
   rawData <- rbind(prodData, tradeData)
   
