@@ -19,6 +19,11 @@ goat_protein_factor <- function(area, year) {
   #remove any full NA rows
   data <- data[!apply(data, 1, function(x) all(is.na(x))),]
   
+  nextyearStock <- data[,.(geographicAreaM49,
+                           timePointYears = as.character(as.numeric(timePointYears) - 1),
+                           Stocksnext = Stocks)]
+  data <- merge(data, nextyearStock, all.x = TRUE)
+  
   #If data is empty, return it
   if (nrow(data) == 0) {
     data[,protein := numeric(0)]
@@ -32,10 +37,6 @@ goat_protein_factor <- function(area, year) {
     
     milkpergoat <- Production * 1000 / Stocks
     energy <- (365 * (1.8 + 0.1 * Carcass.Wt * 2) + 4.6 * milkpergoat) / 35600
-    
-    Stocksnext <- c(Stocks[2:length(Stocks)], NA)
-    #Stocksnext[year==2011] <- 0
-  
     
     liveweight <- Carcass.Wt / .43
     

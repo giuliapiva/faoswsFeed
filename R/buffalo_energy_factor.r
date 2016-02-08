@@ -8,7 +8,6 @@ buffalo_energy_factor <- function() {
   prodData <-  getProdData(animal = "buffalo", fun = "energy", area = area, year = year)
   tradeData <- getTradeData(animal = "buffalo", fun = "energy", area = area, year = year)
 
-
   rawData <- rbind(prodData, tradeData)
   
   namedData <- merge(rawData, codeTable[module == "buffalo" & fun == "energy",.(measuredItemCPC, measuredElement, variable)], 
@@ -17,7 +16,12 @@ buffalo_energy_factor <- function() {
   data <- dcast.data.table(namedData, geographicAreaM49 + timePointYears ~ variable, value.var = "Value")
   #remove any full NA rows
   data <- data[!apply(data, 1, function(x) all(is.na(x))),]
-  
+
+  nextyearStock <- data[,.(geographicAreaM49,
+                           timePointYears = as.character(as.numeric(timePointYears) - 1),
+                           Stocksnext = Stocks)]
+  data <- merge(data, nextyearStock, all.x = TRUE)
+    
   #If data is empty, return it
   if (nrow(data) == 0) {
     data[,energy := numeric(0)]
@@ -33,9 +37,6 @@ buffalo_energy_factor <- function() {
     lw.constant <- .55
     # Beef animals are all animals which are not dairy
     Beef.Animals <- Stocks - Milk.Animals
-    
-    # Change in stocks
-    Stocksnext <- c(Stocks[2:length(Stocks)], NA)
     
     #Live cattle are heavier than carcasses
     ## thousand factor is to convert tonnes to kilograms

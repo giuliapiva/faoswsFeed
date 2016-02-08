@@ -18,6 +18,11 @@ sheep_protein_factor <- function() {
   #remove any full NA rows
   data <- data[!apply(data, 1, function(x) all(is.na(x))),]
   
+  nextyearStock <- data[,.(geographicAreaM49,
+                           timePointYears = as.character(as.numeric(timePointYears) - 1),
+                           Stocksnext = Stocks)]
+  data <- merge(data, nextyearStock, all.x = TRUE)
+  
   #If data is empty, return it
   if (nrow(data) == 0) {
     data[,protein := numeric(0)]
@@ -28,8 +33,6 @@ sheep_protein_factor <- function() {
   data[is.na(data)] <- 0
   
   data <- within(data, {
-    
-    Stocksnext <- c(Stocks[2:length(Stocks)], NA)
     
     milkpersheep <- Production * 1000 / Stocks
     energy <- (365 * (1.8 + 0.1 * Carcass.Wt * 2) + 4.6 * milkpersheep) / 35600

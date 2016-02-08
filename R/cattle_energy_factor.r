@@ -23,6 +23,11 @@ cattle_energy_factor <- function() {
   #remove any full NA rows
   data <- data[!apply(data, 1, function(x) all(is.na(x))),]
 
+  nextyearStock <- data[,.(geographicAreaM49,
+                           timePointYears = as.character(as.numeric(timePointYears) - 1),
+                           Stocksnext = Stocks)]
+  data <- merge(data, nextyearStock, all.x=T)
+  
   #If data is empty, return it
   if (nrow(data) == 0) {
     data[,energy := numeric(0)]
@@ -35,10 +40,8 @@ cattle_energy_factor <- function() {
   data <- within(data, {
     Beef.Animals <- Stocks - Milk.Animals
     
-    Stocksnext <- c(Stocks[2:length(Stocks)], NA)
-    #Stocksnext[year==2011] <- 0
-      
     liveweight <- Carcass.Wt / .55
+    
     milkpercow <- Production * 1000 / Milk.Animals
     kleiberconstant <- 0.75
     metabolicweight <- liveweight ^ kleiberconstant
