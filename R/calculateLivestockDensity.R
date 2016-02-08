@@ -1,3 +1,7 @@
+#'
+#'
+#'@export
+
 calculateLivestockDensity = function(cattleCPC = "02111", addyear) {
 
   

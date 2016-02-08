@@ -1,3 +1,8 @@
+##'
+##' @export
+
+
+
 getAnimalStocks <- function(stockKeys = c("5111", "5112"),  thousandHeads = "5112", addyear){
   
   year <- getQueryKey("timePointYears")
