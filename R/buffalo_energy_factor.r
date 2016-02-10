@@ -29,9 +29,14 @@ buffalo_energy_factor <- function() {
   }
   
   # All missing values are to be treated as zero
-  data[is.na(data)] <- 0
+  #data[is.na(data)] <- 0
   
   data <- within(data, {
+   
+    Milk.Production[is.na(Milk.Production)] <- 0
+    Milk.Animals[is.na(Milk.Animals)] <- 0
+    Imports[is.na(Imports)] <- 0
+    Exports[is.na(Exports)] <- 0
     
     # Define conversion between carcass and liveweight
     lw.constant <- .55
@@ -50,7 +55,9 @@ buffalo_energy_factor <- function() {
                     * liveweight) 
                    / Beef.Animals) / 365
     
-    weightgain[weightgain < 0] <- 0 
+    #`which` protects it from NAs
+    weightgain[which(weightgain < 0)] <- 0 
+    
     milkenergy <- (((365 * 0.077 * metabolicweight) + (0.74 * milkpercow)) * 4.184) / 0.6/ 35600
     beefenergy <- (365 * 4.184 * (0.077 * metabolicweight + (0.063 * (0.96 * liveweight) ^ 0.75 *                                                          
                                                                weightgain ^ 1.097)))/0.6/35600
@@ -58,6 +65,7 @@ buffalo_energy_factor <- function() {
     #beefenergy[weightgain == 0] <- (365*(8.3 + (0.091 * Carcass.Wt[weightgain == 0] * 2)))/35600
     
     energy <- (milkenergy * Milk.Animals + beefenergy * Beef.Animals) / Stocks
+    
   })
   
   data[!(timePointYears %in% newYear), .(

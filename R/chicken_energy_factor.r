@@ -25,7 +25,7 @@ chicken_energy_factor <- function() {
   }
   
   # All missing values are to be treated as zero
-  data[is.na(data)] <- 0
+  #data[is.na(data)] <- 0
   
   within(data, {
     Stocks <- Stocks * 1000
@@ -34,17 +34,15 @@ chicken_energy_factor <- function() {
     kleiberconstant <- 0.75
     metabolicweight <- liveweight ^ kleiberconstant
     
-    if (all(Laying == 0))  
-    {energy <- (metabolicweight * 78.3 *2.5 * 365 * 0.0041868) / 35600
-    
-     } else {
-      Laying <- Laying * 1000
-      Yield <- Yield/ 1000
+      Laying <- Laying * 1000 #Stocks are in 1000 head
+      Yield <- Yield / 1000
     layingenergy <- ((metabolicweight*120 + 2.07 * Yield)*0.0041868*365)/35600
     chickenenergy <- (metabolicweight * 78.3 *2 * 365 * 0.0041868) / 35600
+    
     energy <- (Laying * layingenergy + (Stocks - Laying) * chickenenergy)/Stocks
-    }
+    
     energy[is.na(Laying)] <- (metabolicweight[is.na(Laying)] * 78.3 *2.5 * 365 * 0.0041868) / 35600
+    energy[which(Laying == 0)] <- (metabolicweight[which(Laying == 0)] * 78.3 *2.5 * 365 * 0.0041868) / 35600
   })
   
   

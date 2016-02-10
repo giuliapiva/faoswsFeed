@@ -31,9 +31,13 @@ goat_protein_factor <- function(area, year) {
   }
   
   # All missing values are to be treated as zero
-  data[is.na(data)] <- 0
+  #data[is.na(data)] <- 0
   
   data <- within(data, {
+    
+    Imports[is.na(Imports)] <- 0
+    Exports[is.na(Exports)] <- 0
+    Production[is.na(Production)] <- 0
     
     milkpergoat <- Production * 1000 / Stocks
     energy <- (365 * (1.8 + 0.1 * Carcass.Wt * 2) + 4.6 * milkpergoat) / 35600

@@ -22,7 +22,7 @@ chicken_protein_factor <- function() {
   
   
   # All missing values are to be treated as zero
-  data[is.na(data)] <- 0
+  #data[is.na(data)] <- 0
   
   data <- within(data, {
     Carcass.Wt <- Carcass.Wt / 1000

@@ -35,11 +35,15 @@ cattle_energy_factor <- function() {
     }
   
   # All missing values are to be treated as zero
-  data[is.na(data)] <- 0
+  #data[is.na(data)] <- 0
   
   data <- within(data, {
-    Beef.Animals <- Stocks - Milk.Animals
+
+    Imports[is.na(Imports)] <- 0
+    Exports[is.na(Exports)] <- 0
     
+    Beef.Animals <- Stocks - Milk.Animals
+
     liveweight <- Carcass.Wt / .55
     
     milkpercow <- Production * 1000 / Milk.Animals
@@ -57,6 +61,7 @@ cattle_energy_factor <- function() {
     #beefenergy[weightgain == 0] <- (365*(8.3 + (0.091 * Carcass.Wt[weightgain == 0] * 2)))/35600
     
     energy <- (milkenergy * Milk.Animals + beefenergy * Beef.Animals)/Stocks
+    
   })
   
   data[!(timePointYears %in% newYear),  

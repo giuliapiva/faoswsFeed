@@ -7,14 +7,15 @@ cattle_protein_factor <- function() {
     return(data[, .(geographicAreaM49, timePointYears, protein)])
   }
   
-  data[is.na(data)] <- 0
+  #data[is.na(data)] <- 0
   
   data <- within(data, {
     kleiberconstant <- 0.75
     metabolicweight <- liveweight ^ kleiberconstant
     re <- 0.0635 * (0.96 * liveweight) * 0.75 * (weightgain * 0.96) * 1.097
     beefprotein <- (3.8 * (0.96 * liveweight) ^ 0.75 + (weightgain * (268 - (29.4 * (re / weightgain))))) / 874.1886
-    beefprotein[weightgain == 0] <- (3.8 * (0.96 * liveweight[weightgain == 0]) ^ 0.75) / 874.1886
+    
+    beefprotein[which(weightgain == 0)] <- (3.8 * (0.96 * liveweight[which(weightgain == 0)]) ^ 0.75) / 874.1886
     
     mp <- 5.17 * 6.25 * (milkpercow/365)
     me <- ((milkenergy * 35600) / 365)

@@ -25,9 +25,11 @@ goat_energy_factor <- function() {
   }
   
   # All missing values are to be treated as zero
-  data[is.na(data)] <- 0
+  #data[is.na(data)] <- 0
   
   within(data, {
+    Production[is.na(Production)] <- 0
+    
     milkpergoat <- Production * 1000 / Stocks
     energy <- (365 * (1.8 + 0.1 * Carcass.Wt * 2) + 4.6 * milkpergoat) / 35600
   })

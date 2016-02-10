@@ -25,10 +25,13 @@ sheep_energy_factor <- function() {
   }
   
   # All missing values are to be treated as zero
-  data[is.na(data)] <- 0
+  #data[is.na(data)] <- 0
     
 
   data <- within(data, {
+    
+    Production[is.na(Production)] <- 0
+    
     #Convert production from tonnes to kilograms
     milkpersheep <- Production * 1000 / Stocks
     energy <- (365 * (1.8 + 0.1 * Carcass.Wt * 2) + 4.6 * milkpersheep) / 35600

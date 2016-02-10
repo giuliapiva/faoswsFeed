@@ -13,7 +13,7 @@ camel_energy_factor <- function() {
   #remove any full NA rows
   data <- data[!apply(data, 1, function(x) all(is.na(x))),]
   # All missing values are to be treated as zero
-  data[is.na(data)] <- 0
+  #data[is.na(data)] <- 0
   
   #If data is empty, return it
   if (nrow(data) == 0) {
