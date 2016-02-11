@@ -180,7 +180,8 @@ rabbit <- merge(re, rp, all = T)
 ## 3. COMBINE INDICES
 
 indices <- rbind(cattle, buffalo, sheep, goat, camel, pig, chicken, duck, goose, turkey, horse, rabbit) 
-
+indices[which(energy < 0), energy := 0]
+indices[which(protein < 0), protein := 0]
 ## 4. PREPARE OUTPUT CSV
 
 # format
