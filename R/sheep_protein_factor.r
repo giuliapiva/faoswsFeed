@@ -36,6 +36,7 @@ sheep_protein_factor <- function() {
     
     Imports[is.na(Imports)] <- 0
     Exports[is.na(Exports)] <- 0
+    Production[is.na(Production)] <- 0
     
     milkpersheep <- Production * 1000 / Stocks
     energy <- (365 * (1.8 + 0.1 * Carcass.Wt * 2) + 4.6 * milkpersheep) / 35600
