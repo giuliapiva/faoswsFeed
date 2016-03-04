@@ -141,25 +141,25 @@ surveyData[, timePointYears := as.character(timePointYears)]
 aquaFitted = merge(aquaProductionParameters, surveyData, by = c("geographicAreaM49", "timePointYears", "aquaSpecies"), all.x = T)
                                
  extrapolate <- function(x) {
-                           
+                   
           setkey(aquaFitted, geographicAreaM49, aquaSpecies, timePointYears)
           #Create Variables for year change calculation             
-          aquaFitted[, Y2Ychange := (proportionOnFeed - c(0, proportionOnFeed[1:length(proportionOnFeed) - 1])) / 
-                 c(0, proportionOnFeed[1:length(proportionOnFeed) - 1])]
+          aquaFitted[, Y2Ychange := (feedConversionRate - c(0, feedConversionRate[1:length(feedConversionRate) - 1])) / 
+                 c(0, feedConversionRate[1:length(feedConversionRate) - 1])]
                            
           aquaFitted$Y2Ychange[aquaFitted$timePointYears == min(aquaFitted$timePointYears)] = 0
                            
-          aquaFitted[, pointFeedConversionRatenext := c(pointFeedConversionRate[2:length(pointFeedConversionRate)],
+          aquaFitted[, pointFeedConversionRateprevious := c(pointFeedConversionRate[2:length(pointFeedConversionRate)],
                                                 0) ]
-          aquaFitted[, pointFeedConversionRateprevious := c(0,
+          aquaFitted[, pointFeedConversionRatenext := c(0,
                pointFeedConversionRate[1:length(pointFeedConversionRate) - 1])] 
     
           aquaFitted[, Y2Ychangenext := c(Y2Ychange[2:length(Y2Ychange)],0) ]
  # extrapolate feedConversionRate                          
 ifelse(aquaFitted$timePointYears == x & x < unique(surveyData$timePointYears),
-        aquaFitted$pointFeedConversionRatenext * (1 + aquaFitted$Y2Ychangenext),
+        aquaFitted$pointFeedConversionRatenext * (1 - aquaFitted$Y2Ychangenext),
             ifelse(x == aquaFitted$timePointYears & x > unique(surveyData$timePointYears), 
-                aquaFitted$pointFeedConversionRateprevious * (1 - aquaFitted$Y2Ychange),
+                aquaFitted$pointFeedConversionRateprevious * (1 + aquaFitted$Y2Ychange),
                    aquaFitted$pointFeedConversionRate))
  }
 
