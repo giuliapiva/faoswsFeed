@@ -11,6 +11,7 @@ Mud carp,Carp
 Nilem carp,Carp
 Silver carp,Carp
 Small scale mud carp,Carp
+"Silver, bighead carps nei",Carps
 "Africa-bighead catfish, hybrid",Catfish
 African catfish,Catfish
 Amazon sailfin catfish,Catfish
@@ -36,6 +37,7 @@ Upsidedown catfishes,Catfish
 Wels(=Som) catfish,Catfish
 Yellow catfish,Catfish
 Catla,Catla
+Freshwater crustaceans,Freshwater Crustacean
 Freshwater crustaceans nei,Freshwater Crustacean
 Giant river prawn,Freshwater Crustacean
 Monkey river prawn,Freshwater Crustacean
@@ -55,6 +57,7 @@ Callinectes swimcrabs nei,Marine Crustacean
 Caramote prawn,Marine Crustacean
 Chinese mitten crab,Marine Crustacean
 Common prawn,Marine Crustacean
+"Crabs, sea-spiders",Marine Crustacean
 Eastern school shrimp,Marine Crustacean
 Flathead lobster,Marine Crustacean
 Fleshy prawn,Marine Crustacean
@@ -67,6 +70,7 @@ Indian white prawn,Marine Crustacean
 Indo-Pacific swamp crab,Marine Crustacean
 Japanese spiny lobster,Marine Crustacean
 Kuruma prawn,Marine Crustacean
+"Lobsters, spiny-rock lobsters",Marine Crustacean
 Marine crabs nei,Marine Crustacean
 Metapenaeus shrimps nei,Marine Crustacean
 Mud spiny lobster,Marine Crustacean
@@ -149,6 +153,7 @@ Largemouth black bass,Miscellaneous Freshwater Fish
 Mandarin fish,Miscellaneous Freshwater Fish
 Marble goby,Miscellaneous Freshwater Fish
 Marron crayfish,Miscellaneous Freshwater Fish
+Miscellaneous freshwater fishes,Miscellaneous Freshwater Fish
 Mississippi paddlefish,Miscellaneous Freshwater Fish
 Mudfish,Miscellaneous Freshwater Fish
 Murray cod,Miscellaneous Freshwater Fish
@@ -198,6 +203,7 @@ Striped bass,Miscellaneous Freshwater Fish
 "Striped bass, hybrid",Miscellaneous Freshwater Fish
 Striped snakehead,Miscellaneous Freshwater Fish
 Sturgeons nei,Miscellaneous Freshwater Fish
+"Sturgeons, paddlefishes",Miscellaneous Freshwater Fish
 "Tambacu, hybrid",Miscellaneous Freshwater Fish
 "Tambatinga, hybrid",Miscellaneous Freshwater Fish
 Tench,Miscellaneous Freshwater Fish
@@ -215,11 +221,16 @@ Whitefishes nei,Miscellaneous Freshwater Fish
 Wuchang bream,Miscellaneous Freshwater Fish
 Yabby crayfish,Miscellaneous Freshwater Fish
 Barramundi(=Giant seaperch),Miscellaneous Marine Fish
+Demersal Marine Fish Frsh,Miscellaneous Marine Fish
 Dorada,Miscellaneous Marine Fish
 Dorado,Miscellaneous Marine Fish
 Dotted gizzard shad,Miscellaneous Marine Fish
 Marine crustaceans nei,Miscellaneous Marine Fish
+Marine Fish Nes Fresh,Miscellaneous Marine Fish
 Marine fishes,Miscellaneous Marine Fish
+Miscellaneous marine crustaceans,Miscellaneous Marine Fish
+Shads,Miscellaneous Marine Fish
+"Shrimps, prawns",Marine Crustacean
 Roho labeo,Rohu
 Arctic char,Salmon
 Atlantic salmon,Salmon
@@ -233,6 +244,7 @@ Salmonoids nei,Salmon
 Tilapias and other cichlids,Tilapia
 Brook trout,Trout
 Golden trout,Trout
+Miscellaneous diadromous fishes,Trout
 Rainbow trout,Trout
 Sea trout,Trout
 Sevan trout,Trout
