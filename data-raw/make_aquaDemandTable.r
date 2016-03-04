@@ -106,7 +106,7 @@ parameterValues[, timePointYears := as.character(timePointYears)]
 
 # merge with Production Data
 aquaProductionParameters = merge(aquaProduction, 
-                                 parameterValues, by = c("aquaSpecies", "timePointYears"), all = T)
+                                 parameterValues, by = c("aquaSpecies", "timePointYears"), all.x = T)
   
 
 # Country Specific Survey Data on fcr
