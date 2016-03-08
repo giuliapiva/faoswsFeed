@@ -44,8 +44,10 @@ incomeClasses <- incomeClasses[GroupName %in% c("High income", "Low income", "Mi
 incomeClasses[,geographicAreaM49 := as.character(countrycode(CountryCode, "wb", "iso3n"))]
 incomeClasses <- incomeClasses[,.(geographicAreaM49, CountryName, GroupName)]
 
-#Sudan has the wrong name (it should be former Sudan)
+# Sudan has the wrong name (it should be former Sudan)
 incomeClasses[geographicAreaM49 == "736", CountryName := "Sudan (former)"]
+# China should be 1248
+incomeClasses[geographicAreaM49 == "156", geographicAreaM49 := "1248"]
 #Exclude Channel Islands and Kosovo (not separately recognised by the UN)
 incomeClasses <- incomeClasses[!is.na(geographicAreaM49)]
 
