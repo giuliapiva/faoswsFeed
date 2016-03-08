@@ -87,40 +87,40 @@ imp_model <- lm(productivity~GroupName*timePointYears, data=training)
 
 wdi_withClasses[,imputed := predict(imp_model, data.frame(GroupName, timePointYears))]
 
-imputeNA <- function(prod, imputed){
+imputeNA <- function(xval, prod, imputed){
   if(all(is.na(prod))){
     out <- imputed
   } else {
-    mu <- mean(prod, na.rm=TRUE)
-    mu_p <- mean(imputed)
+    mu <- lm(y~x, data=data.frame(x=xval, y=prod))
+    mu_p <- lm(y~x, data=data.frame(x=xval, y=imputed))
     
-    mu_ratio <- mu/mu_p
+    mu_ratio <- suppressWarnings(predict(mu, data.frame(x=xval))/predict(mu_p, data.frame(x=xval)))
     
     out <- prod
-    out[is.na(out)] <- imputed[is.na(out)] * mu_ratio
+    out[is.na(out)] <- imputed[is.na(out)] * mu_ratio[is.na(out)]
   }
   out
   
 }
 
 # you can actually use productivity straight, but the intermediate is for (commented out) plots
-wdi_withClasses[,new_productivity := imputeNA(productivity, imputed), by=geographicAreaM49]
+wdi_withClasses[,new_productivity := imputeNA(as.numeric(timePointYears), productivity, imputed), by=geographicAreaM49]
 
-# ### plot with red rectangles for NAs
-# 
+### plot with red rectangles for NAs
+
 # library(ggplot2)
 # plot_wdi <- copy(wdi_withClasses)
 # plot_wdi[,timePointYears := as.numeric(timePointYears)]
 # 
 # 
-# pdf("imputation_trial_plots.pdf")
+# pdf("imputation_trial_plots_ts.pdf")
 # for(i in sort(unique(plot_wdi[,Country.Name]))){
 # gp <- ggplot(plot_wdi[Country.Name == i], aes(x=timePointYears, y=new_productivity, group=Country.Name))+
 #   #facet_wrap(~Country.Name, scales="free_y")+
-#   labs(title=i, y="Agricultural Productivity (2005 dollars)")
+#   labs(title=paste0(i, ", with time-series"), y="Agricultural Productivity (2005 dollars)")
 # if(nrow(plot_wdi[is.na(productivity) & Country.Name == i])> 0){
 #   gp <- gp + geom_rect(data=plot_wdi[is.na(productivity) & Country.Name == i], 
-#             aes(xmin = timePointYears-.49, xmax=timePointYears + .49, ymin=-Inf, ymax=Inf), 
+#             aes(xmin = timePointYears-.51, xmax=timePointYears + .51, ymin=-Inf, ymax=Inf), 
 #             fill="indianred", colour = "#00000000")
 # }
 # print(gp + geom_line())
