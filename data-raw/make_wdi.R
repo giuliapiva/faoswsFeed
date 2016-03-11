@@ -72,9 +72,9 @@ defunctCountries <- data.table(geographicAreaM49 = c("729", "890", "402", "810",
 #                              GroupName = c("Middle income", "Middle income", "Middle income", 
 #                                             "High income", "Middle income", "Middle income",
 #                                             "Low income", "High income", "High income"))
-                              GroupName = c("Lower middle income", "Upper middle income", "Upper middle income", 
-                                             "High income", "Upper middle income", "Upper middle income",
-                                             "Low income", "High income", "High income"))
+                              GroupName = c("LMC", "UMC", "UMC", 
+                                             "HIC", "UMC", "UMC",
+                                             "LIC", "HIC", "HIC"))
 
 incomeClasses <- rbind(incomeClasses, defunctCountries)
 
@@ -89,10 +89,10 @@ islandCountries <- data.table(read.csv("data-raw/IR_factor/FaostatAreaGroupLists
 setnames(islandCountries, "X", "geographicAreaM49")
 islandCountries[,geographicAreaM49 := fs2m49(as.character(geographicAreaM49))]
 
-#remove all countries in Small Island Developing States group # Note that the
-#following countries aren't present in WB data: 
-#Aruba, Cook Islands, Guadeloupe, Martinique, Montserrat, Nauru, Niue, 
-#British Virgin Islands, Anguilla
+#remove all countries in Small Island Developing States group 
+#Note that the following countries aren't present in WB data: Aruba, Cook
+#Islands, Guadeloupe, Martinique, Montserrat, Nauru, Niue, British Virgin
+#Islands, Anguilla
 training <- wdi_withClasses[!islandCountries, on="geographicAreaM49",]
 
 trainingFullTS = training[, .SD[(all(!is.na(productivity)))], by="geographicAreaM49"]
@@ -123,24 +123,24 @@ wdi_withClasses[,new_productivity := imputeNA(productivity, imputed), by=geograp
 
 # ### plot with red rectangles for NAs
 # 
-library(ggplot2)
-plot_wdi <- copy(wdi_withClasses)
-plot_wdi[,timePointYears := as.numeric(timePointYears)]
-
-
-pdf("imputation_trial_plots.pdf")
-for(i in sort(unique(plot_wdi[,Country.Name]))){
-gp <- ggplot(plot_wdi[Country.Name == i], aes(x=timePointYears, y=new_productivity, group=Country.Name))+
-  #facet_wrap(~Country.Name, scales="free_y")+
-  labs(title=i, y="Agricultural Productivity (2005 dollars)")
-if(nrow(plot_wdi[is.na(productivity) & Country.Name == i])> 0){
-  gp <- gp + geom_rect(data=plot_wdi[is.na(productivity) & Country.Name == i], 
-            aes(xmin = timePointYears-.51, xmax=timePointYears + .51, ymin=-Inf, ymax=Inf), 
-            fill="indianred", colour = "#00000000")
-}
-print(gp + geom_line())
-}
-dev.off()
+# library(ggplot2)
+# plot_wdi <- copy(wdi_withClasses)
+# plot_wdi[,timePointYears := as.numeric(timePointYears)]
+# 
+# 
+# pdf("imputation_trial_plots.pdf")
+# for(i in sort(unique(plot_wdi[,Country.Name]))){
+# gp <- ggplot(plot_wdi[Country.Name == i], aes(x=timePointYears, y=new_productivity, group=Country.Name))+
+#   #facet_wrap(~Country.Name, scales="free_y")+
+#   labs(title=i, y="Agricultural Productivity (2005 dollars)")
+# if(nrow(plot_wdi[is.na(productivity) & Country.Name == i])> 0){
+#   gp <- gp + geom_rect(data=plot_wdi[is.na(productivity) & Country.Name == i], 
+#             aes(xmin = timePointYears-.51, xmax=timePointYears + .51, ymin=-Inf, ymax=Inf), 
+#             fill="indianred", colour = "#00000000")
+# }
+# print(gp + geom_line())
+# }
+# dev.off()
 ## FINAL PROCESSING
 
 wdi_withClasses[is.na(productivity), productivity := new_productivity]
