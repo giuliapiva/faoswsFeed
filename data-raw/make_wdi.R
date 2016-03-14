@@ -37,10 +37,23 @@ wdi[, geographicAreaM49 := as.character(countrycode(Country.Code, "wb", "iso3n")
 #Remove any countries that aren't converted (probably Kosovo and Channel Islands)
 wdi = wdi[!is.na(geographicAreaM49),]
 # manually correct countrycode mismatch: China code M49 is 1248
-wdi$geographicAreaM49[wdi$geographicAreaM49 == "156"] = "1248"
+wdi[geographicAreaM49 == "156", geographicAreaM49 := "1248"]
+
+# Making the distinction between old and new Sudan
+wdi[geographicAreaM49 == "736" & as.numeric(timePointYears) < 2012, 
+                Country.Name := "Sudan (former)"]
+wdi[geographicAreaM49 == "736" & as.numeric(timePointYears) >= 2012, 
+                geographicAreaM49 := "729"]
+
+# Filling grid back out to all years (after Sudan replacements)
+fullgrid <- wdi[,CJ(geographicAreaM49 = unique(geographicAreaM49), timePointYears = unique(timePointYears))]
+unique_keys <- unique(wdi[, .(Country.Name, Country.Code, Series.Name, Series.Code, geographicAreaM49)])
+unique_keys <- unique_keys[fullgrid, , on="geographicAreaM49"]
+wdi <- merge(wdi, unique_keys, all.y=T, by=names(unique_keys))
 
 startYear = "1990" 
 endYear = max(wdi[, timePointYears])
+
 wdi = wdi[timePointYears %in% as.character(startYear:endYear)]
 ## Imputation of missing data in wdi
 ## !! PROBLEM !! - countries that don't exist anymore. Former Sudan? Former Soviet Countries?
