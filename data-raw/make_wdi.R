@@ -39,6 +39,7 @@ wdi = wdi[!is.na(geographicAreaM49),]
 # manually correct countrycode mismatch: China code M49 is 1248
 wdi[geographicAreaM49 == "156", geographicAreaM49 := "1248"]
 
+#! Warning: Modern Sudan gets counted as former Sudan in WB data.
 # Making the distinction between old and new Sudan
 wdi[geographicAreaM49 == "736" & as.numeric(timePointYears) < 2012, 
                 Country.Name := "Sudan (former)"]
@@ -56,8 +57,6 @@ endYear = max(wdi[, timePointYears])
 
 wdi = wdi[timePointYears %in% as.character(startYear:endYear)]
 ## Imputation of missing data in wdi
-## !! PROBLEM !! - countries that don't exist anymore. Former Sudan? Former Soviet Countries?
-## -- We're going to have to 
 incomeClasses <- data.table(read.csv("data-raw/IR_factor/class.csv"))
 # keep only income groups
 #incomeClasses <- incomeClasses[GroupName %in% c("High income", "Low income", "Middle income"),]
@@ -73,9 +72,6 @@ incomeClasses[geographicAreaM49 == "736", CountryName := "Sudan (former)"]
 incomeClasses[geographicAreaM49 == "156", geographicAreaM49 := "1248"]
 #Exclude Channel Islands and Kosovo (not separately recognised by the UN)
 incomeClasses <- incomeClasses[!is.na(geographicAreaM49)]
-
-#! Warning: Modern Sudan gets counted as former Sudan in WB data. If this
-#shouldn't happen, then we need a mapping for WB country concepts to FAO ones
 
 defunctCountries <- data.table(geographicAreaM49 = c("729", "890", "402", "810", "891", "274", "230", "200", "58"),
                                CountryName = c("Sudan", "Yugoslav SFR(-1991)", "West Bank(-1995)", 
