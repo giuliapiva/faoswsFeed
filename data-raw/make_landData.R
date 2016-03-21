@@ -85,8 +85,8 @@ imputeNA <- function(prod, imputed){
   if(all(is.na(prod))){
     out <- imputed
   } else {
-    mu <- mean(prod, na.rm=TRUE)
-    mu_p <- mean(imputed)
+    mu <- mean(prod[!is.na(prod)], na.rm=TRUE)
+    mu_p <- mean(imputed[!is.na(prod)])
     
     mu_ratio <- mu/mu_p
     
@@ -122,9 +122,19 @@ land[,new_Value := imputeNA(Value, imputed), by=AreaCode]
 # dev.off()
 ### IMPUTATION validation
 
+# nl <- function(val, imp){
+#   if(all(is.na(val))){
+#     return(imp)
+#   }
+#   
+#   nval <- imp * mean(val, na.rm=TRUE)/mean(imp, na.rm=T)
+#   nval
+#   
+# }
+# 
 # land[, nv:= nl(Value, imputed), by = CountryName]
 # 
-# pdf("land_imputation_validation.pdf")
+# pdf("adj_land_imputation_validation.pdf")
 # for(country in sort(unique(na.omit(land$CountryName)))){
 #   g<-ggplot(land[!is.na(GroupName) & CountryName == country,], aes(x=as.numeric(Year), y=nv, group=GroupName))+
 #     geom_line(col="red")+

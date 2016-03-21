@@ -115,8 +115,8 @@ imputeNA <- function(prod, imputed){
   if(all(is.na(prod))){
     out <- imputed
   } else {
-    mu <- mean(prod, na.rm=TRUE)
-    mu_p <- mean(imputed)
+    mu <- mean(prod[!is.na(prod)], na.rm=TRUE)
+    mu_p <- mean(imputed[!is.na(prod)])
     
     mu_ratio <- mu/mu_p
     
