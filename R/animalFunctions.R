@@ -6,7 +6,7 @@
 #' @rdname animal-functions
 #'   
 #' @param animal character of animal as listed in \code{\link{codeTable}}.
-#' @param fun character. Whether for protein or energy function - All of the
+#' @param func character. Whether for protein or energy function - All of the
 #'   form {animal}_{energy|protein}_factor
 #' @param area character. M49 area codes
 #' @param year character. Years

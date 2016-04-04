@@ -12,7 +12,8 @@ Depends:
     R (>= 3.1.2),
     faosws (>= 0.4.2)
 Imports:
-    data.table
+    data.table,
+    lpSolve
 Suggests:
     countrycode,
     devtools
