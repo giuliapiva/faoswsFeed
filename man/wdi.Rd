@@ -8,14 +8,16 @@
 \itemize{
  \item geographicAreaM49, key, M49 code for country
  \item timepointYears, key, Year
- \item productivity, Labour productivty in agriculture as value added per worker in constant 2005 US$
+ \item productivity, Labour productivty in agriculture as value added per
+ worker in constant 2005 US$
 }}
 \usage{
 wdi
 }
 \description{
-The indicator is part of the World Development Incicators (WDI), published by the World Bank and 
-describes value added per worker. Its based on a downloaded flat csv.
+The indicator is part of the World Development Incicators (WDI), published by
+the World Bank and describes value added per worker. Its based on a
+downloaded flat csv. 
 (\url{http://data.worldbank.org/indicator/EA.PRD.AGRI.KD})
 }
 \keyword{datasets}

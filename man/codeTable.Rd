@@ -19,7 +19,8 @@
 codeTable
 }
 \description{
-Different codes and classifications for animals and products derived from them (meat and milk).
+Different codes and classifications for animals and products derived from
+them (meat and milk).
 }
 \keyword{datasets}
 

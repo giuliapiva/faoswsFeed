@@ -15,9 +15,9 @@
 aquaDemandTable
 }
 \description{
-Eventually, when fisheries is integrated into the new working system, this
+Eventually, when fisheries is integrated into the new working system, this 
 will be replaced with calculations from live data. For now it's a flat table.
-It's based on 5 csvs which come from FAOSTAT aquaculture.
+It's based on 5 csvs which come from FAOSTAT aquaculture. 
 (\url{http://www.fao.org/fishery/statistics/global-aquaculture-production/query/en})
 }
 \keyword{datasets}

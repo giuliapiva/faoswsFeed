@@ -7,7 +7,8 @@
 \format{a data.table with 206 rows and 4 columns
 \itemize{
  \item measuredItemCPC, key, CPC code of items 
- \item energyContent, key, Energy content in megajoules (MJ) per metric tonne (MT) dry matter
+ \item energyContent, key, Energy content in megajoules (MJ) per metric tonne
+ (MT) dry matter
  \item proteinContent, Share of protein content per unit
  \item feedClassification, Extent to which the item is used as feed 
  }}
@@ -15,9 +16,9 @@
 feedNutrients
 }
 \description{
-For each item which has been allocated to feed in FAOSTAT in the past the respective energy and protein 
-contents as well as their classificaton as feed item are provided.
-(\url{http://www.feedipedia.org/})
+For each item which has been allocated to feed in FAOSTAT in the past the
+respective energy and protein contents as well as their classification as
+feed item are provided. (\url{http://www.feedipedia.org/})
 }
 \keyword{datasets}
 

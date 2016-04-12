@@ -13,7 +13,8 @@
 animalCoefficients
 }
 \description{
-Coefficients which are used in the estimation equations of livestock intensity of each animal group.
+Coefficients which are used in the estimation equations of livestock
+intensity of each animal group.
 }
 \keyword{datasets}
 

@@ -1,3 +1,5 @@
+#' 
+
 library(data.table)
 library(faosws)
 library(faoswsUtil)
@@ -83,7 +85,7 @@ land[,imputed := predict(imp_model, data.frame(GroupName, Year))]
 
 imputeNA <- function(prod, imputed){
   if(all(is.na(prod))){
-    out <- imputed
+    out <- prod
   } else {
     mu <- mean(prod[!is.na(prod)], na.rm=TRUE)
     mu_p <- mean(imputed[!is.na(prod)])

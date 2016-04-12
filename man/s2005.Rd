@@ -16,10 +16,10 @@
 s2005
 }
 \description{
-The table is derived from feed basket data on country level which has been collected in the framework 
-of the Global Livestock Environmental Assessment Model (GLEAM) for the year of 2005 and is not publicly available.
-For more information:
-(\url{http://www.fao.org/gleam/en/})
+The table is derived from feed basket data on country level which has been
+collected in the framework of the Global Livestock Environmental Assessment
+Model (GLEAM) for the year of 2005 and is not publicly available. For more
+information: (\url{http://www.fao.org/gleam/en/})
 }
 \keyword{datasets}
 

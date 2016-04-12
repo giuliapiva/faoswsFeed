@@ -13,8 +13,9 @@
 animalCPCGroup
 }
 \description{
-The table links livestock species to animal groups which share the same
-charasterics in husbandry. Intensity factors are derived for each animal group.
+The table links livestock species to animal groups which share the same 
+characteristics in husbandry. Intensity factors are derived for each animal
+group.
 }
 \keyword{datasets}
 
