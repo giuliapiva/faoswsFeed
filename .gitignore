@@ -5,6 +5,7 @@
 #Binary files
 *.pdf
 *.jar
+*.png
 
 # Output files
 *.csv
