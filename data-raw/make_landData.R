@@ -27,6 +27,19 @@ unique_keys <- unique(raw_land[, .(AreaCode, ElementCode, ItemCode)])
 unique_keys <- unique_keys[fullgrid, , on="AreaCode"]
 land <- merge(raw_land, unique_keys, all.y=T, by=names(unique_keys))
 
+#!! EXCEPTION 
+warning("Egypt is an exception, its pastures is being estimated as a fixed
+        1276. See https://github.com/SWS-Methodology/faoswsFeed/issues/26 for
+        details")
+
+egyptData <- data.table(AreaCode = "818", 
+                        ElementCode = unique(land[,ElementCode]), 
+                        ItemCode = unique(land[,ItemCode]),
+                        Year = unique(land[,Year]),
+                        Value = 1276)
+
+land <- rbind(land, egyptData)
+
 #### Read in income classes ####
 incomeClasses <- fread("data-raw/IR_factor/class.csv")
 incomeClasses <- incomeClasses[GroupCode %in% c("HIC", "LIC", "UMC", "LMC"),]
@@ -122,6 +135,7 @@ land[,new_Value := imputeNA(Value, imputed), by=AreaCode]
 # print(gp + geom_line())
 # }
 # dev.off()
+
 ### IMPUTATION validation
 
 # nl <- function(val, imp){
