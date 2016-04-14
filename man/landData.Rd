@@ -18,13 +18,13 @@ landData
 \description{
 This data is a set taken from FAOSTAT 
 (\url{http://faostat3.fao.org/download/R/RL/E}) with all countries for the 
-years 1990-2013. It contains area (ha, code: 5110) of meadows and pastures 
-(code: 6655). This dataset contains imputed values which were calculated 
-based on lending group in the World Bank country classification table 
-('class.csv', 
+years 1990-2013. It contains area (1000 ha, code: 5110) of meadows and
+pastures (code: 6655). This dataset contains imputed values which were
+calculated based on lending group in the World Bank country classification
+table ('class.csv', 
 \url{http://data.worldbank.org/about/country-and-lending-groups}). For the 
 calculation, small islands are excluded from the imputation model. This is 
-defined by 'FaostatAreaGroupLists.csv'
+defined by 'FaostatAreaGroupLists.csv' 
 (\url{http://faostat.fao.org/site/371/default.aspx}).
 }
 \keyword{datasets}
