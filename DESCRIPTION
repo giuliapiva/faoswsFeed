@@ -12,7 +12,7 @@ Depends:
     R (>= 3.1.2),
     faosws (>= 0.4.2)
 Imports:
-    data.table,
+    data.table (>= 1.9.6),
     lpSolve
 Suggests:
     countrycode,
