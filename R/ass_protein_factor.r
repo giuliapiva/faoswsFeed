@@ -19,11 +19,7 @@ ass_protein_factor <- function() {
     data[,protein := numeric(0)]
     return(data[, .(geographicAreaM49, timePointYears, protein)])
   }
-  
-  # All missing values are to be treated as zero
-  data[is.na(data)] <- 0
-  
-  
+
   data <- within(data, {
     #No Conversion: Carcass.Wt comes in kg
     liveweight <- Carcass.Wt / 0.63

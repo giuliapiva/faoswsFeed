@@ -18,11 +18,7 @@ mule_energy_factor <- function() {
     data[,energy := numeric(0)]
     return(data)
   }
-  
-  # All missing values are to be treated as zero
-  data[is.na(data)] <- 0
- 
-  
+
   within(data, {
     
     #No Conversion: Carcass.Wt comes in kg
