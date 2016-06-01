@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <RScript xmlns="http://www.fao.org/rScript">
-    <Name>Feed Module</Name>
+    <Name>Impute Feed</Name>
     <Description>Feed demand calculation</Description>
     <Category>Imputation</Category>
     <Authors>
