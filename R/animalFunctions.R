@@ -37,7 +37,7 @@ getTradeData <- function(animal, func, area, year) {
   tradeCodes <-  codeTable[module == animal & fun == func & table == "trade",]
   
   tradeKey = DatasetKey(
-    domain = "trade", dataset = "total_trade_CPC",
+    domain = "trade", dataset = "total_trade_cpc_m49",
     dimensions = list(
       Dimension(name = "geographicAreaM49", keys = area), #user input
       Dimension(name = "measuredItemCPC", keys = unique(tradeCodes$measuredItemCPC)),

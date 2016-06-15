@@ -41,7 +41,7 @@ feedAvail = function(vars, measuredItem = feedNutrients$measuredItemCPC, officia
     #Remove this column so the rbind goes ahead
     
     tradeKey = DatasetKey(
-      domain = "trade", dataset = "total_trade_CPC",
+      domain = "trade", dataset = "total_trade_cpc_m49",
       dimensions = list(
         Dimension(name = "geographicAreaM49", keys = getQueryKey("geographicAreaM49")),
         Dimension(name = "measuredItemCPC", keys = measuredItem),

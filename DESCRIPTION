@@ -20,7 +20,7 @@ Suggests:
 License: FAO
 swsDatasetDepends:
     agriculture:aproduction,
-    trade:total_trade_CPC,
+    trade:total_trade_cpc_m49
 swsModuleDepends:
     faoswsFood,
     faoswsProduction,

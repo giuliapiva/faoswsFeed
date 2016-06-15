@@ -15,7 +15,7 @@ setnames(cpcCodes, c("code", "description"), c("measuredItemCPC", "CPCDescriptio
 ## WARNING: Making the false assumption that there is no overlap in codes (for simplicity, but not to hard to change) which seems to work
 elementCodes <- rbindlist(list(GetCodeList("agriculture", "aproduction", "measuredElement", 
                                   unique(codeTable[table == "production", measuredElement]))[,.(code, description)], 
-                       GetCodeList("trade", "total_trade_CPC", "measuredElementTrade", 
+                       GetCodeList("trade", "total_trade_cpc_m49", "measuredElementTrade", 
                                    unique(codeTable[table == "trade", measuredElement]))[,.(code, description)]
                       ))
 setnames(elementCodes, c("code", "description"), c("measuredElement", "elementDescription"))
