@@ -24,6 +24,6 @@ swsDatasetDepends:
 swsModuleDepends:
     faoswsFood,
     faoswsProduction,
-    tradeproc
+    faoswsTrade
 LazyData: true
 RoxygenNote: 5.0.1
