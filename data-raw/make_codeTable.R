@@ -1,5 +1,5 @@
 library(faosws)
-library(faoswsUtil)
+library(faoswsUtil) # 0.2.12
 library(data.table)
 
 GetTestEnvironment("https://hqlprswsas1.hq.un.fao.org:8181/sws", "930fe2c6-b2ec-40f0-8763-6752c665a63f")
@@ -24,7 +24,7 @@ cpcMerge <- merge(cpcCodes, codeTable, by = "measuredItemCPC")
 allCodes <- merge(cpcMerge, elementCodes, by = "measuredElement")
 
 #Add FS codes
-allCodes[,measuredItemFS := cpc2fcl(measuredItemCPC)]
+allCodes[,measuredItemFS := cpc2fcl(measuredItemCPC, version = "latest")]
 
 setcolorder(allCodes, c("module", "fun", "table", "measuredItemFS", "measuredItemCPC", "CPCDescription", "measuredElementFS", "measuredElement", "elementDescription", "variable"))
 setkey(allCodes, measuredItemCPC, measuredElement)
