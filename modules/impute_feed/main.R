@@ -13,8 +13,9 @@ if (CheckDebug()) {
   GetTestEnvironment(SETTINGS[["server"]], SETTINGS[["token"]])
 }
 
+useSession <- as.logical(swsContext.computationParams$useSession)
 
-feedDemand = calculateFeedDemand()
+feedDemand = calculateFeedDemand(session = useSession)
 #saveRDS(feedDemand, "rdata/feedDemand.rda")
 
 ## Potential Feeds (All feeditems excluding Oil meals, meals and brans)
