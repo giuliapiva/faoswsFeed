@@ -19,6 +19,7 @@
 feedAvail = function(vars, measuredItem = feedNutrients$measuredItemCPC, officialData = NULL, negate = FALSE) {
 
   feedCodeTable = data.table(measuredElement = c("5510", "5023", "5141", "5610", "5910"),
+                             measuredElementFS = c(NA, NA, NA, "61", "91"),
                              dataset = c("production", "production", "production", "trade", "trade"),
                               variable = c("production", "processed", "food", "imports", "exports"))
   
@@ -41,13 +42,13 @@ feedAvail = function(vars, measuredItem = feedNutrients$measuredItemCPC, officia
     #Remove this column so the rbind goes ahead
     
     tradeKey = DatasetKey(
-      domain = "trade", dataset = "total_trade_cpc_m49",
+      domain = "faostat_one", dataset = "FS1_SUA",
       dimensions = list(
-        Dimension(name = "geographicAreaM49", keys = getQueryKey("geographicAreaM49")),
-        Dimension(name = "measuredItemCPC", keys = measuredItem),
-        Dimension(name = "measuredElementTrade", keys =
+        Dimension(name = "geographicAreaFS", keys = m492fs(getQueryKey("geographicAreaM49"))),
+        Dimension(name = "measuredItemFS", keys = sub("^0+", "", cpc2fcl(unique(measuredItem, version = "latest")))),
+        Dimension(name = "measuredElementFS", keys =
                     feedCodeTable[variable %in% vars &
-                                    dataset == "trade", measuredElement]),
+                                    dataset == "trade", measuredElementFS]),
         Dimension(name = "timePointYears", keys = getQueryKey("timePointYears"))
       ),
       sessionId =  slot(swsContext.datasets[[1]], "sessionId")
@@ -56,8 +57,18 @@ feedAvail = function(vars, measuredItem = feedNutrients$measuredItemCPC, officia
     
     tradeData = GetData(tradeKey, flags = FALSE)
     
+    tradeData[, `:=`(geographicAreaFS = fs2m49(geographicAreaFS),
+                     measuredItemFS = fcl2cpc(sprintf("%04d", as.numeric(measuredItemFS))))]
+    tradeData <- tradeData[unique(feedCodeTable[!is.na(measuredElementFS), .(measuredElementFS, measuredElement)]), on = "measuredElementFS"]
+    tradeData[, measuredElementFS := NULL]
+    
+    setnames(tradeData, c("geographicAreaFS", "measuredItemFS"),
+             c("geographicAreaM49", "measuredItemCPC"))
+    
+    setcolorder(tradeData, c("geographicAreaM49", "measuredElement", "measuredItemCPC", "timePointYears", "Value"))
+    
     #Trade has different names
-    setnames(tradeData, "measuredElementTrade", "measuredElement")
+    #setnames(tradeData, "measuredElementTrade", "measuredElement")
   
     #Stick all the data together
     allData = rbind(productionData, tradeData)
