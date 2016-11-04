@@ -10,6 +10,8 @@
 #'   form {animal}_{energy|protein}_factor
 #' @param area character. M49 area codes
 #' @param year character. Years
+#' 
+#' @importFrom faoswsUtil fcl2cpc cpc2fcl fs2m49 m492fs
 
 getProdData <- function(animal, func, area, year){
   
@@ -37,18 +39,32 @@ getTradeData <- function(animal, func, area, year) {
   tradeCodes <-  codeTable[module == animal & fun == func & table == "trade",]
   
   tradeKey = DatasetKey(
-    domain = "trade", dataset = "total_trade_cpc_m49",
+    domain = "faostat_one", dataset = "FS1_SUA",
     dimensions = list(
-      Dimension(name = "geographicAreaM49", keys = area), #user input
-      Dimension(name = "measuredItemCPC", keys = unique(tradeCodes$measuredItemCPC)),
-      Dimension(name = "measuredElementTrade", keys = unique(tradeCodes$measuredElement)),
+      Dimension(name = "geographicAreaFS", keys = m492fs(area)), #user input
+      Dimension(name = "measuredItemFS", keys = sub("^0+", "", cpc2fcl(unique(tradeCodes$measuredItemCPC),
+                                                        version  = "latest"))),
+      Dimension(name = "measuredElementFS", keys = unique(tradeCodes$measuredElementFS)),
       Dimension(name = "timePointYears", keys = year) #user input
     ),
     sessionId =  slot(swsContext.datasets[[1]], "sessionId")
   )
   
   tradeData <- GetData(tradeKey, flags = FALSE)
-  setnames(tradeData, "measuredElementTrade", "measuredElement")
+  
+  #convert codes back to fs and cpc
+  
+  tradeData[, `:=`(geographicAreaFS = fs2m49(geographicAreaFS),
+                   measuredItemFS = fcl2cpc(sprintf("%04d", as.numeric(measuredItemFS))))]
+  tradeData <- tradeData[unique(tradeCodes[, .(measuredElementFS, measuredElement)]), on = "measuredElementFS"]
+  tradeData[, measuredElementFS := NULL]
+  
+  setnames(tradeData, c("geographicAreaFS", "measuredItemFS"),
+           c("geographicAreaM49", "measuredItemCPC"))
+  
+  setcolorder(tradeData, c("geographicAreaM49", "measuredElement", "measuredItemCPC", "timePointYears", "Value"))
+  
+  return(tradeData[])
   
 }
 
@@ -63,7 +79,6 @@ removeMissingFlags <- function(data, delete = FALSE, observationFlag = "flagObse
     workingdata <- workingdata[,to_delete, with = FALSE]
   }
   
-  workingdata
-  
+  return(workingdata[])
   
 }

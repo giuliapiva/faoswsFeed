@@ -13,17 +13,17 @@ Depends:
     faosws (>= 0.4.2)
 Imports:
     data.table (>= 1.9.6),
-    lpSolve
+    lpSolve,
+    faoswsUtil (>= 0.2.12)
 Suggests:
     countrycode,
     devtools
 License: FAO
 swsDatasetDepends:
     agriculture:aproduction,
-    trade:total_trade_cpc_m49
+    faostat_one:FS1_SUA
 swsModuleDepends:
     faoswsFood,
-    faoswsProduction,
-    faoswsTrade
+    faoswsProduction
 LazyData: true
 RoxygenNote: 5.0.1
