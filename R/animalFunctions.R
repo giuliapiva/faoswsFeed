@@ -41,7 +41,8 @@ getTradeData <- function(animal, func, area, year) {
   tradeKey = DatasetKey(
     domain = "faostat_one", dataset = "FS1_SUA",
     dimensions = list(
-      Dimension(name = "geographicAreaFS", keys = m492fs(area)), #user input
+      #user input except curacao,  saint martin and former germany
+      Dimension(name = "geographicAreaFS", keys = setdiff(m492fs(area), c("279", "534", "280"))), 
       Dimension(name = "measuredItemFS", keys = sub("^0+", "", cpc2fcl(unique(tradeCodes$measuredItemCPC),
                                                         version  = "latest"))),
       Dimension(name = "measuredElementFS", keys = unique(tradeCodes$measuredElementFS)),

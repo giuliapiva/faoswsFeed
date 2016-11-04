@@ -44,7 +44,8 @@ feedAvail = function(vars, measuredItem = feedNutrients$measuredItemCPC, officia
     tradeKey = DatasetKey(
       domain = "faostat_one", dataset = "FS1_SUA",
       dimensions = list(
-        Dimension(name = "geographicAreaFS", keys = m492fs(getQueryKey("geographicAreaM49"))),
+        #user input except curacao,  saint martin and former germany
+        Dimension(name = "geographicAreaFS", keys = setdiff(m492fs(getQueryKey("geographicAreaM49")), c("279", "534", "280"))),
         Dimension(name = "measuredItemFS", keys = sub("^0+", "", cpc2fcl(unique(measuredItem, version = "latest")))),
         Dimension(name = "measuredElementFS", keys =
                     feedCodeTable[variable %in% vars &
