@@ -131,6 +131,9 @@ feedAvailability = feedAvail(vars = c("production", "imports", "exports", "food"
 ## Apply nutritive factors and calculate nutrient availability
 feedAvailabilityData <- merge(feedAvailability, feedNutrients, all.x = T)
 
+feedAvailabilityData[is.na(energyContent), energyContent := 0]
+feedAvailabilityData[is.na(proteinContent), proteinContent := 0]
+
 feedAvailabilityData[, energyAvailability := feedAvailability * energyContent]
 feedAvailabilityData[, proteinAvailability := feedAvailability * proteinContent]
 
