@@ -37,14 +37,18 @@ getProdData <- function(animal, func, area, year){
 getTradeData <- function(animal, func, area, year) {
   
   tradeCodes <-  codeTable[module == animal & fun == func & table == "trade",]
+  tradeItems <- na.omit(sub("^0+", "", cpc2fcl(unique(tradeCodes$measuredItemCPC),
+                                       version  = "latest")))
+  if(!is.null(attr(tradeItems, "na.action"))){
+    warning("Some items were omitted converting from cpc to fcl for trade data")
+  }
   
   tradeKey = DatasetKey(
     domain = "faostat_one", dataset = "FS1_SUA",
     dimensions = list(
       #user input except curacao,  saint martin and former germany
       Dimension(name = "geographicAreaFS", keys = setdiff(m492fs(area), c("279", "534", "280"))), 
-      Dimension(name = "measuredItemFS", keys = sub("^0+", "", cpc2fcl(unique(tradeCodes$measuredItemCPC),
-                                                        version  = "latest"))),
+      Dimension(name = "measuredItemFS", keys = tradeItems),
       Dimension(name = "measuredElementFS", keys = unique(tradeCodes$measuredElementFS)),
       Dimension(name = "timePointYears", keys = year) #user input
     ),

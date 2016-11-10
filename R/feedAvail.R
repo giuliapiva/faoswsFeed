@@ -41,12 +41,19 @@ feedAvail = function(vars, measuredItem = feedNutrients$measuredItemCPC, officia
   if(nrow(feedCodeTable[variable %in% vars & dataset == "trade"]) != 0) {
     #Remove this column so the rbind goes ahead
     
+    tradeItems <- na.omit(sub("^0+", "", cpc2fcl(unique(measuredItem), returnFirst = TRUE, version = "latest")))
+    
+    if(!is.null(attr(tradeItems, "na.action"))){
+      warning("Some items were omitted converting from cpc to fcl for trade data")
+    }
+    
+    
     tradeKey = DatasetKey(
       domain = "faostat_one", dataset = "FS1_SUA",
       dimensions = list(
         #user input except curacao,  saint martin and former germany
         Dimension(name = "geographicAreaFS", keys = setdiff(m492fs(getQueryKey("geographicAreaM49")), c("279", "534", "280"))),
-        Dimension(name = "measuredItemFS", keys = sub("^0+", "", cpc2fcl(unique(measuredItem, version = "latest")))),
+        Dimension(name = "measuredItemFS", keys = tradeItems),
         Dimension(name = "measuredElementFS", keys =
                     feedCodeTable[variable %in% vars &
                                     dataset == "trade", measuredElementFS]),
@@ -60,6 +67,16 @@ feedAvail = function(vars, measuredItem = feedNutrients$measuredItemCPC, officia
     
     tradeData[, `:=`(geographicAreaFS = fs2m49(geographicAreaFS),
                      measuredItemFS = fcl2cpc(sprintf("%04d", as.numeric(measuredItemFS))))]
+    #convert all missing to dregs (bad code conversion)
+    ## code                           description selectionOnly type startDate endDate
+    ## 1: 39160 Brewing or distilling dregs and waste         FALSE CRNP        NA      NA
+    #
+    ##    measuredItemFS measuredItemFS_description cpc
+    ## 1:            654   Dregs from Brewing+Dist.  NA
+    ##
+    
+    tradeData[is.na(measuredItemFS), measuredItemFS := "39160"]
+    
     tradeData <- tradeData[unique(feedCodeTable[!is.na(measuredElementFS), .(measuredElementFS, measuredElement)]), on = "measuredElementFS"]
     tradeData[, measuredElementFS := NULL]
     
@@ -83,7 +100,7 @@ feedAvail = function(vars, measuredItem = feedNutrients$measuredItemCPC, officia
   #If a flag is specified, subset by it
   
 
-allData =  merge(allData, feedCodeTable, all.y = TRUE, by = "measuredElement")
+allData =  merge(allData, feedCodeTable[,mget(c("measuredElement", "dataset", "variable"))], all.y = TRUE, by = "measuredElement")
 
 avail = dcast.data.table(allData, geographicAreaM49 + measuredItemCPC + timePointYears ~ variable, value.var = "Value")
 
