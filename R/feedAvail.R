@@ -66,17 +66,9 @@ feedAvail = function(vars, measuredItem = feedNutrients$measuredItemCPC, officia
     tradeData = GetData(tradeKey, flags = FALSE)
     
     tradeData[, `:=`(geographicAreaFS = fs2m49(geographicAreaFS),
-                     measuredItemFS = fcl2cpc(sprintf("%04d", as.numeric(measuredItemFS))))]
-    #convert all missing to dregs (bad code conversion)
-    ## code                           description selectionOnly type startDate endDate
-    ## 1: 39160 Brewing or distilling dregs and waste         FALSE CRNP        NA      NA
-    #
-    ##    measuredItemFS measuredItemFS_description cpc
-    ## 1:            654   Dregs from Brewing+Dist.  NA
-    ##
-    
-    tradeData[is.na(measuredItemFS), measuredItemFS := "39160"]
-    
+                     measuredItemFS = fcl2cpc(sprintf("%04d", as.numeric(measuredItemFS)),
+                                              version = "latest"))]
+
     tradeData <- tradeData[unique(feedCodeTable[!is.na(measuredElementFS), .(measuredElementFS, measuredElement)]), on = "measuredElementFS"]
     tradeData[, measuredElementFS := NULL]
     
