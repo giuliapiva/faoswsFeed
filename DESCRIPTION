@@ -1,6 +1,6 @@
 Package: faoswsFeed
 Title: Calculate Feed requirements per country per year
-Version: 0.2.1
+Version: 0.3.0
 Date: 2016-06-15
 Authors@R: c(person("Bernhard", "Dalheimer", email = "Bernhard.Dalheimer@fao.org", role = "aut"),
              person("Sebastian", "Campbell", email = "Sebastian.Campbell@fao.org", role = c("aut", "cre")))
