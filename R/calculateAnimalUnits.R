@@ -27,9 +27,18 @@
 
 calculateAnimalUnits <- function(){
 
-## 2. COMPILE INDICEs
+## 2. COMPILE INDICES
 
 keys <- c("geographicAreaM49", "timePointYears", "measuredItemCPC")
+
+
+maxYear <- max(as.integer(getQueryKey("timePointYears")))
+allYears <- GetCodeList("agriculture", "aproduction", "timePointYears")[,code]
+if(maxYear >= max(as.integer(allYears))){
+  stop(sprintf(
+    "This module needs to look one year ahead for stocks. The year %s is not in the data so %s cannot be the last year in your selection",
+       maxYear + 1, maxYear))
+}
 
 ## 1. Cattle
 
