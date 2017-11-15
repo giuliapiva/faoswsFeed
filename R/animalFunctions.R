@@ -38,11 +38,18 @@ getTradeData <- function(animal, func, area, year) {
   
   tradeCodes <-  codeTable[module == animal & fun == func & table == "trade",]
   
+  getSplitTrade(area, tradeCodes$measuredItemCPC, tradeCodes$measuredElement, tradeCodes$measuredElementFS, year)
+  
+}
+
+getSplitTrade <- function(area, item, element, fs_element, year){
+  
   # Read data from FAOSTAT
   if(length(getYearCodes("faostat", year))){
     
-    fsTradeItems <- na.omit(sub("^0+", "", cpc2fcl(unique(tradeCodes$measuredItemCPC),
-                                                   version  = "latest")))
+    fsTradeItems <- na.omit(sub("^0+", "", cpc2fcl(unique(item),
+                                                   version  = "latest",
+                                                   returnFirst = TRUE)))
     if(!is.null(attr(fsTradeItems, "na.action"))){
       warning("Some items were omitted converting from cpc to fcl for trade data")
     }
@@ -53,7 +60,7 @@ getTradeData <- function(animal, func, area, year) {
         #user input except curacao,  saint martin and former germany
         Dimension(name = "geographicAreaFS", keys = setdiff(m492fs(area), c("279", "534", "280"))), 
         Dimension(name = "measuredItemFS", keys = fsTradeItems),
-        Dimension(name = "measuredElementFS", keys = unique(tradeCodes$measuredElementFS)),
+        Dimension(name = "measuredElementFS", keys = na.omit(unique(fs_element))),
         Dimension(name = "timePointYears", keys = getYearCodes("faostat", year)) #user input
       ),
       sessionId =  slot(swsContext.datasets[[1]], "sessionId")
@@ -67,8 +74,9 @@ getTradeData <- function(animal, func, area, year) {
   
   #convert codes back to fs and cpc
   fsTradeData[, `:=`(geographicAreaFS = fs2m49(geographicAreaFS),
-                   measuredItemFS = fcl2cpc(sprintf("%04d", as.numeric(measuredItemFS))))]
-  fsTradeData <- fsTradeData[unique(tradeCodes[, .(measuredElementFS, measuredElement)]), on = "measuredElementFS"]
+                     measuredItemFS = fcl2cpc(sprintf("%04d", as.numeric(measuredItemFS))))]
+  fsTradeData <- fsTradeData[unique(data.table(measuredElementFS = fs_element, measuredElement = element)), 
+                             on = "measuredElementFS"]
   fsTradeData[, measuredElementFS := NULL]
   
   setnames(fsTradeData, c("geographicAreaFS", "measuredItemFS"),
@@ -81,8 +89,8 @@ getTradeData <- function(animal, func, area, year) {
                                  dataset = "total_trade_cpc_m49",
                                  dimensions = list(
                                    Dimension(name = "geographicAreaM49", keys = area), 
-                                   Dimension(name = "measuredItemCPC", keys = unique(tradeCodes$measuredItemCPC)),
-                                   Dimension(name = "measuredElementTrade", keys = unique(tradeCodes$measuredElement)),
+                                   Dimension(name = "measuredItemCPC", keys = unique(item)),
+                                   Dimension(name = "measuredElementTrade", keys = na.omit(unique(element))),
                                    Dimension(name = "timePointYears", keys = getYearCodes("trade_module", year)) #user input
                                  )
     )
