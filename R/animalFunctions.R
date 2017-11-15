@@ -30,42 +30,72 @@ getProdData <- function(animal, func, area, year){
   
   prodData <- removeMissingFlags(GetData(prodKey, flags = TRUE))
   prodData[,`:=`(flagObservationStatus = NULL,
-                    flagMethod = NULL)]
+                 flagMethod = NULL)]
   prodData
 }
 
 getTradeData <- function(animal, func, area, year) {
   
   tradeCodes <-  codeTable[module == animal & fun == func & table == "trade",]
-  tradeItems <- na.omit(sub("^0+", "", cpc2fcl(unique(tradeCodes$measuredItemCPC),
-                                       version  = "latest")))
-  if(!is.null(attr(tradeItems, "na.action"))){
-    warning("Some items were omitted converting from cpc to fcl for trade data")
+  
+  # Read data from FAOSTAT
+  if(length(getYearCodes("faostat", year))){
+    
+    fsTradeItems <- na.omit(sub("^0+", "", cpc2fcl(unique(tradeCodes$measuredItemCPC),
+                                                   version  = "latest")))
+    if(!is.null(attr(fsTradeItems, "na.action"))){
+      warning("Some items were omitted converting from cpc to fcl for trade data")
+    }
+    
+    fsTradeKey = DatasetKey(
+      domain = "faostat_one", dataset = "FS1_SUA",
+      dimensions = list(
+        #user input except curacao,  saint martin and former germany
+        Dimension(name = "geographicAreaFS", keys = setdiff(m492fs(area), c("279", "534", "280"))), 
+        Dimension(name = "measuredItemFS", keys = fsTradeItems),
+        Dimension(name = "measuredElementFS", keys = unique(tradeCodes$measuredElementFS)),
+        Dimension(name = "timePointYears", keys = getYearCodes("faostat", year)) #user input
+      ),
+      sessionId =  slot(swsContext.datasets[[1]], "sessionId")
+    )
+    
+    fsTradeData <- GetData(fsTradeKey, flags = FALSE)
+    
+  } else {
+    fsTradeData <- makeEmptyDataset("faostat_one", "FS1_SUA")
   }
   
-  tradeKey = DatasetKey(
-    domain = "faostat_one", dataset = "FS1_SUA",
-    dimensions = list(
-      #user input except curacao,  saint martin and former germany
-      Dimension(name = "geographicAreaFS", keys = setdiff(m492fs(area), c("279", "534", "280"))), 
-      Dimension(name = "measuredItemFS", keys = tradeItems),
-      Dimension(name = "measuredElementFS", keys = unique(tradeCodes$measuredElementFS)),
-      Dimension(name = "timePointYears", keys = year) #user input
-    ),
-    sessionId =  slot(swsContext.datasets[[1]], "sessionId")
-  )
-  
-  tradeData <- GetData(tradeKey, flags = FALSE)
-  
   #convert codes back to fs and cpc
-  
-  tradeData[, `:=`(geographicAreaFS = fs2m49(geographicAreaFS),
+  fsTradeData[, `:=`(geographicAreaFS = fs2m49(geographicAreaFS),
                    measuredItemFS = fcl2cpc(sprintf("%04d", as.numeric(measuredItemFS))))]
-  tradeData <- tradeData[unique(tradeCodes[, .(measuredElementFS, measuredElement)]), on = "measuredElementFS"]
-  tradeData[, measuredElementFS := NULL]
+  fsTradeData <- fsTradeData[unique(tradeCodes[, .(measuredElementFS, measuredElement)]), on = "measuredElementFS"]
+  fsTradeData[, measuredElementFS := NULL]
   
-  setnames(tradeData, c("geographicAreaFS", "measuredItemFS"),
+  setnames(fsTradeData, c("geographicAreaFS", "measuredItemFS"),
            c("geographicAreaM49", "measuredItemCPC"))
+  
+  
+  # Prepare any trade module data
+  if(length(getYearCodes("trade_module", year))){
+    moduleTradeKey <- DatasetKey(domain = "trade",
+                                 dataset = "total_trade_cpc_m49",
+                                 dimensions = list(
+                                   Dimension(name = "geographicAreaM49", keys = area), 
+                                   Dimension(name = "measuredItemCPC", keys = unique(tradeCodes$measuredItemCPC)),
+                                   Dimension(name = "measuredElementTrade", keys = unique(tradeCodes$measuredElement)),
+                                   Dimension(name = "timePointYears", keys = getYearCodes("trade_module", year)) #user input
+                                 )
+    )
+    
+    moduleTradeData <- GetData(moduleTradeKey, flags = FALSE)
+    
+  } else {
+    moduleTradeData <- makeEmptyDataset("trade", "total_trade_cpc_m49")
+  }
+  
+  setnames(moduleTradeData, "measuredElementTrade", "measuredElement")
+  
+  tradeData <- rbind(moduleTradeData, fsTradeData)
   
   setcolorder(tradeData, c("geographicAreaM49", "measuredElement", "measuredItemCPC", "timePointYears", "Value"))
   
