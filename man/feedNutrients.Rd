@@ -7,8 +7,8 @@
 \format{a data.table with 206 rows and 4 columns
 \itemize{
  \item measuredItemCPC, key, CPC code of items 
- \item energyContent, key, Energy content in megajoules (MJ) per metric tonne
- (MT) dry matter
+ \item energyContent, key, Energy content in megajoules (MJ) per kilogram
+ (kg) dry matter
  \item proteinContent, Share of protein content per unit
  \item feedClassification, Extent to which the item is used as feed 
  }}
