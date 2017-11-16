@@ -219,5 +219,7 @@ setkey(feedData, geographicAreaM49, measuredElement, measuredItemCPC, timePointY
 #saveRDS(feedData, "rdata/feedData.rda")
 
 results <- SaveData("agriculture", "aproduction", feedData)
-
-paste0(paste(names(results), unlist(results), collapse = "\n", sep = ": "), "\n\nModule completed successfully")
+# Assigning to new object to remove warnings for output but still have them around in case of debugging
+results_out <- results
+results_out[["warnings"]] <- NULL
+paste0(paste(names(results_out), unlist(results_out), collapse = "\n", sep = ": "), "\n\nModule completed successfully")
