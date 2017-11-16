@@ -73,15 +73,13 @@ getSplitTrade <- function(area, item, element, fs_element, year){
   }
   
   #convert codes back to fs and cpc
-  fsTradeData[, `:=`(geographicAreaFS = fs2m49(geographicAreaFS),
-                     measuredItemFS = fcl2cpc(sprintf("%04d", as.numeric(measuredItemFS))))]
+  fsTradeData[, `:=`(geographicAreaM49 = fs2m49(geographicAreaFS),
+                     measuredItemCPC = fcl2cpc(sprintf("%04d", as.numeric(measuredItemFS))))]
   fsTradeData <- fsTradeData[unique(data.table(measuredElementFS = fs_element, measuredElement = element)), 
                              on = "measuredElementFS"]
-  fsTradeData[, measuredElementFS := NULL]
-  
-  setnames(fsTradeData, c("geographicAreaFS", "measuredItemFS"),
-           c("geographicAreaM49", "measuredItemCPC"))
-  
+  fsTradeData[, `:=`(measuredElementFS = NULL,
+                     measuredItemFS = NULL,
+                     geographicAreaFS = NULL)]
   
   # Prepare any trade module data
   if(length(getYearCodes("trade_module", year))){
