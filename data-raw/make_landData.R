@@ -11,7 +11,14 @@ if (CheckDebug()) {
   GetTestEnvironment("https://hqlprswsas1.hq.un.fao.org:8181/sws", "c63d8cf2-3e70-409d-a05b-7800aadaea44")
 }
 
+required_cols <- c("AreaCode", "ElementCode", "ItemCode", "Year", "Value")
+
 raw_land <- fread("data-raw/IR_factor/landData.csv")
+
+setnames(raw_land, c("Area Code", "Element Code", "Item Code", "Year", "Value"), required_cols)
+raw_land <- raw_land[, mget(required_cols)]
+raw_land[, Value := as.numeric(Value)]
+
 raw_land[, AreaCode := fs2m49(as.character(AreaCode))]
 
 
