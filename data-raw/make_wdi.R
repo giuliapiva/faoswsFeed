@@ -8,7 +8,7 @@ library(faoswsUtil)
 #' 
 #' class.csv                  - WB income groups in which countries belong
 #' FaostatAreaGroupLists.csv  - Used to get Small Island Developing States
-#' wdi-productivity_6-12.csv  - World Bank agricultural worker productivity
+#' wdi-productivity.csv  - World Bank agricultural worker productivity
 
 # Read in token for code conversions
 if (CheckDebug()) {
@@ -18,9 +18,7 @@ if (CheckDebug()) {
 }
 
 ## Agricultural productivity data ##
-#rawWdi = data.table(read.csv("data-raw/IR_factor/wdi-productivity_6-12.csv", stringsAsFactors = FALSE))
-# updated File:
-rawWdi = data.table(read.csv("data-raw/IR_factor/wdiLaborProductivityUpdated.csv", stringsAsFactors = FALSE))
+rawWdi = data.table(read.csv("data-raw/IR_factor/wdi-productivity.csv", stringsAsFactors = FALSE))
 #Remove useless metadata at bottom of csv by keeping rows with country names
 rawWdi = rawWdi[Country.Name != "",]
 
