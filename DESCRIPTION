@@ -1,12 +1,11 @@
 Package: faoswsFeed
 Title: Calculate Feed requirements per country per year
-Version: 0.4.0
-Date: 2017-11-16
+Version: 0.4.1
+Date: 2017-12-11
 Authors@R: c(person("Bernhard", "Dalheimer", email = "Bernhard.Dalheimer@fao.org", role = "aut"), person("Sebastian",
               "Campbell", email = "Sebastian.Campbell@fao.org", role = c("aut", "cre")))
 Description: The methodology of this package was written by Onno Hoffmeister and Bernhard Dalheimer to solve the problem of
-              changing feed requirements in different countries over time as opposed to the existing static consumption
-              model.
+              changing feed requirements in different countries over time as opposed to the existing static consumption model.
 Depends: R (>= 3.1.2), faosws (>= 0.4.2)
 Imports: data.table (>= 1.9.6), lpSolve, faoswsUtil (>= 0.4.0)
 Suggests: countrycode, devtools
