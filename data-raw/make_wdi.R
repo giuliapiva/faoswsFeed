@@ -18,7 +18,8 @@ if (CheckDebug()) {
 }
 
 ## Agricultural productivity data ##
-rawWdi = data.table(read.csv("data-raw/IR_factor/wdi-productivity.csv", stringsAsFactors = FALSE))
+rawWdi = data.table(read.csv("data-raw/IR_factor/wdi-productivity.csv", 
+                             stringsAsFactors = FALSE, skip = 4))
 #Remove useless metadata at bottom of csv by keeping rows with country names
 rawWdi = rawWdi[Country.Name != "",]
 

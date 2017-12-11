@@ -16,8 +16,8 @@ wdi
 }
 \description{
 The indicator is part of the World Development Incicators (WDI), published by
-the World Bank and describes value added per worker. Its based on a
-downloaded flat csv. 
+the World Bank and describes value added per worker. It's based on a
+downloaded flat csv. All empty columns were removed.
 (\url{http://data.worldbank.org/indicator/EA.PRD.AGRI.KD})
 }
 \keyword{datasets}
