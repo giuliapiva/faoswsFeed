@@ -38,6 +38,8 @@
 #' will be replaced with calculations from live data. For now it's a flat table.
 #' It's based on 5 csvs which come from FAOSTAT aquaculture. 
 #' (\url{http://www.fao.org/fishery/statistics/global-aquaculture-production/query/en})
+#' The aquaculture production query uses all countries, but no continent
+#' aggregates or value in USD.
 #' 
 #' @format a data.table with 4632 rows and 4 columns
 #' \itemize{

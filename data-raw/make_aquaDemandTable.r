@@ -3,13 +3,17 @@ library(data.table)
 library(countrycode)
 
 # Read the production file
-aquaProductionData = data.table(read.csv('data-raw/aquaData/globalAquacultureProduction.csv'))
+aquaProductionData = fread('data-raw/aquaData/globalAquacultureProduction.csv')
 
 # Remove the flag columns
 aquaProductionData[, c(which(like(colnames(aquaProductionData), "S_"))) := NULL]
 
+# Rename column names
+setnames(aquaProductionData, c("Land Area", "Ocean Area", "Environment", "Species", "Scientific name"), 
+         c("geographicArea", "oceanArea", "waterEnvironment", "figisSpecies", "scientificName"))
+
 # Produce M49 codes using countrycode
-aquaProductionData[, geographicAreaM49 := as.character(countrycode(Land.Area, 
+aquaProductionData[, geographicAreaM49 := as.character(countrycode(geographicArea, 
                                            origin = "country.name", 
                                            destination = "iso3n", 
                                            warn = F))] 
@@ -17,18 +21,14 @@ aquaProductionData[, geographicAreaM49 := as.character(countrycode(Land.Area,
 # manually correct countrycode mismatch: China code M49 is 1248
 aquaProductionData[geographicAreaM49 == "156", geographicAreaM49 := "1248"]
 # Sudan now has country code 729
-aquaProductionData[Land.Area == "Sudan", geographicAreaM49 := "729"]
+aquaProductionData[geographicArea == "Sudan", geographicAreaM49 := "729"]
 
 # Remove the areas without code (they're non existent)
 aquaProductionData = aquaProductionData[!is.na(geographicAreaM49),]
 
-# Rename column names
-setnames(aquaProductionData, c(1,2,3,4,5), c("geographicArea", "oceanArea", 
-                                             "waterEnvironment", "figisSpecies", "scientificName"))
-
-# Ensure that all data columns are numeric
-aquaProductionData[, (6:(ncol(aquaProductionData) - 1)) := lapply(.SD, as.numeric), 
-                   .SDcols = 6:(ncol(aquaProductionData) - 1)]
+# Change data columns to numeric
+year_cols <- grep("^[[:digit:]]{4}$", colnames(aquaProductionData), value = TRUE)
+aquaProductionData[, (year_cols) := lapply(mget(year_cols), as.numeric)]
 
 # From wide to long
 aquaProductionLongData = melt(aquaProductionData, 
