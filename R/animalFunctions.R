@@ -50,15 +50,22 @@ getSplitTrade <- function(area, item, element, fs_element, year){
     fsTradeItems <- na.omit(sub("^0+", "", cpc2fcl(unique(item),
                                                    version  = "latest",
                                                    returnFirst = TRUE)))
+    
     if(!is.null(attr(fsTradeItems, "na.action"))){
       warning("Some items were omitted converting from cpc to fcl for trade data")
+    }
+    
+    #user input except curacao,  saint martin and former germany    
+    fsCountries <- na.omit(setdiff(m492fs(area), c("279", "534", "280")))
+    
+    if(!is.null(attr(fsCountries, "na.action"))){
+      warning("Some areas were omitted converting from m49 to fs for trade data")
     }
     
     fsTradeKey = DatasetKey(
       domain = "faostat_one", dataset = "FS1_SUA",
       dimensions = list(
-        #user input except curacao,  saint martin and former germany
-        Dimension(name = "geographicAreaFS", keys = setdiff(m492fs(area), c("279", "534", "280"))), 
+        Dimension(name = "geographicAreaFS", keys = fsCountries), 
         Dimension(name = "measuredItemFS", keys = fsTradeItems),
         Dimension(name = "measuredElementFS", keys = na.omit(unique(fs_element))),
         Dimension(name = "timePointYears", keys = getYearCodes("faostat", year)) #user input
