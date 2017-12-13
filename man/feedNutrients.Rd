@@ -4,7 +4,7 @@
 \name{feedNutrients}
 \alias{feedNutrients}
 \title{Nutrient table and classification of feedstuffs}
-\format{a data.table with 206 rows and 4 columns
+\format{a data.table with 148 rows and 4 columns
 \itemize{
  \item measuredItemCPC, key, CPC code of items 
  \item energyContent, key, Energy content in megajoules (MJ) per kilogram
@@ -18,7 +18,9 @@ feedNutrients
 \description{
 For each item which has been allocated to feed in FAOSTAT in the past the
 respective energy and protein contents as well as their classification as
-feed item are provided. (\url{http://www.feedipedia.org/})
+feed item are provided. (\url{http://www.feedipedia.org/}). This table used
+to use every commodity historically used as feed, but now uses a subset of
+those given how many were rare feeds such as sugar.
 }
 \keyword{datasets}
 
