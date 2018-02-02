@@ -1,12 +1,8 @@
 # faoswsFeed 
 
-Moving of Feed module to new system
+This project has been moved to bitbucket to preserve private data. It can now be found at https://sdlc.fao.org/bitbucket/projects/SWS/repos/faoswsfeed/browse
 
 ## Note
-
-Certain files are  missing from this repo (such as data from GLEAM). For full 
-development access, it's recommended that you contact the authors in
-the DESCRIPTION file.
 
 ** All work under this repository represents the latest status of development 
 and is made public for collaboration purposes. It does not reflect the current 
